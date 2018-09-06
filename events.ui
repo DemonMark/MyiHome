@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>events</class>
+ <widget class="QTabWidget" name="events">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>909</width>
+    <height>511</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Zdarzenia</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background :qlineargradient(spread:reflect, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(204, 247, 255, 147), stop:1 rgba(0, 0, 0, 147));
+
+
+ QTabBar::tab:selected {
+background : url( /home/bananapi/Desktop/13489_13_07_08_12_39_47_4.jpg)
+}
+QTabBar::tab{
+background : url( /home/bananapi/Desktop/21370_03_10_09_6_59_36.png)
+
+}</string>
+  </property>
+  <property name="currentIndex">
+   <number>0</number>
+  </property>
+  <property name="tabsClosable">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="tab">
+   <property name="styleSheet">
+    <string notr="true"> bacground color : qradialgradient(spread:repeat, cx:0.5, cy:0.5, radius:0.077, fx:0.5, fy:0.5, stop:0 rgba(0, 169, 255, 147), stop:0.497326 rgba(0, 0, 0, 147), stop:1 rgba(0, 169, 255, 147))
+
+ QTabBar::tab:selected {
+background : url( /home/bananapi/Desktop/13489_13_07_08_12_39_47_4.jpg)
+}
+QTabBar::tab{
+background : url( /home/bananapi/Desktop/21370_03_10_09_6_59_36.png)
+
+}
+</string>
+   </property>
+   <attribute name="title">
+    <string>Zdarzenia</string>
+   </attribute>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>901</width>
+      <height>491</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="tabsClosable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="tab_3">
+     <property name="styleSheet">
+      <string notr="true">background-color: url(:/grafika/tapeta-8753-72-zolte-tlo.jpg)</string>
+     </property>
+     <attribute name="title">
+      <string>Stworz</string>
+     </attribute>
+     <widget class="QPushButton" name="zdarzeniesave">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>140</y>
+        <width>51</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">image: url(:/grafika/Save-icon.png);</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>70</y>
+        <width>296</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="_2">
+       <item>
+        <widget class="QLabel" name="modulwej">
+         <property name="text">
+          <string>Modul wejsciowy</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLineEdit" name="ipwej"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="ipmodwej">
+             <property name="text">
+              <string>ip modulu</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QPushButton" name="dodajwej">
+             <property name="text">
+              <string>Dodaj</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="nazwamodwej"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="nazwamoduluwej">
+             <property name="text">
+              <string>nazwa modułu</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="istniejacemodwej">
+           <property name="text">
+            <string>                      Istniejace moduly</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QComboBox" name="nazwydodmodwej">
+             <item>
+              <property name="text">
+               <string>Modul wej241</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Modul wej212</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QComboBox" name="ipdodmodwej">
+             <item>
+              <property name="text">
+               <string>192.168.200.241</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>192.168.200.212</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="usunwej">
+             <property name="text">
+              <string>Usun</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="otworzwej">
+           <property name="text">
+            <string>Otworz</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>70</y>
+        <width>296</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QLabel" name="modulwyj">
+         <property name="text">
+          <string>Modul wyjsciowy</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="ipwyj"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="ipmodwyj">
+             <property name="text">
+              <string>ip modulu</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="dodajwyj">
+             <property name="text">
+              <string>Dodaj</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="nazwamodwyj"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="nazwamoduluwyj">
+             <property name="text">
+              <string>nazwa modułu</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="istniejacemodulywyj">
+           <property name="text">
+            <string>                    Istniejace moduly</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QComboBox" name="nazwydodmodwyj">
+             <item>
+              <property name="text">
+               <string>Modul wyj209</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QComboBox" name="ipdodmodwyj">
+             <item>
+              <property name="text">
+               <string>192.168.200.209</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="usunwyj">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>Usun</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="otworzwyj">
+           <property name="text">
+            <string>Otworz</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="tab_2">
+   <property name="styleSheet">
+    <string notr="true">background : transparent</string>
+   </property>
+   <attribute name="title">
+    <string>Ustawienia</string>
+   </attribute>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>126</y>
+      <width>571</width>
+      <height>217</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_12">
+       <item>
+        <widget class="QLabel" name="modulwyj2">
+         <property name="text">
+          <string>Modul wyjsciowy</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="modulwej2">
+         <property name="text">
+          <string>Modul wejsciowy</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QComboBox" name="ipdodmodwyj2">
+           <item>
+            <property name="text">
+             <string>192.168.200.209</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="ktorewyj">
+           <item>
+            <property name="text">
+             <string>Wyjscie - 1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 4</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 6</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 7</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 8</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 9</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 10</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 11</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 12</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 13</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 14</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 15</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 16</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 17</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 18</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 19</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 20</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 21</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 22</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 23</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wyjscie - 24</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="czynnosc">
+           <item>
+            <property name="text">
+             <string>Zalacz</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wylacz</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Czasowe zalaczenie</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Czasowe wylaczenie</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="odmczaswyj">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="horizontalSlider">
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QComboBox" name="ipdodmodwej2">
+           <item>
+            <property name="text">
+             <string>192.168.200.241</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>192.168.200.212</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="ktorewej">
+           <item>
+            <property name="text">
+             <string>Wejscie - 1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 4</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 5</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 6</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 7</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 8</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 9</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 10</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 11</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 12</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 13</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 14</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 15</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 16</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 17</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 18</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 19</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 20</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 21</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 22</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 23</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wejscie - 24</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="czynnosc2">
+           <item>
+            <property name="text">
+             <string>Zalacz</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Wylacz</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Czasowe zalaczenie</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Czasowe wylaczenie</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="odmczaswej">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="horizontalSlider_2">
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QPushButton" name="test">
+           <property name="text">
+            <string>Test</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="ustawieniasave">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>360</y>
+      <width>61</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">image: url(:/grafika/Save-icon.png);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>odmczaswyj</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>264</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>261</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider_2</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>odmczaswej</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>533</x>
+     <y>278</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>539</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ipdodmodwyj</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>nazwydodmodwyj</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>148</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>147</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ipdodmodwej</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>nazwydodmodwej</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>571</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>577</x>
+     <y>248</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>nazwydodmodwyj</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ipdodmodwyj</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>198</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>276</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>nazwydodmodwej</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ipdodmodwej</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>619</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>617</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
