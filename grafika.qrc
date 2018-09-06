@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/grafika">
-        <file>asas.pro</file>
-        <file>069450-blue-chrome-rain-icon-alphanumeric-plus-sign.png</file>
-    </qresource>
-    <qresource prefix="/">
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/parter.jpg</file>
-    </qresource>
-</RCC>

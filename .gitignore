@@ -41,3 +41,7 @@ target_wrapper.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
+
+grafika\.qrc
+
+069450-blue-chrome-rain-icon-alphanumeric-plus-sign\.png

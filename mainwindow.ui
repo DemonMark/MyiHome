@@ -185,7 +185,7 @@ background : url( /home/bananapi/Desktop/21370_03_10_09_6_59_36.png)
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -1293,6 +1293,9 @@ background-repeat: none;
           <height>192</height>
          </rect>
         </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
         <item>
          <property name="text">
           <string>Korytarz góra</string>
@@ -1317,6 +1320,9 @@ background-repeat: none;
           <width>256</width>
           <height>192</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::MultiSelection</enum>
@@ -1511,6 +1517,9 @@ background-color: transparent;
           <width>541</width>
           <height>91</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="modelColumn">
          <number>0</number>
