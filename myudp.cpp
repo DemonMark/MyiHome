@@ -16,6 +16,8 @@ QList<int> bgi; //wybór grup zharmonogramowanych przycisków do aktywacji
 extern QList<QList<int> > outmasks;
 extern QList<QList<int> > scheduledcs;
 extern QList<int> scheduledtime;
+extern QList<int> tspinBox;
+QList<QTimer*> scheduledtimers;
 unsigned char temperatura[26];
 int wej241,wej212;
 extern unsigned char maskawysl[10];
@@ -26,7 +28,9 @@ extern int dzien;
 extern int spimy;
 extern int flaga;
 extern int obecnosc;
-extern int tt;
+extern int t1;
+extern int gn;
+extern int t[3];
 int c[32]; //wejścia
 int odliczG;
 int PIRs=0, PIRs_2=0;
@@ -50,8 +54,6 @@ MyUDP::MyUDP(QObject *parent) :
   timer_obecnosc = new QTimer(this);
   connect(timer_obecnosc,SIGNAL(timeout()),this,SLOT(obecnosc_none()));
 
-  timer_lazienka = new QTimer(this);
-  connect(timer_lazienka, SIGNAL(timeout()), this, SLOT(Slott()));
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
 void MyUDP::WYSUDP()
@@ -172,7 +174,7 @@ void MyUDP::readyRead(){
             for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
 
                 if(temp[0] & scheduledhexxpir[j]){
-                    if(scheduledtime[j]==0 || scheduledtime[j]==1 && dzien==0){
+                    if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
 
                         bgi.insert(j,j);
                         int i=0;
@@ -180,13 +182,15 @@ void MyUDP::readyRead(){
 
                             maskawysl[outmasks.value(j)[i]]|=r;
                             MyUDP client;
-                            //custom_timer(10000, this, SLOT(Slott()));
+
                             client.WYSUDP();
                             c[scheduledcs.value(j)[i]]=1;
                             i++;
                         }
-                    timer_lazienka->start(tt);
-                    scheduledaction=1;
+                        if(scheduledtime[j]==0){
+                            scheduledtimers.at(j)->start(t[tspinBox.value(j)]);
+                            scheduledaction=1;
+                        }
                     }
                 }
 
@@ -226,19 +230,9 @@ void MyUDP::Slott(){
     maskawysl[0]&=~0x040;
     client.WYSUDP();
     c[7]=0;
-    timer_lazienka->stop();
+    scheduledtimers.at(0)->stop();
+}
 
-    qDebug() <<"POSZLOOOOOOOOOOOOOO";
-}
-//*******************FUNKCJA TIMERÓW*******************************//
-void MyUDP::custom_timer(int duration, QObject *target, const char *slot)
-{
-    QTimer *timer_name = new QTimer;
-    QObject::connect(timer_name, SIGNAL(timeout()), target, slot);
-    //QTimer::singleShot(duration, this, slot);
-    timer_name->start(duration);
-}
-//*******************ZEROWANIE WSZYSTKICH WYJSC*******************//
 void MyUDP::zerujWyj()
 {
     for(int i=0;i<=32;i++)

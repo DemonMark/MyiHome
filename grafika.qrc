@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/grafika">
+        <file>asas.pro</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/parter.jpg</file>
+    </qresource>
+</RCC>

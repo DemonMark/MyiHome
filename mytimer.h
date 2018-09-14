@@ -2,19 +2,19 @@
 #define MYTIMER_H
 
 #include <QTimer>
-#include <QObject> //+
+#include <QObject>
 
 class MyTimer : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit MyTimer(QObject *parent = 0);
-    QTimer *timerConf;
+    //explicit MyTimer(QObject *parent = 0);
+    explicit MyTimer(QObject *target, const char *slot);
     void TimerStart();
 
 public slots:
-    void MyTimerSlot1();
+
 };
 
 #endif // MYTIMER_H

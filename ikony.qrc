@@ -34,8 +34,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_11.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_13.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_13.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_LD_off.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_LD_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gdoordown.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gdooropen.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gdoorup.png</file>
@@ -62,5 +60,11 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/plus_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/timer_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/timer_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/timer_2_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/timer_2_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/timer_3_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/timer_3_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on.png</file>
     </qresource>
 </RCC>

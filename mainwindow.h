@@ -18,7 +18,6 @@ public:
     ~MainWindow();
     //Ui::MainWindow *ui;
     ///MainWindow();
-    //void MyTimerSlot();
 
 private slots:
 
@@ -38,7 +37,7 @@ private slots:
   void showTime();
   void wyjscie();
   void stykOff();
-
+  void offfff();
   void on_WY25_toggled(bool checked);
 
   void on_WY26_toggled(bool checked);
@@ -114,6 +113,18 @@ private slots:
   void on_pushButton_28_clicked();
 
   void on_spinBox_valueChanged(int arg1);
+
+  void on_pushButton_29_clicked();
+
+  void on_pushButton_30_clicked();
+
+  void on_pushButton_31_clicked();
+
+  void on_spinBox_2_valueChanged(int arg1);
+
+  void on_spinBox_3_valueChanged(int arg1);
+
+  void on_pushButton_32_clicked();
 
 private:
     Ui::MainWindow *ui;

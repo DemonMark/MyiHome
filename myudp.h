@@ -13,13 +13,11 @@ class MyUDP : public QObject
         explicit MyUDP(QObject *parent = 0);
         void WYSUDP();
         QUdpSocket *socket;
-        void custom_timer(int duration, QObject *target, const char *slot); //+
         void zerujWyj();
 
 private:
         QTimer *timer_LOff;
         QTimer *timer_obecnosc;
-        QTimer *timer_lazienka;
 
   signals:
 
@@ -27,6 +25,6 @@ private:
         void readyRead();
         void lightsOff();
         void obecnosc_none();
-        void Slott(); //+
+        void Slott();
 };
 #endif // MYUDP_H

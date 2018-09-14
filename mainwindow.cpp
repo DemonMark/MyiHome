@@ -30,12 +30,14 @@ QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
 QList<int> scheduledtime; //lista znaczników dla włączania harmonogramu wg czasu wieczornego
+QList<int> tspinBox;
 QString time_text;
 extern QString ips;
 extern int odb;        //brak odbioru ramki
 extern int q;           //odebranie konkretnej ramki
 extern int c[32];
 int m; //numeracja pozycji przycisku na liście
+int t[3];
 int liczpetle=0;
 int wlaczony,reszta,zal;
 extern unsigned char temp[20];
@@ -44,11 +46,11 @@ extern unsigned char hexx[9];
 extern QList<unsigned char> scheduledhexxpir;
 extern QList<QList<unsigned char> > scheduledhexxout;
 extern QList<int> bgi;
+extern QList<QTimer*> scheduledtimers;
 unsigned char maskawysl[10];
 extern int odliczG;
 int a=0;
 int gn=-1;
-int tt=300000;
 int qu;
 int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0;
 int dzien;  //jeśli = 1 czujki nie włączają świateł
@@ -64,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timerId= startTimer(10);                //czas timera 10ms
+    timerId = startTimer(10);                //czas timera 10ms
      /******************************ZEGAR************************/
     QTimer *timer =new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
@@ -80,7 +82,8 @@ MainWindow::MainWindow(QWidget *parent) :
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
 
-    //QListWidgetItem *item = new QListWidgetItem(ui->listWidget_2);
+    //WARTOSCI POCZATKOWE//
+    ui->spinBox->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -456,11 +459,11 @@ if("192.168.1.100"==ips){
 
 
     if (PIRs == 0){
-        QPixmap PIR_off("/media/HDD1/admin/iHome/28-02-2018/media/pir_LD_off.png");
+        QPixmap PIR_off("/media/HDD1/admin/iHome/28-02-2018/media/pir_off.png");
         ui->label_pir_LD->setPixmap(PIR_off);
     }
     if (PIRs_2 == 0){
-        QPixmap PIR_off("/media/HDD1/admin/iHome/28-02-2018/media/pir_LD_off.png");
+        QPixmap PIR_off("/media/HDD1/admin/iHome/28-02-2018/media/pir_off.png");
         ui->label_pir_LD_2->setPixmap(PIR_off);
     }
 
@@ -1262,16 +1265,19 @@ void MainWindow::on_pushButton_23_clicked()
     a=0;  
     if(ui->pushButton_29->isChecked()){
         scheduledtime.insert(gn,1);
-        ui->pushButton_29->setChecked(false);
+        scheduledtimers.insert(gn,0);
         isTime = "| *";
     }
     else{
+        MyTimer(this, SLOT(offfff()));
+        tspinBox.insert(gn,ui->listWidget->currentRow());
         scheduledtime.insert(gn,0);
         isTime = "";
     }
     ui->listWidget_3->addItem(itempirlist.takeFirst()->text()+" -> "+tempnames+isTime);
     ui->listWidget->clearSelection();
     ui->listWidget_2->clearSelection();
+
 }
 
 void MainWindow::on_pushButton_24_clicked()
@@ -1299,7 +1305,6 @@ void MainWindow::on_pushButton_26_clicked()
 {
     QProcess reku;
     QStringList params;
-    qDebug() <<scheduledhexxout[0];
     params << "/home/pi/HAP-NodeJS/python/fanoff.py";
     reku.start("python", params);
     reku.waitForFinished(-1);
@@ -1314,6 +1319,7 @@ void MainWindow::on_pushButton_27_clicked()
     outmasks.removeAt(cr);
     scheduledcs.removeAt(cr);
     scheduledtime.removeAt(cr);
+    scheduledtimers.removeAt(cr);
     gn--;
 }
 
@@ -1326,5 +1332,63 @@ void MainWindow::on_pushButton_28_clicked()
 
 void MainWindow::on_spinBox_valueChanged(int arg1)
 {
-    tt=arg1*60000;
+    t[0]=arg1*60000;
+}
+
+void MainWindow::on_spinBox_2_valueChanged(int arg1)
+{
+    t[1]=arg1*60000;
+}
+
+void MainWindow::on_spinBox_3_valueChanged(int arg1)
+{
+    t[2]=arg1*60000;
+}
+
+void MainWindow::offfff(){
+    for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
+            if(scheduledtime[j]==0){
+                int i=0;
+                foreach(unsigned char r, scheduledhexxout[j]){
+                    maskawysl[outmasks.value(j)[i]]&=~r;
+                    MyUDP client;
+                    client.WYSUDP();
+                    c[scheduledcs.value(j)[i]]=0;
+                    bList.at(scheduledbtns.value(j)[i])->setChecked(false);
+                    i++;
+                }
+            scheduledtimers.at(j)->stop();
+            }
+    }
+}
+
+void MainWindow::on_pushButton_29_clicked()
+{
+    ui->pushButton_29->isChecked();
+    ui->pushButton_30->setChecked(false);
+    ui->pushButton_31->setChecked(false);
+}
+
+void MainWindow::on_pushButton_30_clicked()
+{
+    ui->pushButton_30->isChecked();
+    ui->pushButton_29->setChecked(false);
+    ui->pushButton_31->setChecked(false);
+}
+
+void MainWindow::on_pushButton_31_clicked()
+{
+    ui->pushButton_31->isChecked();
+    ui->pushButton_29->setChecked(false);
+    ui->pushButton_30->setChecked(false);
+}
+
+void MainWindow::on_pushButton_32_clicked()
+{
+    if(ui->spinBox->isVisible()){
+        ui->spinBox->setVisible(false);
+    }
+    else{
+        ui->spinBox->setVisible(true);
+    }
 }

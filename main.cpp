@@ -20,10 +20,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MyUDP client;
-    MyUDP serwer;
     MainWindow w;
     w.show();
     client.zerujWyj();
-   //MyTimer lazienka;        // uruchomienie timera zew.
   return a.exec();
 }
