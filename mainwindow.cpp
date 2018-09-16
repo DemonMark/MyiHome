@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
 
     //WARTOSCI POCZATKOWE//
-    ui->spinBox->setVisible(false);
+    ui->spinBox_3->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -1220,6 +1220,7 @@ void MainWindow::stykOff(){
 
 void MainWindow::on_pushButton_23_clicked()
 {
+    if(ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0){
     int hexxpos;
     int om;
     gn++;
@@ -1277,7 +1278,7 @@ void MainWindow::on_pushButton_23_clicked()
     ui->listWidget_3->addItem(itempirlist.takeFirst()->text()+" -> "+tempnames+isTime);
     ui->listWidget->clearSelection();
     ui->listWidget_2->clearSelection();
-
+}
 }
 
 void MainWindow::on_pushButton_24_clicked()
@@ -1347,18 +1348,21 @@ void MainWindow::on_spinBox_3_valueChanged(int arg1)
 
 void MainWindow::offfff(){
     for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-            if(scheduledtime[j]==0){
-                int i=0;
-                foreach(unsigned char r, scheduledhexxout[j]){
-                    maskawysl[outmasks.value(j)[i]]&=~r;
-                    MyUDP client;
-                    client.WYSUDP();
-                    c[scheduledcs.value(j)[i]]=0;
-                    bList.at(scheduledbtns.value(j)[i])->setChecked(false);
-                    i++;
-                }
-            scheduledtimers.at(j)->stop();
+        if(scheduledtimers[j]->isActive()){
+            qDebug() << "Timer aktywny:" << j;
+        }
+        else{
+            int i=0;
+            foreach(unsigned char r, scheduledhexxout[j]){
+                maskawysl[outmasks.value(j)[i]]&=~r;
+                MyUDP client;
+                client.WYSUDP();
+                c[scheduledcs.value(j)[i]]=0;
+                bList.at(scheduledbtns.value(j)[i])->setChecked(false);
+                i++;
             }
+            scheduledtimers.at(j)->stop();
+         }
     }
 }
 
@@ -1385,10 +1389,10 @@ void MainWindow::on_pushButton_31_clicked()
 
 void MainWindow::on_pushButton_32_clicked()
 {
-    if(ui->spinBox->isVisible()){
-        ui->spinBox->setVisible(false);
+    if(ui->spinBox_3->isVisible()){
+        ui->spinBox_3->setVisible(false);
     }
     else{
-        ui->spinBox->setVisible(true);
+        ui->spinBox_3->setVisible(true);
     }
 }

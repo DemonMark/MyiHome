@@ -176,7 +176,7 @@ void MyUDP::readyRead(){
                 if(temp[0] & scheduledhexxpir[j]){
                     if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
 
-                        bgi.insert(j,j);
+                        bgi.insert(j,j);//czy to zadziała?
                         int i=0;
                         foreach(unsigned char r, scheduledhexxout[j]){
 
@@ -188,6 +188,7 @@ void MyUDP::readyRead(){
                             i++;
                         }
                         if(scheduledtime[j]==0){
+                            scheduledtimers.at(j)->setSingleShot(true);
                             scheduledtimers.at(j)->start(t[tspinBox.value(j)]);
                             scheduledaction=1;
                         }
