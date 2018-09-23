@@ -67,5 +67,9 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/set timer.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_on.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/sup.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/sdown.png</file>
     </qresource>
 </RCC>

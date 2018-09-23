@@ -23,6 +23,7 @@
 #include <QList>
 #include <QIcon>
 #include <QProcess>
+#include <QtWebKit/QtWebKit>
 
 QList<QPushButton*> bList; //lista przycisków
 int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,19,19,19,19,19,19,19,19,19,19,19,19,19,9,16,6,18,2,3,19,19}; //pozycja przycisku na liście
@@ -60,6 +61,8 @@ int otwarta=0; //status bramy garażowej
 extern int PIRs,PIRs_2;
 extern int LOff;
 extern int scheduledaction;
+QDate dateTime;
+QString dateStamptext;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -68,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     timerId = startTimer(10);                //czas timera 10ms
      /******************************ZEGAR************************/
-    QTimer *timer =new QTimer(this);
+    QTimer *timer = new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
     timer->start();
     bList = ui->tab_5->findChildren<QPushButton*>();
@@ -82,19 +85,24 @@ MainWindow::MainWindow(QWidget *parent) :
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
 
-    //WARTOSCI POCZATKOWE//
+    //PARAMETRY POCZĄTKOWE//
     ui->spinBox_3->setVisible(false);
+    webView = new QWebView(this);
+    webView->setVisible(false);
+    webView->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+    QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+    dateTime = QDate::currentDate();
+    dateStamptext = dateTime.toString("dd/MM/yyyy");
 }
 
 MainWindow::~MainWindow()
 {
- //   writeSetting();
+    //writeSetting();
     delete ui;
     killTimer(timerId);
-
 }
 
-void MainWindow :: showTime(){
+void MainWindow::showTime(){
     QTime time=QTime::currentTime();
     time_text=time.toString("hh:mm:ss");
     ui->digitalclock->setText(time_text);
@@ -111,7 +119,7 @@ void MainWindow :: showTime(){
      }
 //****************DZIEŃ LUB NOC*********************************//
 
-     if (time_text>=ui->timeEdit->text() && time_text<=ui->timeEdit_2->text()){
+     if (time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
          dzien=1;
          spimy=0;
      }
@@ -119,9 +127,16 @@ void MainWindow :: showTime(){
          dzien=0;
      }
 
-    QDateTime dateTime=QDateTime::currentDateTime();
+    dateTime=QDate::currentDate();
     QString datetimetext= dateTime.toString("dd/MM/yyyy");
     ui->datatime->setText(datetimetext);
+
+//***********ZMIANA DNIA**************//
+    if(datetimetext!=dateStamptext){
+        webView->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+        QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+        dateStamptext = dateTime.toString("dd/MM/yyyy");
+    }
 
 //***************WYŚWIETLANIE TIMERÓW****************//
 
@@ -129,7 +144,7 @@ void MainWindow :: showTime(){
   }
 
 /************************************************************** ODBIERANIE *********************************************************************/
-    void MainWindow::timerEvent(QTimerEvent *event){
+void MainWindow::timerEvent(QTimerEvent *event){
 
 
 /******************TESTOWY MODUL INZ MARKA*********************/
@@ -1395,4 +1410,13 @@ void MainWindow::on_pushButton_32_clicked()
     else{
         ui->spinBox_3->setVisible(true);
     }
+}
+
+void MainWindow::readTimeFromWWW(){
+    qDebug() << "ZMIANA DATY";
+    QWebElement wTime = webView->page()->mainFrame()->findFirstElement("h1");
+    QString swTime = wTime.toPlainText();
+    ui->label_25->setText(swTime.mid(51,5));
+    ui->label_26->setText(swTime.mid(73,5));
+    QObject::disconnect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
 }
