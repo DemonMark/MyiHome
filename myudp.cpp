@@ -7,7 +7,7 @@
 int odb,i;
 int q=0;
 int n; //numeracja wejścia
-int in[4]={0,1,2,4}; //grupy wejść
+int in[4]={0,1,2,4}; //grupy wejść modułu IN
 unsigned char temp[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
 QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych przez harmonogramy
@@ -116,6 +116,7 @@ void MyUDP::readyRead(){
         ips=sender.toString();
         emit ips;
         if("192.168.1.102"==ips) {
+            emit changes(); //sygnal do odbierania
             for (i=3;i<=(Buffer.length());i++){
                 temperatura[i]=Buffer[i];
             }
@@ -139,6 +140,7 @@ void MyUDP::readyRead(){
                     if(temp[z] & hexx[i]){  //szukanie aktywnego wejścia
 
                         c[n]++;
+                        emit changes(); //sygnal do odbierania
                         if (c[n]==1){
 
                             maskawysl[z]|=(hexx[i]);
@@ -182,7 +184,6 @@ void MyUDP::readyRead(){
 
                             maskawysl[outmasks.value(j)[i]]|=r;
                             MyUDP client;
-
                             client.WYSUDP();
                             c[scheduledcs.value(j)[i]]=1;
                             i++;
@@ -191,12 +192,11 @@ void MyUDP::readyRead(){
                             scheduledtimers.at(j)->setSingleShot(true);
                             scheduledtimers.at(j)->start(t[tspinBox.value(j)]);
                             scheduledaction=1;
+                            emit changes(); //sygnal do odbierania
                         }
                     }
                 }
-
             }
-
         }
      }
 }
@@ -215,6 +215,7 @@ void MyUDP :: lightsOff(){
     client.zerujWyj();
     timer_LOff->stop();
     LOff=1;
+    emit changes(); //sygnal do odbierania
     }
 }
 //***********FUNKCJA ZERUJĄCA OBECNOŚĆ**************************//

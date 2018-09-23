@@ -23,5 +23,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     client.zerujWyj();
+    QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
   return a.exec();
 }

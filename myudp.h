@@ -20,6 +20,7 @@ private:
         QTimer *timer_obecnosc;
 
   signals:
+        void changes();
 
   public slots:
         void readyRead();

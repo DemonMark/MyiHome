@@ -21,7 +21,7 @@ public:
     ///MainWindow();
 
 private slots:
-
+  void receiving();
   void on_WY3_toggled(bool checked);
   void on_WY1_toggled(bool checked);
   void on_WY2_toggled(bool checked);

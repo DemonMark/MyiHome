@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timerId = startTimer(10);                //czas timera 10ms
+    timerId = startTimer(500);                //czas timera 10ms
      /******************************ZEGAR************************/
     QTimer *timer = new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
@@ -145,7 +145,8 @@ void MainWindow::showTime(){
 
 /************************************************************** ODBIERANIE *********************************************************************/
 void MainWindow::timerEvent(QTimerEvent *event){
-
+}
+void MainWindow::receiving(){
 
 /******************TESTOWY MODUL INZ MARKA*********************/
 
@@ -459,7 +460,7 @@ if("192.168.1.100"==ips){
             temp[0]&=~0x02;
             PIRs_2=1;
         }
-
+//******************ZAZNACZANIE BUTTONA Z HARMONOGRAMU*************************//
         if(scheduledaction==1){
             foreach(int bgis, bgi){
                 foreach(int btns, scheduledbtns[bgis]){
