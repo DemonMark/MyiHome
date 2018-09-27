@@ -37,7 +37,6 @@ extern QString ips;
 extern int odb;        //brak odbioru ramki
 extern int q;           //odebranie konkretnej ramki
 extern int c[32];
-int m; //numeracja pozycji przycisku na liście
 int t[3];
 int liczpetle=0;
 int wlaczony,reszta,zal;
@@ -77,22 +76,33 @@ MainWindow::MainWindow(QWidget *parent) :
     bList = ui->tab_5->findChildren<QPushButton*>();
     //bList = MainWindow::findChildren<QPushButton*>();
 
-    foreach(QPushButton *x, bList)
+    foreach(QPushButton *btn, bList)
     {
-        qDebug() << x->objectName() ;
+        qDebug() << btn->objectName();
+        connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
     }
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
 
     //PARAMETRY POCZĄTKOWE//
+    t[0]=300000;
+    t[1]=300000;
+    t[2]=300000;
+
     ui->spinBox_3->setVisible(false);
+
     webView = new QWebView(this);
     webView->setVisible(false);
     webView->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
     QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+
     dateTime = QDate::currentDate();
     dateStamptext = dateTime.toString("dd/MM/yyyy");
+
+    movie_pompa_1 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
+    movie_pompa_2 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
+    movie_pompa_3 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
 }
 
 MainWindow::~MainWindow()
@@ -148,8 +158,6 @@ void MainWindow::timerEvent(QTimerEvent *event){
 }
 void MainWindow::receiving(){
 
-/******************TESTOWY MODUL INZ MARKA*********************/
-
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
         QString b,t,d,b1,t1,d1,b2,t2,d2,b3,t3,d3,b4,t4,d4,b5,t5,d5,b6,t6,d6,b7,t7,d7,b8,t8,d8,b9,t9,d9,b10,d10,t10;
         QString a = ".";
@@ -202,6 +210,7 @@ void MainWindow::receiving(){
 
         QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on.png");
         QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo.png");
+        QPixmap pompa_off("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
 
             //**HISTEREZA BIBLIOTEKA**//
      //   if (((temp[0]*10)+temp[1]-(ui->doubleSpinBox->value())*10) >=(((ui->spinBox->value())*10)+(ui->spinBox_2->value()))){
@@ -233,13 +242,11 @@ void MainWindow::receiving(){
          if (((temperatura[5]*10)+temperatura[6]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_3->value())*10)){
 
             ui->th_2->setPixmap(temp_off);
-
             flaga_1=1;
          }
         if (((temperatura[5]*10)+temperatura[6]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_3->value())*10)){
 
             ui->th_2->setPixmap(temp_on);
-
             flaga_1=0;
         }
         //**KUCHNIA-JADALNIA**//
@@ -289,7 +296,7 @@ void MainWindow::receiving(){
 
        qu++;
 
-       if (qu==3000){
+       if (qu==30){
            if (flaga_7==0){
            maskawysl[3]|=0x80;
            MyUDP client;
@@ -354,19 +361,29 @@ void MainWindow::receiving(){
                 maskawysl[3]|=0x40;
                 MyUDP client;
                 client.WYSUDP();
-            } else {
+                ui->label_pompa_1->setMovie(movie_pompa_1);
+                movie_pompa_1->start();
+            }
+            if(flaga_1==1 && flaga_2==1 && flaga_4==1 && flaga_5==1 && flaga_6==1){
                 maskawysl[3]&=~0x40;
                 MyUDP client;
                 client.WYSUDP();
+                movie_pompa_1->stop();
+                ui->label_pompa_1->setPixmap(pompa_off);
             }
             if (flaga==0 || flaga_7==0){
                 maskawysl[3]|=0x80;
                 MyUDP client;
                 client.WYSUDP();
-            } else {
+                ui->label_pompa_2->setMovie(movie_pompa_2);
+                movie_pompa_2->start();
+            }
+            if (flaga==1 && flaga_7==1){
                 maskawysl[3]&=~0x80;
                 MyUDP client;
                 client.WYSUDP();
+                movie_pompa_2->stop();
+                ui->label_pompa_2->setPixmap(pompa_off);
             }
            qu=0;
 
@@ -375,7 +392,7 @@ void MainWindow::receiving(){
 //****************zaznaczanie buttonów po wykryciu pakietu************************//
 if("192.168.1.100"==ips){
 
-    m=0;
+    int m=0; //numeracja pozycji przycisku na liście
 
     for (int j=0; j<=4;j++){
 
@@ -848,351 +865,6 @@ void MainWindow::on_WY40_toggled(bool checked)
         client.WYSUDP();
         }
 }
-//****************************WYSYŁANIE Z IKON PULPITU**********************//
-void MainWindow::on_pushButton_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-    qDebug() << timerId;
-    if(checked && c[8]==0){
-        qDebug() << "*************WARUNEK 1************" << c[8];
-        maskawysl[0]|=0x80;
-        client.WYSUDP();
-        c[8]=1;
-    }
-
-    if(!checked && c[8]==1){
-        qDebug() << "*************WARUNEK 3***********" << c[8];
-        maskawysl[0]&=~0x80;
-        client.WYSUDP();
-        c[8]=0;
-    }
-}
-
-void MainWindow::on_pushButton_2_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[7]==0){
-        maskawysl[0]|=0x40;
-        client.WYSUDP();
-        c[7]=1;
-    }
-
-    if(!checked && c[7]==1){
-        maskawysl[0]&=~0x40;
-        client.WYSUDP();
-        c[7]=0;
-    }
-}
-
-void MainWindow::on_pushButton_3_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[29]==0){
-        maskawysl[4]|=0x10;
-        client.WYSUDP();
-        c[29]=1;
-    }
-
-    if(!checked && c[29]==1){
-        maskawysl[4]&=~0x10;
-        client.WYSUDP();
-        c[29]=0;
-    }
-}
-
-void MainWindow::on_pushButton_4_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[30]==0){
-        maskawysl[4]|=0x20;
-        client.WYSUDP();
-        c[30]=1;
-    }
-
-    if(!checked && c[30]==1){
-        maskawysl[4]&=~0x20;
-        client.WYSUDP();
-        c[30]=0;
-    }
-}
-
-void MainWindow::on_pushButton_5_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[24]==0){
-        maskawysl[2]|=0x01;
-        client.WYSUDP();
-        c[24]=1;
-    }
-
-    if(!checked && c[24]==1){
-        maskawysl[2]&=~0x01;
-        client.WYSUDP();
-        c[24]=0;
-    }
-}
-
-void MainWindow::on_pushButton_6_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[15]==0){
-        maskawysl[1]|=0x40;
-        client.WYSUDP();
-        c[15]=1;
-    }
-
-    if(!checked && c[15]==1){
-        maskawysl[1]&=~0x40;
-        client.WYSUDP();
-        c[15]=0;
-    }
-}
-
-void MainWindow::on_pushButton_7_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[27]==0){
-        maskawysl[4]|=0x04;
-        client.WYSUDP();
-        c[27]=1;
-    }
-
-    if(!checked && c[27]==1){
-        maskawysl[4]&=~0x04;
-        client.WYSUDP();
-        c[27]=0;
-    }
-}
-
-void MainWindow::on_pushButton_8_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[19]==0){
-        maskawysl[2]|=0x04;
-        client.WYSUDP();
-        c[19]=1;
-    }
-
-    if(!checked && c[19]==1){
-        maskawysl[2]&=~0x04;
-        client.WYSUDP();
-        c[19]=0;
-    }
-}
-
-void MainWindow::on_pushButton_9_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[13]==0){
-        maskawysl[1]|=0x10;
-        client.WYSUDP();
-        c[13]=1;
-    }
-
-    if(!checked && c[13]==1){
-        maskawysl[1]&=~0x10;
-        client.WYSUDP();
-        c[13]=0;
-    }
-}
-
-void MainWindow::on_pushButton_10_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[25]==0){
-        maskawysl[4]|=0x01;
-        client.WYSUDP();
-        c[25]=1;
-    }
-
-    if(!checked && c[25]==1){
-        maskawysl[4]&=~0x01;
-        client.WYSUDP();
-        c[25]=0;
-    }
-}
-
-void MainWindow::on_pushButton_11_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[16]==0){
-        maskawysl[1]|=0x80;
-        client.WYSUDP();
-        c[16]=1;
-    }
-
-    if(!checked && c[16]==1){
-        maskawysl[1]&=~0x80;
-        client.WYSUDP();
-        c[16]=0;
-    }
-}
-
-void MainWindow::on_pushButton_12_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[14]==0){
-        maskawysl[1]|=0x20;
-        client.WYSUDP();
-        c[14]=1;
-    }
-
-    if(!checked && c[14]==1){
-        maskawysl[1]&=~0x20;
-        client.WYSUDP();
-        c[14]=0;
-    }
-}
-
-void MainWindow::on_pushButton_15_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[6]==0){
-        maskawysl[0]|=0x20;
-        client.WYSUDP();
-        c[6]=1;
-    }
-
-    if(!checked && c[6]==1){
-        maskawysl[0]&=~0x20;
-        client.WYSUDP();
-        c[6]=0;
-    }
-}
-
-void MainWindow::on_pushButton_16_pressed()
-{
-    QByteArray tab;
-    MyUDP client;
-
-    maskawysl[4]|=0x80;
-    client.WYSUDP();
-    timer_bramaStykOff->start(500);
-}
-
-void MainWindow::on_pushButton_16_released()
-{
-    /*QByteArray tab;
-    MyUDP client;
-
-    maskawysl[4]&=~0x80;
-    client.WYSUDP();*/
-}
-
-void MainWindow::on_pushButton_17_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[18]==0){
-        maskawysl[2]|=0x02;
-        client.WYSUDP();
-        c[18]=1;
-    }
-
-    if(!checked && c[18]==1){
-        maskawysl[2]&=~0x02;
-        client.WYSUDP();
-        c[18]=0;
-    }
-}
-
-void MainWindow::on_pushButton_18_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[11]==0){
-        maskawysl[1]|=0x04;
-        client.WYSUDP();
-        c[11]=1;
-    }
-
-    if(!checked && c[11]==1){
-        maskawysl[1]&=~0x04;
-        client.WYSUDP();
-        c[11]=0;
-    }
-}
-
-void MainWindow::on_pushButton_19_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[26]==0){
-        maskawysl[4]|=0x02;
-        client.WYSUDP();
-        c[26]=1;
-    }
-
-    if(!checked && c[26]==1){
-        maskawysl[4]&=~0x02;
-        client.WYSUDP();
-        c[26]=0;
-    }
-}
-
-void MainWindow::on_pushButton_20_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[12]==0){
-        maskawysl[1]|=0x08;
-        client.WYSUDP();
-        c[12]=1;
-    }
-
-    if(!checked && c[12]==1){
-        maskawysl[1]&=~0x08;
-        client.WYSUDP();
-        c[12]=0;
-    }
-}
-
-void MainWindow::on_pushButton_21_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP client;
-
-    if(checked && c[28]==0){
-        maskawysl[4]|=0x08;
-        client.WYSUDP();
-        c[28]=1;
-    }
-
-    if(!checked && c[28]==1){
-        maskawysl[4]&=~0x08;
-        client.WYSUDP();
-        c[28]=0;
-    }
-}
 
 //**************wyłączony do czasu rozwiązania problemu zera na liście bList
 void MainWindow::on_pushButton_13_toggled(bool checked)
@@ -1283,6 +955,7 @@ void MainWindow::on_pushButton_23_clicked()
     if(ui->pushButton_29->isChecked()){
         scheduledtime.insert(gn,1);
         scheduledtimers.insert(gn,0);
+        tspinBox.insert(gn, 0);
         isTime = "| *";
     }
     else{
@@ -1290,6 +963,7 @@ void MainWindow::on_pushButton_23_clicked()
         tspinBox.insert(gn,ui->listWidget->currentRow());
         scheduledtime.insert(gn,0);
         isTime = "";
+        qDebug() << tspinBox;
     }
     ui->listWidget_3->addItem(itempirlist.takeFirst()->text()+" -> "+tempnames+isTime);
     ui->listWidget->clearSelection();
@@ -1337,6 +1011,7 @@ void MainWindow::on_pushButton_27_clicked()
     scheduledcs.removeAt(cr);
     scheduledtime.removeAt(cr);
     scheduledtimers.removeAt(cr);
+    scheduledbtns.removeAt(cr);
     gn--;
 }
 
@@ -1420,4 +1095,38 @@ void MainWindow::readTimeFromWWW(){
     ui->label_25->setText(swTime.mid(51,5));
     ui->label_26->setText(swTime.mid(73,5));
     QObject::disconnect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *)
+{
+    emit pressed();
+}
+
+//****************************WYSYŁANIE Z IKON PULPITU**********************//
+
+void MainWindow::ClickedbtnFinder(){
+
+    int m=0; //numeracja pozycji przycisku na liście
+    for (int j=0; j<=4;j++){
+        for (int i=1; i<=8;i++){
+            int y=bPos[m];
+            if(bList.at(y)==QObject::sender()){
+                qDebug() << "NR" << m << "TO TEN BUTTON" << "WARTOSC DLA c =" << m+1;
+                QByteArray tab;
+                MyUDP client;
+                //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
+                if(bList.at(y)->isChecked() && c[m+1]==0){ //warunek z c do usunięcia
+                maskawysl[j]|=(hexx[i]);
+                client.WYSUDP();
+                c[m+1]=1;
+                }
+                if((bList.at(y)->isChecked()==false) && c[m+1]==1){
+                maskawysl[j]&=~(hexx[i]);
+                client.WYSUDP();
+                c[m+1]=0;
+                }
+            }
+        m++;
+        }
+    }
 }

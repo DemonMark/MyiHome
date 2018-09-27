@@ -26,6 +26,5 @@ private:
         void readyRead();
         void lightsOff();
         void obecnosc_none();
-        void Slott();
 };
 #endif // MYUDP_H

@@ -607,7 +607,7 @@ font: 75 15pt &quot;Sans Serif&quot;;</string>
          <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <double>22.500000000000000</double>
+         <double>22.000000000000000</double>
         </property>
        </widget>
        <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
@@ -1981,7 +1981,7 @@ background-color: transparent;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="grafika.qrc">:/HDD1/admin/iHome/28-02-2018/media/parter.jpg</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/parter.jpg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2009,7 +2009,7 @@ background-color: transparent;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -2037,7 +2037,7 @@ background-color: transparent;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2130,7 +2130,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2284,7 +2284,7 @@ background-color: transparent;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2333,7 +2333,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2435,7 +2435,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2536,7 +2536,7 @@ background-color: transparent;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2585,7 +2585,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -2781,7 +2781,7 @@ font: 75 20pt &quot;Roboto Condensed&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -3168,9 +3168,6 @@ selection-background-color: transparent;
         <property name="value">
          <number>5</number>
         </property>
-        <property name="displayIntegerBase">
-         <number>10</number>
-        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
         <property name="geometry">
@@ -3183,6 +3180,9 @@ selection-background-color: transparent;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pompa cyrkulacji&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_33{
@@ -3209,8 +3209,79 @@ background-color: transparent;
         <property name="autoRepeat">
          <bool>false</bool>
         </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_pompa_1">
+        <property name="geometry">
+         <rect>
+          <x>835</x>
+          <y>376</y>
+          <width>50</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pompa parter&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/pompa_off.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_pompa_2">
+        <property name="geometry">
+         <rect>
+          <x>851</x>
+          <y>427</y>
+          <width>50</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pompa piętro&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/pompa_off.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
        <zorder>label_parter</zorder>
@@ -3255,6 +3326,8 @@ background-color: transparent;
        <zorder>pushButton_32</zorder>
        <zorder>spinBox_3</zorder>
        <zorder>pushButton_33</zorder>
+       <zorder>label_pompa_1</zorder>
+       <zorder>label_pompa_2</zorder>
       </widget>
      </widget>
     </item>
@@ -3290,9 +3363,6 @@ background-color: transparent;
   <tabstop>WY24</tabstop>
   <tabstop>WY2</tabstop>
  </tabstops>
- <resources>
-  <include location="grafika.qrc"/>
-  <include location="ikony.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

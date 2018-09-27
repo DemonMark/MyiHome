@@ -6,8 +6,6 @@
 
 int odb,i;
 int q=0;
-int n; //numeracja wejścia
-int in[4]={0,1,2,4}; //grupy wejść modułu IN
 unsigned char temp[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
 QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych przez harmonogramy
@@ -31,7 +29,7 @@ extern int obecnosc;
 extern int t1;
 extern int gn;
 extern int t[3];
-int c[32]; //wejścia
+int c[41]; //wejścia (41 pozycji kontenera wliczając 0)
 int odliczG;
 int PIRs=0, PIRs_2=0;
 int LOff=0;
@@ -120,35 +118,29 @@ void MyUDP::readyRead(){
             for (i=3;i<=(Buffer.length());i++){
                 temperatura[i]=Buffer[i];
             }
-
         }
-
         if("192.168.1.100"==ips) {
 
-            n=0;
+            int n=0; //numeracja wejścia
             for (int i=3; i<=(Buffer.length());i++){
 
                 temp[i-3]=Buffer[i];
             }
 
-            for (int j=0; j<=3;j++){
+            for (int j=0; j<=4;j++){
 
-                int z=in[j];
                 for (int i=1; i<=8;i++){
-
                     n++;
-                    if(temp[z] & hexx[i]){  //szukanie aktywnego wejścia
-
+                    if(j!=3){ //ominięcie grupy 3 zajętej przez wyjścia systemu ogrzewania
+                    if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
                         c[n]++;
-                        emit changes(); //sygnal do odbierania
                         if (c[n]==1){
-
-                            maskawysl[z]|=(hexx[i]);
+                            maskawysl[j]|=(hexx[i]);
                             MyUDP client;
                             client.WYSUDP();
                          }
                          if (c[n]==2){
-                            maskawysl[z]&=~(hexx[i]);
+                            maskawysl[j]&=~(hexx[i]);
                             MyUDP client;
                             client.WYSUDP();
                             c[n]=0;
@@ -156,6 +148,8 @@ void MyUDP::readyRead(){
                     }
                 }
             }
+            }
+        emit changes(); //sygnal do odbierania
         }
 //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
@@ -190,10 +184,11 @@ void MyUDP::readyRead(){
                         }
                         if(scheduledtime[j]==0){
                             scheduledtimers.at(j)->setSingleShot(true);
-                            scheduledtimers.at(j)->start(t[tspinBox.value(j)]);
-                            scheduledaction=1;
-                            emit changes(); //sygnal do odbierania
+                            scheduledtimers.at(j)->start(t[tspinBox[j]]);
+                            qDebug() << j << tspinBox.at(j);
                         }
+                    scheduledaction=1;
+                    emit changes(); //sygnal do odbierania
                     }
                 }
             }
@@ -225,19 +220,10 @@ void MyUDP :: obecnosc_none(){
     PIRs=0;
     PIRs_2=0;
 }
-//**********************Tymczasowe rozwiazanie timera lazienka****************//
-void MyUDP::Slott(){
-
-    MyUDP client;
-    maskawysl[0]&=~0x040;
-    client.WYSUDP();
-    c[7]=0;
-    scheduledtimers.at(0)->stop();
-}
 
 void MyUDP::zerujWyj()
 {
-    for(int i=0;i<=32;i++)
+    for(int i=0;i<=40;i++)
     {
        c[i]=0;
     }
