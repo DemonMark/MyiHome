@@ -35,7 +35,6 @@ private slots:
   void on_WY22_toggled(bool checked);
   void on_WY23_toggled(bool checked);
   void on_WY24_toggled(bool checked);
-  void on_slider_sliderMoved(int position);
   void showTime();
   void wyjscie();
   void stykOff();
@@ -50,10 +49,8 @@ private slots:
   void on_WY31_toggled(bool checked);
   void on_WY32_toggled(bool checked);
   void on_WY39_toggled(bool checked);
-  void on_WY40_toggled(bool checked);
-
   void on_pushButton_13_toggled(bool checked);
-
+  void on_pushButton_16_pressed();
   void on_pushButton_23_clicked();
   void on_pushButton_24_clicked();
   void on_pushButton_25_clicked();
@@ -68,6 +65,8 @@ private slots:
   void on_spinBox_3_valueChanged(int arg1);
   void on_pushButton_32_clicked();
   void readTimeFromWWW();
+  void on_pushButton_33_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
     QUdpSocket *socket;

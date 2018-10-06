@@ -185,7 +185,7 @@ void MyUDP::readyRead(){
                         if(scheduledtime[j]==0){
                             scheduledtimers.at(j)->setSingleShot(true);
                             scheduledtimers.at(j)->start(t[tspinBox[j]]);
-                            qDebug() << j << tspinBox.at(j);
+                            //qDebug() << j << tspinBox.at(j);
                         }
                     scheduledaction=1;
                     emit changes(); //sygnal do odbierania

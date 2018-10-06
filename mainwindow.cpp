@@ -26,19 +26,21 @@
 #include <QtWebKit/QtWebKit>
 
 QList<QPushButton*> bList; //lista przycisków
-int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,19,19,19,19,19,19,19,19,19,19,19,19,19,9,16,6,18,2,3,19,19}; //pozycja przycisku na liście
+int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,19,19,19,19,19,21,19,19,19,19,19,19,19,9,16,6,18,2,3,19,13}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
 QList<int> scheduledtime; //lista znaczników dla włączania harmonogramu wg czasu wieczornego
 QList<int> tspinBox;
+QList<int> gnpos;
+QList<QString> startat;
+QList<QString> stopat;
 QString time_text;
 extern QString ips;
 extern int odb;        //brak odbioru ramki
 extern int q;           //odebranie konkretnej ramki
-extern int c[32];
+extern int c[41];
 int t[3];
-int liczpetle=0;
 int wlaczony,reszta,zal;
 extern unsigned char temp[20];
 extern unsigned char temperatura[27];
@@ -155,7 +157,40 @@ void MainWindow::showTime(){
 
 /************************************************************** ODBIERANIE *********************************************************************/
 void MainWindow::timerEvent(QTimerEvent *event){
+    int i1=0;
+    int i2=0;
+    foreach(QString start, startat){
+        int i=0;
+        int j=gnpos.at(i1);
+        if(time_text==start){
+            foreach(unsigned char r, scheduledhexxout[j]){
+                maskawysl[outmasks.value(j)[i]]|=r;
+                MyUDP client;
+                client.WYSUDP();
+                c[scheduledcs.value(j)[i]]=1;
+                i++;
+            }
+            qDebug() << "START";
+        }
+        i1++;
+    }
+    foreach(QString stop, stopat){
+        int i=0;
+        int j=gnpos.at(i2);
+        if(time_text==stop){
+            foreach(unsigned char r, scheduledhexxout[j]){
+                maskawysl[outmasks.value(j)[i]]&=~r;
+                MyUDP client;
+                client.WYSUDP();
+                c[scheduledcs.value(j)[i]]=1;
+                i++;
+            }
+            qDebug() << "STOP";
+        }
+        i2++;
+    }
 }
+
 void MainWindow::receiving(){
 
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
@@ -318,12 +353,12 @@ void MainWindow::receiving(){
              client.WYSUDP();
          }
            if (flaga_2==0){
-           maskawysl[3]|=0x03;
+           maskawysl[3]|=0x02;
            MyUDP client;
            client.WYSUDP();
          }
            if (flaga_2==1){
-             maskawysl[3]&=~0x03;
+             maskawysl[3]&=~0x02;
              MyUDP client;
              client.WYSUDP();
          }
@@ -407,19 +442,15 @@ if("192.168.1.100"==ips){
                         QIcon biBrama(bBrama);
                         bList.at(13)->setIcon(biBrama);
                         bList.at(13)->setIconSize(bBrama.rect().size());
-                        temp[3]&=~0x01;
                         otwarta=1;
-
                     }
                     if (otwarta==2){
                         QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoordown.png");
                         QIcon biBrama(bBrama);
                         bList.at(13)->setIcon(biBrama);
                         bList.at(13)->setIconSize(bBrama.rect().size());
-                        otwarta=3;
-
+                        otwarta=1;
                     }
-
                 }
                 if(temp[3] & 0x02) {
                     QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdooropen.png");
@@ -427,8 +458,6 @@ if("192.168.1.100"==ips){
                     bList.at(13)->setIcon(biBrama);
                     bList.at(13)->setIconSize(bBrama.rect().size());
                     otwarta=2;
-                    temp[3]&=~0x03;
-
                 }
                 //***koniec wyjątków
                 if (j!=3){
@@ -449,10 +478,10 @@ if("192.168.1.100"==ips){
 
 
 //**************zmiana statusu/ikony bramy na ZAMKNIĘTA po zamknięciu***********
-    if(otwarta == 3){
+    if(otwarta == 1){
 
         if(temp[3] & 0x01){
-            qDebug() << "NADAL ZAMYKA";
+            qDebug() << "NADAL W RUCHU";
         }
         else{
             QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoorclose.png");
@@ -690,12 +719,6 @@ void MainWindow::on_WY9_toggled(bool checked){
         client.WYSUDP();
         }
 }
-/***************************************************************ZEROWANIE ODLICZANIA WYLACZENIA CZUJNIKOW******************************************************************************/
-   void MainWindow::on_slider_sliderMoved(int position){
-    liczpetle=0;
-}
-
-
 
 void MainWindow::on_WY25_toggled(bool checked)
 {
@@ -829,10 +852,6 @@ void MainWindow::on_WY32_toggled(bool checked)
         }
 }
 
-
-
-
-
 void MainWindow::on_WY39_toggled(bool checked)
 {
     QByteArray tab;
@@ -849,21 +868,9 @@ void MainWindow::on_WY39_toggled(bool checked)
         }
 }
 
+void MainWindow::on_pushButton_16_pressed(){
 
-void MainWindow::on_WY40_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[4]|=0x80;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[4]&=~0x80;
-        client.WYSUDP();
-        }
+    timer_bramaStykOff->start(500);
 }
 
 //**************wyłączony do czasu rozwiązania problemu zera na liście bList
@@ -904,71 +911,93 @@ void MainWindow::stykOff(){
     maskawysl[4]&=~0x80;
     client.WYSUDP();
     timer_bramaStykOff->stop();
+    ui->pushButton_16->setChecked(false);
+    c[40]=0;
 }
 
 void MainWindow::on_pushButton_23_clicked()
 {
     if(ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0){
-    int hexxpos;
-    int om;
-    gn++;
-    QList<unsigned char> ingridiens;
-    QList<int> outmask;
-    QList<int> scheduledc;
-    QList<int> scheduledbtn;
-    QString tempnames;
-    QString isTime;
-    QList<QListWidgetItem*> itemtextlist = ui->listWidget_2->selectedItems();
-    QList<QListWidgetItem*> itempirlist = ui->listWidget->selectedItems();
-    QModelIndexList rowsy = ui->listWidget_2->selectionModel()->selectedRows(0);
-    foreach(QModelIndex rows, rowsy){
-        if(rows.row()<=7){
-            hexxpos=0;
-            om=0;
+        int hexxpos;
+        int om;
+        gn++;
+        QListWidgetItem *new_item = new QListWidgetItem;
+        QList<unsigned char> ingridiens;
+        QList<int> outmask;
+        QList<int> scheduledc;
+        QList<int> scheduledbtn;
+        QString tempnames;
+        QList<QListWidgetItem*> itemtextlist = ui->listWidget_2->selectedItems();
+        QList<QListWidgetItem*> itempirlist = ui->listWidget->selectedItems();
+        QModelIndexList rowsy = ui->listWidget_2->selectionModel()->selectedRows(0);
+        foreach(QModelIndex rows, rowsy){
+            if(rows.row()<=7){
+                hexxpos=0;
+                om=0;
+            }
+            if(rows.row()>7 && rows.row()<=15){
+                hexxpos=8;
+                om=1;
+            }
+            if(rows.row()>15 && rows.row()<=23){
+                hexxpos=16;
+                om=2;
+            }
+            if(rows.row()>23 && rows.row()<=31){
+                hexxpos=24;
+                om=3;
+            }
+            if(rows.row()>31){
+                hexxpos=32;
+                om=4;
+            }
+            ingridiens.insert(a,hexx[(rows.row())-hexxpos+1]);
+            outmask.insert(a,om);
+            scheduledc.insert(a,(rows.row())+1);
+            tempnames.append(itemtextlist.at(a)->text() + ", ");
+            scheduledbtn.insert(a,bPos[rows.row()]);
+            a++;
         }
-        if(rows.row()>7 && rows.row()<=15){
-            hexxpos=8;
-            om=1;
+        //scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
+        scheduledhexxout.insert(gn,ingridiens);
+        outmasks.insert(gn,outmask);
+        scheduledcs.insert(gn, scheduledc);
+        scheduledbtns.insert(gn,scheduledbtn);
+        a=0;
+        if(ui->pushButton_29->isChecked()){
+            scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
+            scheduledtime.insert(gn,1);
+            scheduledtimers.insert(gn,0);
+            tspinBox.insert(gn, 0);
+            new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
+            new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
         }
-        if(rows.row()>15 && rows.row()<=23){
-            hexxpos=16;
-            om=2;
+        if(ui->pushButton_30->isChecked()){
+            scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
+            MyTimer(this, SLOT(offfff()));
+            tspinBox.insert(gn,ui->listWidget->currentRow());
+            scheduledtime.insert(gn,0);
+            new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_on.png"));
+            new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
         }
-        if(rows.row()>23 && rows.row()<=31){
-            hexxpos=24;
-            om=4;
+        if(ui->pushButton_31->isChecked()){
+            startat.insert(gn,ui->timeEdit->text());
+            stopat.insert(gn,ui->timeEdit_2->text());
+            scheduledhexxpir.insert(gn,0);
+            scheduledtime.insert(gn,2);
+            scheduledtimers.insert(gn,0);
+            tspinBox.insert(gn,0);
+            gnpos.insert(gn,gn);
+            new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+            new_item->setText(ui->timeEdit->text()+" - "+ui->timeEdit_2->text()+" -> "+tempnames);
         }
-        ingridiens.insert(a,hexx[(rows.row())-hexxpos+1]);
-        outmask.insert(a,om);
-        scheduledc.insert(a,(rows.row())+1);
-        tempnames.append(itemtextlist.at(a)->text() + ", ");
-        scheduledbtn.insert(a,bPos[rows.row()]);
-        a++;
+        //new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
+        ui->listWidget_3->addItem(new_item);
+        ui->listWidget->clearSelection();
+        ui->listWidget_2->clearSelection();
+    }
+    QFile settings("/media/HDD1/admin/28-02-2018/settings.txt");
 
-    }    
-    scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
-    scheduledhexxout.insert(gn,ingridiens);
-    outmasks.insert(gn,outmask);
-    scheduledcs.insert(gn, scheduledc);
-    scheduledbtns.insert(gn,scheduledbtn);
-    a=0;  
-    if(ui->pushButton_29->isChecked()){
-        scheduledtime.insert(gn,1);
-        scheduledtimers.insert(gn,0);
-        tspinBox.insert(gn, 0);
-        isTime = "| *";
-    }
-    else{
-        MyTimer(this, SLOT(offfff()));
-        tspinBox.insert(gn,ui->listWidget->currentRow());
-        scheduledtime.insert(gn,0);
-        isTime = "";
-        qDebug() << tspinBox;
-    }
-    ui->listWidget_3->addItem(itempirlist.takeFirst()->text()+" -> "+tempnames+isTime);
-    ui->listWidget->clearSelection();
-    ui->listWidget_2->clearSelection();
-}
 }
 
 void MainWindow::on_pushButton_24_clicked()
@@ -979,7 +1008,6 @@ void MainWindow::on_pushButton_24_clicked()
      params << "/home/pi/HAP-NodeJS/python/fan2.py";
      reku.start("python", params);
      reku.waitForFinished(-1);
-
 }
 
 void MainWindow::on_pushButton_25_clicked()
@@ -1004,15 +1032,17 @@ void MainWindow::on_pushButton_26_clicked()
 void MainWindow::on_pushButton_27_clicked()
 {
     int cr = ui->listWidget_3->currentRow();
-    delete ui->listWidget_3->currentItem();
-    scheduledhexxout.removeAt(cr);
-    scheduledhexxpir.removeAt(cr);
-    outmasks.removeAt(cr);
-    scheduledcs.removeAt(cr);
-    scheduledtime.removeAt(cr);
-    scheduledtimers.removeAt(cr);
-    scheduledbtns.removeAt(cr);
-    gn--;
+    if(cr>=0){
+        delete ui->listWidget_3->currentItem();
+        scheduledhexxout.removeAt(cr);
+        scheduledhexxpir.removeAt(cr);
+        outmasks.removeAt(cr);
+        scheduledcs.removeAt(cr);
+        scheduledtime.removeAt(cr);
+        scheduledtimers.removeAt(cr);
+        scheduledbtns.removeAt(cr);
+        gn--;
+    }
 }
 
 void MainWindow::on_pushButton_28_clicked()
@@ -1039,21 +1069,23 @@ void MainWindow::on_spinBox_3_valueChanged(int arg1)
 
 void MainWindow::offfff(){
     for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-        if(scheduledtimers[j]->isActive()){
-            qDebug() << "Timer aktywny:" << j;
-        }
-        else{
-            int i=0;
-            foreach(unsigned char r, scheduledhexxout[j]){
-                maskawysl[outmasks.value(j)[i]]&=~r;
-                MyUDP client;
-                client.WYSUDP();
-                c[scheduledcs.value(j)[i]]=0;
-                bList.at(scheduledbtns.value(j)[i])->setChecked(false);
-                i++;
+        if(scheduledtime[j]==0){
+            if(scheduledtimers[j]->isActive()){
+                qDebug() << "Timer aktywny:" << j;
             }
-            scheduledtimers.at(j)->stop();
-         }
+            else{
+                int i=0;
+                foreach(unsigned char r, scheduledhexxout[j]){
+                    maskawysl[outmasks.value(j)[i]]&=~r;
+                    MyUDP client;
+                    client.WYSUDP();
+                    c[scheduledcs.value(j)[i]]=0;
+                    bList.at(scheduledbtns.value(j)[i])->setChecked(false);
+                    i++;
+                }
+                scheduledtimers.at(j)->stop();
+            }
+        }
     }
 }
 
@@ -1062,6 +1094,7 @@ void MainWindow::on_pushButton_29_clicked()
     ui->pushButton_29->isChecked();
     ui->pushButton_30->setChecked(false);
     ui->pushButton_31->setChecked(false);
+    ui->listWidget->setDisabled(false);
 }
 
 void MainWindow::on_pushButton_30_clicked()
@@ -1069,6 +1102,7 @@ void MainWindow::on_pushButton_30_clicked()
     ui->pushButton_30->isChecked();
     ui->pushButton_29->setChecked(false);
     ui->pushButton_31->setChecked(false);
+    ui->listWidget->setDisabled(false);
 }
 
 void MainWindow::on_pushButton_31_clicked()
@@ -1076,6 +1110,7 @@ void MainWindow::on_pushButton_31_clicked()
     ui->pushButton_31->isChecked();
     ui->pushButton_29->setChecked(false);
     ui->pushButton_30->setChecked(false);
+    ui->listWidget->setDisabled(true);
 }
 
 void MainWindow::on_pushButton_32_clicked()
@@ -1111,7 +1146,6 @@ void MainWindow::ClickedbtnFinder(){
         for (int i=1; i<=8;i++){
             int y=bPos[m];
             if(bList.at(y)==QObject::sender()){
-                qDebug() << "NR" << m << "TO TEN BUTTON" << "WARTOSC DLA c =" << m+1;
                 QByteArray tab;
                 MyUDP client;
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
@@ -1129,4 +1163,10 @@ void MainWindow::ClickedbtnFinder(){
         m++;
         }
     }
+}
+
+void MainWindow::on_pushButton_33_toggled(bool checked)
+{
+
+
 }
