@@ -26,21 +26,27 @@
 #include <QtWebKit/QtWebKit>
 
 QList<QPushButton*> bList; //lista przycisków
+QList<QDial*> dList; //lista regulatorów
+QList<QLabel*> lList; //lista etykiet temperatur
+QList<QLabel*> ldList; //lista opisów regulatorów
 int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,19,19,19,19,19,21,19,19,19,19,19,19,19,9,16,6,18,2,3,19,13}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
-QList<int> scheduledtime; //lista znaczników dla włączania harmonogramu wg czasu wieczornego
+QList<int> scheduledtime; //lista znaczników dla włączania harmonogramu wg czasu wieczornego lub innego
 QList<int> tspinBox;
 QList<int> gnpos;
 QList<QString> startat;
 QList<QString> stopat;
+QList<QString> outnames;
+QList<QString> pirnames;
 QString time_text;
 extern QString ips;
 extern int odb;        //brak odbioru ramki
 extern int q;           //odebranie konkretnej ramki
 extern int c[41];
 int t[3];
+int num;
 int wlaczony,reszta,zal;
 extern unsigned char temp[20];
 extern unsigned char temperatura[27];
@@ -77,12 +83,22 @@ MainWindow::MainWindow(QWidget *parent) :
     timer->start();
     bList = ui->tab_5->findChildren<QPushButton*>();
     //bList = MainWindow::findChildren<QPushButton*>();
-
+    dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*"));
+    lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*"));
+    ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     foreach(QPushButton *btn, bList)
     {
-        qDebug() << btn->objectName();
+        //qDebug() << btn->objectName();
         connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
     }
+    foreach(QDial* dL, dList){
+        connect(dL, SIGNAL(valueChanged(int)), this, SLOT(writescheduler()));
+        connect(lList.at(num), SIGNAL(mouse_clicked()), this, SLOT(ClickedlabelFinder()));
+        dL->setVisible(false);
+        ldList.at(num)->setVisible(false);
+        num++;
+    }
+
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
@@ -93,6 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
     t[2]=300000;
 
     ui->spinBox_3->setVisible(false);
+    ui->label_32->setVisible(false);
 
     webView = new QWebView(this);
     webView->setVisible(false);
@@ -194,54 +211,58 @@ void MainWindow::timerEvent(QTimerEvent *event){
 void MainWindow::receiving(){
 
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
-        QString b,t,d,b1,t1,d1,b2,t2,d2,b3,t3,d3,b4,t4,d4,b5,t5,d5,b6,t6,d6,b7,t7,d7,b8,t8,d8,b9,t9,d9,b10,d10,t10;
-        QString a = ".";
-        a.split(" ")[0].toInt();
+        QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11;
+        //QString a = ".";
+        //a.split(" ")[0].toInt();
         //****BIBLIOTEKA****//
         b.append(QString("%1").arg(temperatura[3]));
-        d=((ui->doubleSpinBox->value())+(t.append(QString("%1").arg(temperatura[4]))));
+        t.append(QString("%1").arg(temperatura[4]));
         //****SALON****//
         b1.append(QString("%1").arg(temperatura[5]));
-        d1=((ui->doubleSpinBox->value())+(t1.append(QString("%1").arg(temperatura[6]))));
+        t1.append(QString("%1").arg(temperatura[6]));
         //****SYPIALNIA****//
         b2.append(QString("%1").arg(temperatura[7]));
-        d2=((ui->doubleSpinBox->value())+(t2.append(QString("%1").arg(temperatura[8]))));
+        t2.append(QString("%1").arg(temperatura[8]));
         //****KORYTARZ DOL****//
         b3.append(QString("%1").arg(temperatura[9]));
-        d3=((ui->doubleSpinBox->value())+(t3.append(QString("%1").arg(temperatura[10]))));
+        t3.append(QString("%1").arg(temperatura[10]));
         //****MARYNARSKI****//
         b4.append(QString("%1").arg(temperatura[11]));
-        d4=((ui->doubleSpinBox->value())+(t4.append(QString("%1").arg(temperatura[12]))));
+        t4.append(QString("%1").arg(temperatura[12]));
         //****LAZIENKA DOL****//
         b5.append(QString("%1").arg(temperatura[13]));
-        d5=((ui->doubleSpinBox->value())+(t5.append(QString("%1").arg(temperatura[14]))));
+        t5.append(QString("%1").arg(temperatura[14]));
         //****KUCHNIA-JADALNIA****//
         b6.append(QString("%1").arg(temperatura[15]));
-        d6=((ui->doubleSpinBox->value())+(t6.append(QString("%1").arg(temperatura[16]))));
+        t6.append(QString("%1").arg(temperatura[16]));
         //****WIATROLAP****//
         b7.append(QString("%1").arg(temperatura[17]));
-        d7=((ui->doubleSpinBox->value())+(t7.append(QString("%1").arg(temperatura[18]))));
+        t7.append(QString("%1").arg(temperatura[18]));
         //****POKOJ MYSZKI****//
         b8.append(QString("%1").arg(temperatura[19]));
-        d8=((ui->doubleSpinBox->value())+(t8.append(QString("%1").arg(temperatura[20]))));
+        t8.append(QString("%1").arg(temperatura[20]));
         //****LOFT****//
         b9.append(QString("%1").arg(temperatura[21]));
-        d9=((ui->doubleSpinBox->value())+(t9.append(QString("%1").arg(temperatura[22]))));
+        t9.append(QString("%1").arg(temperatura[22]));
         //****ZEWNATRZ****//
         b10.append(QString("%1").arg(temperatura[25]));
-        d10=((ui->doubleSpinBox->value())+(t10.append(QString("%1").arg(temperatura[26]))));
+        t10.append(QString("%1").arg(temperatura[26]));
+        //****ŁAZIENKA GÓRA****//
+        b11.append(QString("%1").arg(temperatura[23]));
+        t11.append(QString("%1").arg(temperatura[24]));
 
         ui->label_2->setText(b+"."+t);
-        ui->label_6->setText(b1+"."+t1);
+        ui->label_temp_2->setText(b1+"."+t1);
         ui->label_10->setText(b2+"."+t2);
         ui->label_12->setText(b3+"."+t3);
-        ui->label_14->setText(b4+"."+t4);
-        ui->label_16->setText(b5+"."+t5);
-        ui->label_18->setText(b6+"."+t6);
-        ui->label_23->setText(b7+"."+t7);
+        ui->label_temp_3->setText(b4+"."+t4);
+        ui->label_temp_1->setText(b5+"."+t5);
+        ui->label_temp_4->setText(b6+"."+t6);
+        ui->label_temp_5->setText(b7+"."+t7);
         ui->label_21->setText(b8+"."+t8);
         ui->label_29->setText(b9+"."+t9);
         ui->label_31->setText(b10+"."+t10);
+        ui->label_6->setText(b11+"."+t11);
 
         QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on.png");
         QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo.png");
@@ -249,149 +270,142 @@ void MainWindow::receiving(){
 
             //**HISTEREZA BIBLIOTEKA**//
      //   if (((temp[0]*10)+temp[1]-(ui->doubleSpinBox->value())*10) >=(((ui->spinBox->value())*10)+(ui->spinBox_2->value()))){
-        if (((temperatura[3]*10)+temperatura[4]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_2->value())*10)){
+        if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_6->value()){
 
-            ui->label_3->setPalette(Qt::red);
-            ui->label_3->setAutoFillBackground(true);
             flaga=1;
         }
-     //  if (((temp[0]*10)+temp[1]+(ui->doubleSpinBox->value())*10) <=(((ui->spinBox->value())*10)+(ui->spinBox_2->value()))){
-        if (((temperatura[3]*10)+temperatura[4]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_2->value())*10)){
-             ui->label_3->setPalette(Qt::green);
-             ui->label_3->setAutoFillBackground(true);
+        if (((temperatura[3]*10)+temperatura[4]+ui->dial_7->value()) <=ui->dial_6->value()){
+
              flaga=0;
        }
         //**HISTEREZA SYPIALNIA**//
-        if (((temperatura[7]*10)+temperatura[8]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_9->value())*10)){
+        if (((temperatura[7]*10)+temperatura[8]-ui->dial_7->value()) >=ui->dial_11->value()){
 
-        ui->label_27->setPalette(Qt::red);
-        ui->label_27->setAutoFillBackground(true);
         flaga_7=1;
         }
-        if (((temperatura[7]*10)+temperatura[8]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_9->value())*10)){
-         ui->label_27->setPalette(Qt::green);
-          ui->label_27->setAutoFillBackground(true);
+        if (((temperatura[7]*10)+temperatura[8]+ui->dial_7->value()) <=ui->dial_11->value()){
+
          flaga_7=0;
         }
         //**HISTEREZA SALON**//
-         if (((temperatura[5]*10)+temperatura[6]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_3->value())*10)){
+         if (((temperatura[5]*10)+temperatura[6]-ui->dial_7->value()) >=ui->dial_temp_2->value()){
 
             ui->th_2->setPixmap(temp_off);
             flaga_1=1;
          }
-        if (((temperatura[5]*10)+temperatura[6]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_3->value())*10)){
+        if (((temperatura[5]*10)+temperatura[6]+ui->dial_7->value()) <=ui->dial_temp_2->value()){
 
             ui->th_2->setPixmap(temp_on);
             flaga_1=0;
         }
         //**KUCHNIA-JADALNIA**//
-         if (((temperatura[15]*10)+temperatura[16]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_4->value())*10)){
+         if (((temperatura[15]*10)+temperatura[16]-ui->dial_7->value()) >=ui->dial_temp_4->value()){
 
              ui->th_5->setPixmap(temp_off);
              flaga_2=1;
          }
-        if (((temperatura[15]*10)+temperatura[16]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_4->value())*10)){
+        if (((temperatura[15]*10)+temperatura[16]+ui->dial_7->value()) <=ui->dial_temp_4->value()){
 
              ui->th_5->setPixmap(temp_on);
              flaga_2=0;
         }
         //**MARYNARSKI**//
-         if (((temperatura[11]*10)+temperatura[12]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_6->value())*10)){
+         if (((temperatura[11]*10)+temperatura[12]-ui->dial_7->value()) >=ui->dial_temp_3->value()){
 
              ui->th_3->setPixmap(temp_off);
              flaga_4=1;
          }
-        if (((temperatura[11]*10)+temperatura[12]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_6->value())*10)){
+        if (((temperatura[11]*10)+temperatura[12]+ui->dial_7->value()) <=ui->dial_temp_3->value()){
 
             ui->th_3->setPixmap(temp_on);
             flaga_4=0;
         }
         //**LAZIENKA DOL**//
-        if (((temperatura[13]*10)+temperatura[14]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_7->value())*10)){
+        if (((temperatura[13]*10)+temperatura[14]-ui->dial_7->value()) >=ui->dial_temp_1->value()){
 
             ui->th_1->setPixmap(temp_off);
             flaga_5=1;
         }
-        if (((temperatura[13]*10)+temperatura[14]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_7->value())*10)){
+        if (((temperatura[13]*10)+temperatura[14]+ui->dial_7->value()) <=ui->dial_temp_1->value()){
 
             ui->th_1->setPixmap(temp_on);
             flaga_5=0;
         }
         //**WIATROLAP**//
-         if (((temperatura[17]*10)+temperatura[18]-(ui->doubleSpinBox->value())*10) >=((ui->doubleSpinBox_8->value())*10)){
+         if (((temperatura[17]*10)+temperatura[18]-ui->dial_7->value()) >=ui->dial_temp_5->value()){
 
             ui->th_6->setPixmap(temp_off);
             flaga_6=1;
          }
-        if (((temperatura[17]*10)+temperatura[18]+(ui->doubleSpinBox->value())*10) <=((ui->doubleSpinBox_8->value())*10)){
+        if (((temperatura[17]*10)+temperatura[18]+ui->dial_7->value()) <=ui->dial_temp_5->value()){
 
             ui->th_6->setPixmap(temp_on);
             flaga_6=0;
         }
 
        qu++;
-
        if (qu==30){
+           if(ui->pushButton_34->isChecked()){
            if (flaga_7==0){
            maskawysl[3]|=0x80;
            MyUDP client;
            client.WYSUDP();
-         }
+           }
            if (flaga_7==1){
              maskawysl[3]&=~0x80;
              MyUDP client;
              client.WYSUDP();
-         }
+           }
            if (flaga_1==0){
            maskawysl[3]|=0x04;
            MyUDP client;
            client.WYSUDP();
-         }
+           }
            if (flaga_1==1){
              maskawysl[3]&=~0x04;
              MyUDP client;
              client.WYSUDP();
-         }
+           }
            if (flaga_2==0){
            maskawysl[3]|=0x02;
            MyUDP client;
            client.WYSUDP();
-         }
+           }
            if (flaga_2==1){
              maskawysl[3]&=~0x02;
              MyUDP client;
              client.WYSUDP();
-         }
+           }
            if (flaga_4==0){
            maskawysl[3]|=0x08;
            MyUDP client;
            client.WYSUDP();
-         }
+           }
            if (flaga_4==1){
              maskawysl[3]&=~0x08;
              MyUDP client;
              client.WYSUDP();
-         }
+           }
            if (flaga_5==0){
            maskawysl[3]|=0x10;
            MyUDP client;
            client.WYSUDP();
-         }
+           }
            if (flaga_5==1){
              maskawysl[3]&=~0x10;
              MyUDP client;
              client.WYSUDP();
-         }
+           }
            if (flaga_6==0){
            maskawysl[3]|=0x20;
            MyUDP client;
            client.WYSUDP();
-         }
+           }
            if (flaga_6==1){
              maskawysl[3]&=~0x20;
              MyUDP client;
              client.WYSUDP();
-         }
+           }
             if (flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0){
                 maskawysl[3]|=0x40;
                 MyUDP client;
@@ -420,8 +434,8 @@ void MainWindow::receiving(){
                 movie_pompa_2->stop();
                 ui->label_pompa_2->setPixmap(pompa_off);
             }
-           qu=0;
-
+        }
+       qu=0;
        }
 
 //****************zaznaczanie buttonów po wykryciu pakietu************************//
@@ -531,11 +545,12 @@ if("192.168.1.100"==ips){
 
     if (LOff==1){
 
-        foreach(QPushButton *x, bList)
+        for(int x=0; x<=39; x++)
         {
-            if(x->isChecked() == true){
+            int y=bPos[x];
+            if(bList[y]->isChecked() == true){
 
-                x->setChecked(false);
+                bList[y]->setChecked(false);
             }
         }
         LOff=0;
@@ -961,8 +976,9 @@ void MainWindow::on_pushButton_23_clicked()
         //scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
         scheduledhexxout.insert(gn,ingridiens);
         outmasks.insert(gn,outmask);
-        scheduledcs.insert(gn, scheduledc);
+        scheduledcs.insert(gn,scheduledc);
         scheduledbtns.insert(gn,scheduledbtn);
+        outnames.insert(gn,tempnames);
         a=0;
         if(ui->pushButton_29->isChecked()){
             scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
@@ -971,6 +987,7 @@ void MainWindow::on_pushButton_23_clicked()
             tspinBox.insert(gn, 0);
             new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
+            pirnames.insert(gn,ui->listWidget->currentItem()->text());
         }
         if(ui->pushButton_30->isChecked()){
             scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
@@ -979,6 +996,7 @@ void MainWindow::on_pushButton_23_clicked()
             scheduledtime.insert(gn,0);
             new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_on.png"));
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
+            pirnames.insert(gn,ui->listWidget->currentItem()->text());
         }
         if(ui->pushButton_31->isChecked()){
             startat.insert(gn,ui->timeEdit->text());
@@ -995,38 +1013,9 @@ void MainWindow::on_pushButton_23_clicked()
         ui->listWidget_3->addItem(new_item);
         ui->listWidget->clearSelection();
         ui->listWidget_2->clearSelection();
+        qDebug() << scheduledhexxpir;
     }
-    QFile settings("/media/HDD1/admin/28-02-2018/settings.txt");
-
-}
-
-void MainWindow::on_pushButton_24_clicked()
-{
-     QProcess reku;
-     QStringList params;
-
-     params << "/home/pi/HAP-NodeJS/python/fan2.py";
-     reku.start("python", params);
-     reku.waitForFinished(-1);
-}
-
-void MainWindow::on_pushButton_25_clicked()
-{
-    QProcess reku;
-    QStringList params;
-
-    params << "/home/pi/HAP-NodeJS/python/fan1.py";
-    reku.start("python", params);
-    reku.waitForFinished(-1);
-}
-
-void MainWindow::on_pushButton_26_clicked()
-{
-    QProcess reku;
-    QStringList params;
-    params << "/home/pi/HAP-NodeJS/python/fanoff.py";
-    reku.start("python", params);
-    reku.waitForFinished(-1);
+    writescheduler();
 }
 
 void MainWindow::on_pushButton_27_clicked()
@@ -1041,7 +1030,14 @@ void MainWindow::on_pushButton_27_clicked()
         scheduledtime.removeAt(cr);
         scheduledtimers.removeAt(cr);
         scheduledbtns.removeAt(cr);
+        tspinBox.removeAt(cr);
+        outnames.removeAt(cr);
+        pirnames.removeAt(cr);
+        gnpos.removeAt(cr);
+        startat.removeAt(cr);
+        stopat.removeAt(cr);
         gn--;
+        writescheduler();
     }
 }
 
@@ -1169,4 +1165,115 @@ void MainWindow::on_pushButton_33_toggled(bool checked)
 {
 
 
+}
+
+void MainWindow::writescheduler(){
+    QFile target("/media/HDD1/admin/iHome/28-02-2018/settings.txt");
+    if(target.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QDataStream out(&target);
+        QDataStream &operator<<(QDataStream &out, const unsigned char& dane);
+        out << scheduledhexxout;
+        out << scheduledhexxpir;
+        out << outmasks;
+        out << scheduledcs;
+        out << scheduledtime;
+        out << scheduledbtns;
+        out << outnames;
+        out << pirnames;
+        //out << scheduledtimers;
+        out << tspinBox;
+        out << startat;
+        out << stopat;
+        out << gnpos;
+        foreach(QDial* dL, dList){
+            out << dL->value();
+        }
+        target.flush();
+        target.close();
+    }
+}
+
+void MainWindow::readscheduler(){
+    int dLv[11];
+    int u=0;
+    int dLv_n=0;
+    QFile target("/media/HDD1/admin/iHome/28-02-2018/settings.txt");
+    if(target.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QDataStream in(&target);
+        QDataStream &operator>>(QDataStream &in, unsigned char& dane);
+        in >> scheduledhexxout >> scheduledhexxpir >> outmasks >> scheduledcs >> scheduledtime >> scheduledbtns
+                >> outnames >> pirnames >> tspinBox >> startat >> stopat >> gnpos
+                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dLv[5] >> dLv[6] >> dLv[7] >> dLv[8] >> dLv[9] >> dLv[10];
+        target.close();
+
+        foreach(QDial* dL, dList){
+            dL->setValue(dLv[dLv_n]);
+            dLv_n++;
+        }
+
+        foreach(int time, scheduledtime){
+            gn=u;
+            QListWidgetItem *new_item = new QListWidgetItem;
+            if(time==0){
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_on.png"));
+                new_item->setText(pirnames.at(u) + " -> " + outnames.at(u));
+                ui->listWidget_3->addItem(new_item);
+                MyTimer(this, SLOT(offfff()));
+            }
+            if(time==1){
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
+                new_item->setText(pirnames.at(u) + " -> " + outnames.at(u));
+                ui->listWidget_3->addItem(new_item);
+                scheduledtimers.insert(gn,0);
+            }
+            if(time==2){
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+                new_item->setText(pirnames.at(u) + " -> " + outnames.at(u));
+                ui->listWidget_3->addItem(new_item);
+                scheduledtimers.insert(gn,0);
+            }
+            u++;
+        }
+    }
+}
+
+void MainWindow::on_dial_12_valueChanged(int value)
+{
+    QProcess reku;
+    QStringList params;
+    if(value==1){
+        params << "/home/pi/HAP-NodeJS/python/fanoff.py";
+        reku.start("python", params);
+        reku.waitForFinished(-1);
+    }
+    if(value==2){
+        params << "/home/pi/HAP-NodeJS/python/fan1.py";
+        reku.start("python", params);
+        reku.waitForFinished(-1);
+    }
+    if(value==3){
+        params << "/home/pi/HAP-NodeJS/python/fan2.py";
+        reku.start("python", params);
+        reku.waitForFinished(-1);
+    }
+}
+
+void MainWindow::ClickedlabelFinder(){
+
+    for(int i=0; i<=4; i++){
+        if(lList.at(i)==QObject::sender()){
+            if(dList.at(i)->isVisible() == true){
+                dList.at(i)->setVisible(false);
+                ldList.at(i)->setVisible(false);
+                ui->label_32->setVisible(false);
+            }else{
+                dList.at(i)->setVisible(true);
+                ldList.at(i)->setVisible(true);
+                ui->label_32->setVisible(true);
+            }
+        }else{
+            dList.at(i)->setVisible(false);
+            ldList.at(i)->setVisible(false);
+        }
+    }
 }

@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     MyUDP client;
     MainWindow w;
     w.show();
+    w.readscheduler();
     client.zerujWyj();
     QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
   return a.exec();

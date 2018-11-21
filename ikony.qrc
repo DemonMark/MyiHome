@@ -49,11 +49,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_17.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_18.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_18.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/reku_1.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/reku_2.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/reku_3.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/power_off.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/power_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/minus_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/minus_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/plus_off.png</file>
@@ -73,5 +68,14 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off.png</file>
         <file>../../../HDD1/admin/backup/backup.img</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/clock_frame.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/dial.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/dial_2.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/countdown.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/power_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/power_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/dial_3.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_on.png</file>
     </qresource>
 </RCC>

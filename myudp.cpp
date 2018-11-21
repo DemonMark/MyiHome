@@ -7,6 +7,7 @@
 int odb,i;
 int q=0;
 unsigned char temp[20];
+unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
 QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych przez harmonogramy
 QList<QList<unsigned char> > scheduledhexxout; //tablica bitów wyjść definiowanych przez harmonogramy
@@ -109,7 +110,7 @@ void MyUDP::readyRead(){
 
         //qDebug() <<" Mss from" << sender.toString();
         //qDebug() << "Mss port" << senderPort;
-        //qDebug() << "Ramka" << k;
+        //qDebug() << "Ramka: " << k;
 
         ips=sender.toString();
         emit ips;
@@ -153,23 +154,27 @@ void MyUDP::readyRead(){
         }
 //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
-
             for (int i=3; i<=(Buffer.length());i++)
             {
                 temp[i-3]=Buffer[i];
             }
             obecnosc=1;
             timer_obecnosc->start(300000);
-
+            if(temp[1]&0x01){
+                qDebug() << "ZALANIE";
+            }
             //***TIMER PO URUCHOMIENIU IDE SPAC***//
             if(spimy==1){
                 odliczG=600;
                 timer_LOff->start(1000);
             }
             //***WYKONYWANIE HARMONOGRAMU***//
+                //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
+            if(!temp[0]==0){
+                tempholder[0] = temp[0];
+                //******//
             for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-
-                if(temp[0] & scheduledhexxpir[j]){
+                if(tempholder[0] & scheduledhexxpir[j]){
                     if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
 
                         bgi.insert(j,j);//czy to zadziała?
@@ -192,6 +197,7 @@ void MyUDP::readyRead(){
                     }
                 }
             }
+        }
         }
      }
 }

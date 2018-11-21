@@ -20,8 +20,10 @@ public:
     //Ui::MainWindow *ui;
     ///MainWindow();
     void mousePressEvent(QMouseEvent *);
+    void readscheduler();
 
 private slots:
+    void writescheduler();
   void receiving();
   void on_WY3_toggled(bool checked);
   void on_WY1_toggled(bool checked);
@@ -40,6 +42,7 @@ private slots:
   void stykOff();
   void offfff();
   void ClickedbtnFinder();
+  void ClickedlabelFinder();
   void on_WY25_toggled(bool checked);
   void on_WY26_toggled(bool checked);
   void on_WY27_toggled(bool checked);
@@ -52,9 +55,6 @@ private slots:
   void on_pushButton_13_toggled(bool checked);
   void on_pushButton_16_pressed();
   void on_pushButton_23_clicked();
-  void on_pushButton_24_clicked();
-  void on_pushButton_25_clicked();
-  void on_pushButton_26_clicked();
   void on_pushButton_27_clicked();
   void on_pushButton_28_clicked();
   void on_spinBox_valueChanged(int arg1);
@@ -66,6 +66,7 @@ private slots:
   void on_pushButton_32_clicked();
   void readTimeFromWWW();
   void on_pushButton_33_toggled(bool checked);
+  void on_dial_12_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;
@@ -77,6 +78,8 @@ private:
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
     QMovie *movie_pompa_3;
+
+
   protected:
     void timerEvent(QTimerEvent *event);
     void readSetting();

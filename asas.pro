@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     events.cpp \
     dialog.cpp \
     dialog2.cpp \
-    zmienne.cpp
+    zmienne.cpp \
+    label_temp.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     events.h \
     dialog.h \
     dialog2.h \
-    zmienne.h
+    zmienne.h \
+    label_temp.h
 
 FORMS    += mainwindow.ui \
     events.ui \

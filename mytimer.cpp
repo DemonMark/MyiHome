@@ -8,7 +8,7 @@ MyTimer::MyTimer(QObject *target, const char *slot)
     QTimer *timer_name = new QTimer;
     QObject::connect(timer_name, SIGNAL(timeout()), target, slot);
     scheduledtimers.insert(gn, timer_name);
-    //qDebug() << timer_name->timerId() << timer_name << "GN:" << gn;
+    qDebug() << scheduledtimers << "GN:" << gn;
 }
 void MyTimer::TimerStart()
 {
