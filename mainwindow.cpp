@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "myudp.h"
 #include "zdarzenie.h"
+#include "pir_button.h"
 #include <QtGui>
 #include <QLCDNumber>
 #include <QUdpSocket>
@@ -22,14 +23,19 @@
 #include <QPixmap>
 #include <QList>
 #include <QIcon>
-#include <QProcess>
 #include <QtWebKit/QtWebKit>
+#include "bcm2835.h"
+
+#define GEAR1 RPI_V2_GPIO_P1_16
+#define GEAR2 RPI_V2_GPIO_P1_18
 
 QList<QPushButton*> bList; //lista przycisków
-QList<QDial*> dList; //lista regulatorów
+QList<pir_button*> pirList; //lista czujek
+QList<QDial*> dList; //lista regulatorów temperatury
+QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,19,19,19,19,19,21,19,19,19,19,19,19,19,9,16,6,18,2,3,19,13}; //pozycja przycisku na liście
+int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,24,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,19,13}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -45,7 +51,7 @@ extern QString ips;
 extern int odb;        //brak odbioru ramki
 extern int q;           //odebranie konkretnej ramki
 extern int c[41];
-int t[3];
+int t[4];
 int num;
 int wlaczony,reszta,zal;
 extern unsigned char temp[20];
@@ -60,7 +66,7 @@ extern int odliczG;
 int a=0;
 int gn=-1;
 int qu;
-int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0;
+int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0,flaga_8=0;
 int dzien;  //jeśli = 1 czujki nie włączają świateł
 int spimy;  //jeśli = 1 odliczanie 10min od detekcji do wyłączenia światła(wyjść)
 int obecnosc; //jeśli = 1 wyłączenie świateł(wyjść) o ustalonej godzinie nie odpala się
@@ -71,12 +77,24 @@ extern int scheduledaction;
 QDate dateTime;
 QString dateStamptext;
 
+//MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
+
+//inicjalizacja pinów GPIO Raspberry
+void initGPIO()
+{
+    bcm2835_gpio_fsel(GEAR1, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(GEAR2, BCM2835_GPIO_FSEL_OUTP);
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    bcm2835_init();
+    initGPIO();
+
     ui->setupUi(this);
-    timerId = startTimer(500);                //czas timera 10ms
+    timerId = startTimer(500);
      /******************************ZEGAR************************/
     QTimer *timer = new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
@@ -84,13 +102,17 @@ MainWindow::MainWindow(QWidget *parent) :
     bList = ui->tab_5->findChildren<QPushButton*>();
     //bList = MainWindow::findChildren<QPushButton*>();
     dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*"));
+    dpList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_pir_*"));
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
+    pirList = ui->tab_5->findChildren<pir_button*>();
+
     foreach(QPushButton *btn, bList)
     {
         //qDebug() << btn->objectName();
         connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
     }
+
     foreach(QDial* dL, dList){
         connect(dL, SIGNAL(valueChanged(int)), this, SLOT(writescheduler()));
         connect(lList.at(num), SIGNAL(mouse_clicked()), this, SLOT(ClickedlabelFinder()));
@@ -99,17 +121,25 @@ MainWindow::MainWindow(QWidget *parent) :
         num++;
     }
 
+    foreach(QDial* dpL, dpList){
+        dpL->setVisible(false);
+        connect(dpL, SIGNAL(valueChanged(int)), this, SLOT(settimers()));
+
+    }
+
+    foreach (pir_button* ere, pirList) {
+        connect(ere, SIGNAL(klik()), this, SLOT(showui()));
+    }
+
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
 
     //PARAMETRY POCZĄTKOWE//
-    t[0]=300000;
-    t[1]=300000;
-    t[2]=300000;
 
-    ui->spinBox_3->setVisible(false);
     ui->label_32->setVisible(false);
+    ui->label_47->setVisible(false);
+    ui->label_48->setVisible(false);
 
     webView = new QWebView(this);
     webView->setVisible(false);
@@ -126,10 +156,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    //writeSetting();
     delete ui;
     killTimer(timerId);
 }
+//dostep do MainWindow z innych klas
+/*MainWindow *MainWindow::getMainWinPtr()
+{
+    return pMainWindow;
+}*/
 
 void MainWindow::showTime(){
     QTime time=QTime::currentTime();
@@ -281,11 +315,18 @@ void MainWindow::receiving(){
         //**HISTEREZA SYPIALNIA**//
         if (((temperatura[7]*10)+temperatura[8]-ui->dial_7->value()) >=ui->dial_11->value()){
 
-        flaga_7=1;
+            flaga_7=1;
         }
         if (((temperatura[7]*10)+temperatura[8]+ui->dial_7->value()) <=ui->dial_11->value()){
 
-         flaga_7=0;
+            flaga_7=0;
+        }
+        //**HISTEREZA LOFT**//
+        if(((temperatura[21]*10)+temperatura[22]-ui->dial_7->value())>=ui->dial_10->value()){
+            flaga_8=1;
+        }
+        if(((temperatura[21]*10)+temperatura[22]+ui->dial_7->value())<=ui->dial_10->value()){
+            flaga_8=0;
         }
         //**HISTEREZA SALON**//
          if (((temperatura[5]*10)+temperatura[6]-ui->dial_7->value()) >=ui->dial_temp_2->value()){
@@ -347,14 +388,24 @@ void MainWindow::receiving(){
        if (qu==30){
            if(ui->pushButton_34->isChecked()){
            if (flaga_7==0){
-           maskawysl[3]|=0x80;
+           maskawysl[2]|=0x10;
            MyUDP client;
            client.WYSUDP();
            }
            if (flaga_7==1){
-             maskawysl[3]&=~0x80;
+             maskawysl[2]&=~0x10;
              MyUDP client;
              client.WYSUDP();
+           }
+           if(flaga_8==0){
+               maskawysl[2]|=0x40;
+               MyUDP client;
+               client.WYSUDP();
+           }
+           if(flaga_8==1){
+               maskawysl[2]&=~0x040;
+               MyUDP client;
+               client.WYSUDP();
            }
            if (flaga_1==0){
            maskawysl[3]|=0x04;
@@ -420,14 +471,14 @@ void MainWindow::receiving(){
                 movie_pompa_1->stop();
                 ui->label_pompa_1->setPixmap(pompa_off);
             }
-            if (flaga==0 || flaga_7==0){
+            if (flaga==0 || flaga_7==0 || flaga_8==0){
                 maskawysl[3]|=0x80;
                 MyUDP client;
                 client.WYSUDP();
                 ui->label_pompa_2->setMovie(movie_pompa_2);
                 movie_pompa_2->start();
             }
-            if (flaga==1 && flaga_7==1){
+            if (flaga==1 && flaga_7==1 && flaga_8==1){
                 maskawysl[3]&=~0x80;
                 MyUDP client;
                 client.WYSUDP();
@@ -509,16 +560,8 @@ if("192.168.1.100"==ips){
 
 //*********************WYŚWIETLANIE AKTYWNOŚCI CZUJEK PIR***********************//
     if("192.168.1.103"==ips){
-        QPixmap PIR_on("/media/HDD1/admin/iHome/28-02-2018/media/pir_LD_on.png");
-        if(temp[0] & 0x04){
-            ui->label_pir_LD->setPixmap(PIR_on);
-            temp[0]&=~0x04;
-            PIRs=1;
-        }
-        if(temp[0] & 0x02){
-            ui->label_pir_LD_2->setPixmap(PIR_on);
-            temp[0]&=~0x02;
-            PIRs_2=1;
+        if(temp[1]&0x01){
+            ui->pushButton_24->setChecked(true);
         }
 //******************ZAZNACZANIE BUTTONA Z HARMONOGRAMU*************************//
         if(scheduledaction==1){
@@ -535,12 +578,10 @@ if("192.168.1.100"==ips){
 
 
     if (PIRs == 0){
-        QPixmap PIR_off("/media/HDD1/admin/iHome/28-02-2018/media/pir_off.png");
-        ui->label_pir_LD->setPixmap(PIR_off);
+        //************
     }
     if (PIRs_2 == 0){
-        QPixmap PIR_off("/media/HDD1/admin/iHome/28-02-2018/media/pir_off.png");
-        ui->label_pir_LD_2->setPixmap(PIR_off);
+        //************
     }
 
     if (LOff==1){
@@ -1017,7 +1058,7 @@ void MainWindow::on_pushButton_23_clicked()
     }
     writescheduler();
 }
-
+//usuwanie pozycji z harmonogramu//
 void MainWindow::on_pushButton_27_clicked()
 {
     int cr = ui->listWidget_3->currentRow();
@@ -1046,21 +1087,6 @@ void MainWindow::on_pushButton_28_clicked()
     odliczG=1;
     MyUDP client;
     client.lightsOff();
-}
-
-void MainWindow::on_spinBox_valueChanged(int arg1)
-{
-    t[0]=arg1*60000;
-}
-
-void MainWindow::on_spinBox_2_valueChanged(int arg1)
-{
-    t[1]=arg1*60000;
-}
-
-void MainWindow::on_spinBox_3_valueChanged(int arg1)
-{
-    t[2]=arg1*60000;
 }
 
 void MainWindow::offfff(){
@@ -1109,16 +1135,6 @@ void MainWindow::on_pushButton_31_clicked()
     ui->listWidget->setDisabled(true);
 }
 
-void MainWindow::on_pushButton_32_clicked()
-{
-    if(ui->spinBox_3->isVisible()){
-        ui->spinBox_3->setVisible(false);
-    }
-    else{
-        ui->spinBox_3->setVisible(true);
-    }
-}
-
 void MainWindow::readTimeFromWWW(){
     qDebug() << "ZMIANA DATY";
     QWebElement wTime = webView->page()->mainFrame()->findFirstElement("h1");
@@ -1126,11 +1142,6 @@ void MainWindow::readTimeFromWWW(){
     ui->label_25->setText(swTime.mid(51,5));
     ui->label_26->setText(swTime.mid(73,5));
     QObject::disconnect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
-}
-
-void MainWindow::mousePressEvent(QMouseEvent *)
-{
-    emit pressed();
 }
 
 //****************************WYSYŁANIE Z IKON PULPITU**********************//
@@ -1180,7 +1191,6 @@ void MainWindow::writescheduler(){
         out << scheduledbtns;
         out << outnames;
         out << pirnames;
-        //out << scheduledtimers;
         out << tspinBox;
         out << startat;
         out << stopat;
@@ -1188,27 +1198,38 @@ void MainWindow::writescheduler(){
         foreach(QDial* dL, dList){
             out << dL->value();
         }
+        foreach(QDial* dpL, dpList){
+            out << dpL->value();
+        }
+
         target.flush();
         target.close();
     }
 }
 
 void MainWindow::readscheduler(){
-    int dLv[11];
+    int dLv[5];
+    int dpLv[4];
     int u=0;
     int dLv_n=0;
+    int dpLv_n=0;
+    int time2_u=0; //oddzielna numeracja listy start,stop
     QFile target("/media/HDD1/admin/iHome/28-02-2018/settings.txt");
     if(target.open(QIODevice::ReadOnly | QIODevice::Text)){
         QDataStream in(&target);
         QDataStream &operator>>(QDataStream &in, unsigned char& dane);
         in >> scheduledhexxout >> scheduledhexxpir >> outmasks >> scheduledcs >> scheduledtime >> scheduledbtns
                 >> outnames >> pirnames >> tspinBox >> startat >> stopat >> gnpos
-                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dLv[5] >> dLv[6] >> dLv[7] >> dLv[8] >> dLv[9] >> dLv[10];
+                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dpLv[0] >> dpLv[1] >> dpLv[2] >> dpLv[3];
         target.close();
 
         foreach(QDial* dL, dList){
             dL->setValue(dLv[dLv_n]);
             dLv_n++;
+        }
+        foreach (QDial* dpL, dpList) {
+            dpL->setValue(dpLv[dpLv_n]);
+            dpLv_n++;
         }
 
         foreach(int time, scheduledtime){
@@ -1228,9 +1249,10 @@ void MainWindow::readscheduler(){
             }
             if(time==2){
                 new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
-                new_item->setText(pirnames.at(u) + " -> " + outnames.at(u));
+                new_item->setText(startat.at(time2_u) + " - " + stopat.at(time2_u) + " -> " + outnames.at(u));
                 ui->listWidget_3->addItem(new_item);
                 scheduledtimers.insert(gn,0);
+                time2_u++;
             }
             u++;
         }
@@ -1239,22 +1261,17 @@ void MainWindow::readscheduler(){
 
 void MainWindow::on_dial_12_valueChanged(int value)
 {
-    QProcess reku;
-    QStringList params;
     if(value==1){
-        params << "/home/pi/HAP-NodeJS/python/fanoff.py";
-        reku.start("python", params);
-        reku.waitForFinished(-1);
+        bcm2835_gpio_write(GEAR1, HIGH);
+        bcm2835_gpio_write(GEAR2, HIGH);
     }
     if(value==2){
-        params << "/home/pi/HAP-NodeJS/python/fan1.py";
-        reku.start("python", params);
-        reku.waitForFinished(-1);
+        bcm2835_gpio_write(GEAR1, LOW);
+        bcm2835_gpio_write(GEAR2, HIGH);
     }
     if(value==3){
-        params << "/home/pi/HAP-NodeJS/python/fan2.py";
-        reku.start("python", params);
-        reku.waitForFinished(-1);
+        bcm2835_gpio_write(GEAR1, HIGH);
+        bcm2835_gpio_write(GEAR2, LOW);
     }
 }
 
@@ -1275,5 +1292,24 @@ void MainWindow::ClickedlabelFinder(){
             dList.at(i)->setVisible(false);
             ldList.at(i)->setVisible(false);
         }
+    }
+}
+
+void MainWindow::settimers()
+{
+    for(int i=0; i<dpList.length(); i++){
+        t[i]=(dpList.at(i)->value()*1000);
+    }
+    writescheduler();
+}
+
+void MainWindow::showui()
+{
+    if(!ui->label_47->isVisible()){
+        ui->label_47->setVisible(true);
+        ui->label_48->setVisible(true);
+    }else{
+        ui->label_47->setVisible(false);
+        ui->label_48->setVisible(false);
     }
 }

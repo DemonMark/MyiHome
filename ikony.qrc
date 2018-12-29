@@ -62,10 +62,8 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/set timer.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_on.gif</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/sup.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/sdown.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off.png</file>
         <file>../../../HDD1/admin/backup/backup.img</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/clock_frame.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/dial.png</file>
@@ -77,5 +75,27 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/leak_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/leak_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_11_v.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_11_v.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_2.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_3.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_4.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_5.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_6.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_7.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_off_8.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_2.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_3.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_4.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_5.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_6.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_7.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_8.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_on.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/circulation_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/circulation_on.gif</file>
     </qresource>
 </RCC>

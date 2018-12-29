@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     dialog.cpp \
     dialog2.cpp \
     zmienne.cpp \
-    label_temp.cpp
+    label_temp.cpp \
+    pir_button.cpp \
+    bcm2835.c
 
 
 HEADERS  += mainwindow.h \
@@ -30,7 +32,9 @@ HEADERS  += mainwindow.h \
     dialog.h \
     dialog2.h \
     zmienne.h \
-    label_temp.h
+    label_temp.h \
+    pir_button.h \
+    bcm2835.h
 
 FORMS    += mainwindow.ui \
     events.ui \

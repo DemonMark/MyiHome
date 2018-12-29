@@ -2,7 +2,7 @@
 #define LABEL_TEMP_H
 
 #include <QLabel>
-#include<QMouseEvent>
+#include <QMouseEvent>
 
 class label_temp : public QLabel
 {

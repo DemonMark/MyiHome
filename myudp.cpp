@@ -160,6 +160,7 @@ void MyUDP::readyRead(){
             }
             obecnosc=1;
             timer_obecnosc->start(300000);
+            emit changes();
             if(temp[1]&0x01){
                 qDebug() << "ZALANIE";
             }
