@@ -13,8 +13,6 @@
 #include <QLabel>
 #include <QDateTime>
 #include "mytimer.h"
-#include "events.h"
-#include "zmienne.h"
 #include <QtCore/QCoreApplication>
 #include <QApplication>
 #include <QWidget>
@@ -28,6 +26,10 @@
 
 #define GEAR1 RPI_V2_GPIO_P1_16
 #define GEAR2 RPI_V2_GPIO_P1_18
+#define PIN_TH RPI_V2_GPIO_P1_07
+#define DHT_MAXCOUNT 32000 //liczba dobrana do szybkości RPi2 - dotyczy max czasu odczytu powyżej TIMEOUT
+#define DHT_BITS 41
+#define DC '\xb0' //znak stopnia
 
 QList<QPushButton*> bList; //lista przycisków
 QList<pir_button*> pirList; //lista czujek
@@ -35,7 +37,7 @@ QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,24,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,19,13}; //pozycja przycisku na liście
+int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,24,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -48,12 +50,10 @@ QList<QString> outnames;
 QList<QString> pirnames;
 QString time_text;
 extern QString ips;
-extern int odb;        //brak odbioru ramki
 extern int q;           //odebranie konkretnej ramki
 extern int c[41];
-int t[4];
+QList<int> t;
 int num;
-int wlaczony,reszta,zal;
 extern unsigned char temp[20];
 extern unsigned char temperatura[27];
 extern unsigned char hexx[9];
@@ -66,16 +66,22 @@ extern int odliczG;
 int a=0;
 int gn=-1;
 int qu;
-int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0,flaga_8=0;
+int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0,flaga_8=0,flaga_9=0,flaga_10=0;
 int dzien;  //jeśli = 1 czujki nie włączają świateł
 int spimy;  //jeśli = 1 odliczanie 10min od detekcji do wyłączenia światła(wyjść)
 int obecnosc; //jeśli = 1 wyłączenie świateł(wyjść) o ustalonej godzinie nie odpala się
 int otwarta=0; //status bramy garażowej
-extern int PIRs,PIRs_2;
 extern int LOff;
 extern int scheduledaction;
 QDate dateTime;
 QString dateStamptext;
+float humidity;
+int humidityholder=1;
+bool humiditywatcher=false;
+bool persistent;
+int count_up=0;
+int count_down=0;
+extern bool simulating_on;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -99,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer *timer = new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
     timer->start();
-    bList = ui->tab_5->findChildren<QPushButton*>();
+    bList = ui->tab_5->findChildren<QPushButton*>(QRegExp ("pushButton*"));
     //bList = MainWindow::findChildren<QPushButton*>();
     dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*"));
     dpList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_pir_*"));
@@ -123,10 +129,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     foreach(QDial* dpL, dpList){
         dpL->setVisible(false);
-        connect(dpL, SIGNAL(valueChanged(int)), this, SLOT(settimers()));
+        connect(dpL, SIGNAL(valueChanged(int)), this, SLOT(settimers(int)));
 
     }
-
+    //sprawa do opanowania - dostep do UI z subklasy
     foreach (pir_button* ere, pirList) {
         connect(ere, SIGNAL(klik()), this, SLOT(showui()));
     }
@@ -140,6 +146,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_32->setVisible(false);
     ui->label_47->setVisible(false);
     ui->label_48->setVisible(false);
+    ui->dial_12->setValue(1);
 
     webView = new QWebView(this);
     webView->setVisible(false);
@@ -151,7 +158,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     movie_pompa_1 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_pompa_2 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
-    movie_pompa_3 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
+    movie_cyrkulacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/circulation_on.gif");
+    movie_countdown = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/countdown.gif");
+    ui->label_19->setMovie(movie_countdown);
+
+    connect(movie_cyrkulacja, SIGNAL(frameChanged(int)), this, SLOT(cyrkulacja_rotation()));
 }
 
 MainWindow::~MainWindow()
@@ -201,13 +212,19 @@ void MainWindow::showTime(){
         dateStamptext = dateTime.toString("dd/MM/yyyy");
     }
 
-//***************WYŚWIETLANIE TIMERÓW****************//
-
-    ui->label_11->setText(QDateTime::fromTime_t(odliczG).toUTC().toString("mm:ss")); //zamiana ms na minuty
-  }
+//***************WYŚWIETLANIE TIMERA****************//
+        ui->label_11->setText(QDateTime::fromTime_t(odliczG).toUTC().toString("mm:ss")); //zamiana ms na minuty
+        if(obecnosc==1 && spimy==1){
+            movie_countdown->start();
+            ui->label_19->setStyleSheet("background-image:none");
+        }else{
+            movie_countdown->stop();
+        }
+}
 
 /************************************************************** ODBIERANIE *********************************************************************/
 void MainWindow::timerEvent(QTimerEvent *event){
+    //sprawdzanie czy istnieją swiatła do włączenia z harmonogramu
     int i1=0;
     int i2=0;
     foreach(QString start, startat){
@@ -225,6 +242,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
         }
         i1++;
     }
+    //sprawdzanie czy istnieją swiatła do wyłączenia z harmonogramu
     foreach(QString stop, stopat){
         int i=0;
         int j=gnpos.at(i2);
@@ -240,6 +258,16 @@ void MainWindow::timerEvent(QTimerEvent *event){
         }
         i2++;
     }
+    //nadzorowanie wilgotnosci w lazience
+    if(persistent && !humiditywatcher && spimy==0){
+        humiditywatcher=true;
+        ui->dial_12->setValue(2);
+    }
+    if(!persistent && humiditywatcher){
+        ui->dial_12->setValue(humidityholder);
+        humiditywatcher=false;
+    }
+
 }
 
 void MainWindow::receiving(){
@@ -285,21 +313,21 @@ void MainWindow::receiving(){
         b11.append(QString("%1").arg(temperatura[23]));
         t11.append(QString("%1").arg(temperatura[24]));
 
-        ui->label_2->setText(b+"."+t);
-        ui->label_temp_2->setText(b1+"."+t1);
-        ui->label_10->setText(b2+"."+t2);
-        ui->label_12->setText(b3+"."+t3);
-        ui->label_temp_3->setText(b4+"."+t4);
-        ui->label_temp_1->setText(b5+"."+t5);
-        ui->label_temp_4->setText(b6+"."+t6);
-        ui->label_temp_5->setText(b7+"."+t7);
-        ui->label_21->setText(b8+"."+t8);
-        ui->label_29->setText(b9+"."+t9);
-        ui->label_31->setText(b10+"."+t10);
-        ui->label_6->setText(b11+"."+t11);
+        ui->label_2->setText(b+"."+t + DC);
+        ui->label_temp_2->setText(b1+"."+t1 + DC);
+        ui->label_10->setText(b2+"."+t2+DC);
+        ui->label_12->setText(b3+"."+t3+DC);
+        ui->label_temp_3->setText(b4+"."+t4+DC);
+        ui->label_temp_1->setText(b5+"."+t5 + DC);
+        ui->label_temp_4->setText(b6+"."+t6 + DC);
+        ui->label_temp_5->setText(b7+"."+t7 + DC);
+        ui->label_21->setText(b8+"."+t8 + DC);
+        ui->label_29->setText(b9+"."+t9 + DC);
+        ui->label_31->setText(b10+"."+t10 + DC);
+        ui->label_6->setText(b11+"."+t11 + DC);
 
-        QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on.png");
-        QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo.png");
+        QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png");
+        QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
         QPixmap pompa_off("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
 
             //**HISTEREZA BIBLIOTEKA**//
@@ -327,6 +355,20 @@ void MainWindow::receiving(){
         }
         if(((temperatura[21]*10)+temperatura[22]+ui->dial_7->value())<=ui->dial_10->value()){
             flaga_8=0;
+        }
+        //**HISTEREZA ŁAZIENKA GÓRA**//
+        if(((temperatura[23]*10)+temperatura[24]-ui->dial_7->value())>=ui->dial_8->value()){
+            flaga_9=1;
+        }
+        if(((temperatura[23]*10)+temperatura[24]+ui->dial_7->value())<=ui->dial_8->value()){
+            flaga_9=0;
+        }
+        //**HISTEREZA BIBLIOTEKA**//
+        if(((temperatura[3]*10)+temperatura[4]-ui->dial_7->value())>=ui->dial_6->value()){
+            flaga_10=1;
+        }
+        if(((temperatura[3]*10)+temperatura[4]+ui->dial_7->value())<=ui->dial_6->value()){
+            flaga_10=0;
         }
         //**HISTEREZA SALON**//
          if (((temperatura[5]*10)+temperatura[6]-ui->dial_7->value()) >=ui->dial_temp_2->value()){
@@ -385,7 +427,9 @@ void MainWindow::receiving(){
         }
 
        qu++;
-       if (qu==30){
+       if (qu==15){
+           getHumidity();
+           barometer();
            if(ui->pushButton_34->isChecked()){
            if (flaga_7==0){
            maskawysl[2]|=0x10;
@@ -404,6 +448,26 @@ void MainWindow::receiving(){
            }
            if(flaga_8==1){
                maskawysl[2]&=~0x040;
+               MyUDP client;
+               client.WYSUDP();
+           }
+           if(flaga_9==0){
+               maskawysl[2]|=0x80;
+               MyUDP client;
+               client.WYSUDP();
+           }
+           if(flaga_9==1){
+               maskawysl[2]&=~0x080;
+               MyUDP client;
+               client.WYSUDP();
+           }
+           if(flaga_10==0){
+               maskawysl[2]|=0x20;
+               MyUDP client;
+               client.WYSUDP();
+           }
+           if(flaga_10==1){
+               maskawysl[2]&=~0x020;
                MyUDP client;
                client.WYSUDP();
            }
@@ -471,14 +535,14 @@ void MainWindow::receiving(){
                 movie_pompa_1->stop();
                 ui->label_pompa_1->setPixmap(pompa_off);
             }
-            if (flaga==0 || flaga_7==0 || flaga_8==0){
+            if (flaga==0 || flaga_7==0 || flaga_8==0 || flaga_9==0 || flaga_10==0){
                 maskawysl[3]|=0x80;
                 MyUDP client;
                 client.WYSUDP();
                 ui->label_pompa_2->setMovie(movie_pompa_2);
                 movie_pompa_2->start();
             }
-            if (flaga==1 && flaga_7==1 && flaga_8==1){
+            if (flaga==1 && flaga_7==1 && flaga_8==1 && flaga_9==1 && flaga_10==1){
                 maskawysl[3]&=~0x80;
                 MyUDP client;
                 client.WYSUDP();
@@ -490,8 +554,8 @@ void MainWindow::receiving(){
        }
 
 //****************zaznaczanie buttonów po wykryciu pakietu************************//
-if("192.168.1.100"==ips){
-
+if("192.168.1.100"==ips || simulating_on){
+    simulating_on=false;
     int m=0; //numeracja pozycji przycisku na liście
 
     for (int j=0; j<=4;j++){
@@ -573,15 +637,6 @@ if("192.168.1.100"==ips){
             scheduledaction=0;
             bgi.clear();
         }
-    }
-
-
-
-    if (PIRs == 0){
-        //************
-    }
-    if (PIRs_2 == 0){
-        //************
     }
 
     if (LOff==1){
@@ -908,22 +963,6 @@ void MainWindow::on_WY32_toggled(bool checked)
         }
 }
 
-void MainWindow::on_WY39_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[4]|=0x40;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[4]&=~0x40;
-        client.WYSUDP();
-        }
-}
-
 void MainWindow::on_pushButton_16_pressed(){
 
     timer_bramaStykOff->start(500);
@@ -1085,8 +1124,7 @@ void MainWindow::on_pushButton_27_clicked()
 void MainWindow::on_pushButton_28_clicked()
 {
     odliczG=1;
-    MyUDP client;
-    client.lightsOff();
+    emit all_off();
 }
 
 void MainWindow::offfff(){
@@ -1174,8 +1212,12 @@ void MainWindow::ClickedbtnFinder(){
 
 void MainWindow::on_pushButton_33_toggled(bool checked)
 {
-
-
+    if(checked){
+        movie_cyrkulacja->start();
+    }else{
+        movie_cyrkulacja->stop();
+        ui->pushButton_33->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/circulation_off.png"));
+    }
 }
 
 void MainWindow::writescheduler(){
@@ -1198,10 +1240,7 @@ void MainWindow::writescheduler(){
         foreach(QDial* dL, dList){
             out << dL->value();
         }
-        foreach(QDial* dpL, dpList){
-            out << dpL->value();
-        }
-
+        out << t;
         target.flush();
         target.close();
     }
@@ -1209,7 +1248,6 @@ void MainWindow::writescheduler(){
 
 void MainWindow::readscheduler(){
     int dLv[5];
-    int dpLv[4];
     int u=0;
     int dLv_n=0;
     int dpLv_n=0;
@@ -1220,15 +1258,15 @@ void MainWindow::readscheduler(){
         QDataStream &operator>>(QDataStream &in, unsigned char& dane);
         in >> scheduledhexxout >> scheduledhexxpir >> outmasks >> scheduledcs >> scheduledtime >> scheduledbtns
                 >> outnames >> pirnames >> tspinBox >> startat >> stopat >> gnpos
-                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dpLv[0] >> dpLv[1] >> dpLv[2] >> dpLv[3];
+                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> t;
         target.close();
-
+        qDebug() << t;
         foreach(QDial* dL, dList){
             dL->setValue(dLv[dLv_n]);
             dLv_n++;
         }
         foreach (QDial* dpL, dpList) {
-            dpL->setValue(dpLv[dpLv_n]);
+            dpL->setValue((t.at(dpLv_n))/1000);
             dpLv_n++;
         }
 
@@ -1273,6 +1311,10 @@ void MainWindow::on_dial_12_valueChanged(int value)
         bcm2835_gpio_write(GEAR1, HIGH);
         bcm2835_gpio_write(GEAR2, LOW);
     }
+    if(humiditywatcher==false){
+        humidityholder=value;
+        qDebug() << humidityholder;
+    }
 }
 
 void MainWindow::ClickedlabelFinder(){
@@ -1295,10 +1337,13 @@ void MainWindow::ClickedlabelFinder(){
     }
 }
 
-void MainWindow::settimers()
+void MainWindow::settimers(int dial_value)
 {
     for(int i=0; i<dpList.length(); i++){
-        t[i]=(dpList.at(i)->value()*1000);
+        if(dpList.at(i)==QObject::sender()){
+            //t.replace(i,(dpList.at(i)->value()*1000));
+            t.replace(i,(dial_value*1000));
+        }
     }
     writescheduler();
 }
@@ -1311,5 +1356,111 @@ void MainWindow::showui()
     }else{
         ui->label_47->setVisible(false);
         ui->label_48->setVisible(false);
+    }
+}
+
+void MainWindow::cyrkulacja_rotation()
+{
+    ui->pushButton_33->setIcon(movie_cyrkulacja->currentPixmap());
+    ui->pushButton_33->setIconSize(QSize(45,45));
+}
+
+void MainWindow::getHumidity()
+{
+    int pulseCounts[DHT_BITS*2] = {0};
+
+    bcm2835_gpio_fsel(PIN_TH, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_write(PIN_TH, LOW);
+    bcm2835_delay(20);
+    bcm2835_gpio_fsel(PIN_TH, BCM2835_GPIO_FSEL_INPT);
+    //bcm2835_delayMicroseconds(30);
+    //generowanie małego poóźnienia < 1us
+    for (volatile int i = 0; i < 50; ++i) {
+     }
+
+     // Wait for DHT to pull pin low.
+     u_int32_t count = 0;
+     while (bcm2835_gpio_lev(PIN_TH)==1) {
+       if (++count >= DHT_MAXCOUNT) {
+         // Timeout waiting for response.
+         qDebug() << "READING ERROR";
+         break;
+       }
+     }
+
+    for(int j=0; j<DHT_BITS*2; j+=2){
+        while(bcm2835_gpio_lev(PIN_TH)==0){
+            if (++pulseCounts[j] >= DHT_MAXCOUNT){
+                break;
+            }
+        }
+        while(bcm2835_gpio_lev(PIN_TH)==1){
+            if (++pulseCounts[j+1] >= DHT_MAXCOUNT){
+                break;
+            }
+        }
+    }
+    u_int32_t threshold = 0;
+      for (int i=2; i < DHT_BITS*2; i+=2) {
+        threshold += pulseCounts[i];
+      }
+      threshold /= DHT_BITS-1;
+
+      u_int8_t data[5] = {0};
+       for (int i=3; i < DHT_BITS*2; i+=2) {
+         int index = (i-3)/16;
+         data[index] <<= 1;
+         if (pulseCounts[i] >= threshold) {
+            // One bit for long pulse.
+           data[index] |= 1;
+         }
+            // Else zero bit for short pulse.
+       }
+
+    if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF)){
+        qDebug() << "DANE OK";
+        humidity = (float) (data[0]);
+        float temperature = (float) (data[2]);
+        QString hum, temp;
+        hum.setNum(humidity);
+        temp.setNum(temperature);
+        ui->label_13->setText(hum +"%");
+        ui->label_14->setText(temp + DC);
+        if(humidity>=61){
+            count_down=0;
+            if(++count_up==2){
+                count_up=0;
+                persistent=true;
+            }
+        }
+        if(humidity<=60){
+            count_up=0;
+            if(++count_down==2){
+                count_down=0;
+                persistent=false;
+            }
+        }
+    }
+}
+
+void MainWindow::barometer()
+{
+    QString pressure;
+    QFile weather_data("/home/pi/plik.txt");
+    if(weather_data.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream data(&weather_data);
+        data >> pressure;
+        ui->label_35->setText(pressure);
+    }
+    weather_data.close();
+
+}
+
+void MainWindow::on_pushButton_32_clicked(bool checked)
+{
+    if(checked){
+        emit simulating(true);
+    }else{
+        emit simulating(false);
     }
 }

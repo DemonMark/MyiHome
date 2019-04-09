@@ -68,7 +68,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/clock_frame.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/dial.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/dial_2.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/countdown.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/power_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/power_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/dial_3.png</file>
@@ -95,7 +94,18 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pir_on_8.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_on.gif</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/circulation_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/circulation_on.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/circulation_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/countdown.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/countdown.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/thermo_1.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/Humidity Sensor.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_19.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_19.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/altitude.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/weather_conditions.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/robot_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/robot_on.png</file>
     </qresource>
 </RCC>

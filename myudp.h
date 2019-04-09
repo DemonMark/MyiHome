@@ -18,6 +18,7 @@ class MyUDP : public QObject
 private:
         QTimer *timer_LOff;
         QTimer *timer_obecnosc;
+        QTimer *action;
 
   signals:
         void changes();
@@ -26,5 +27,8 @@ private:
         void readyRead();
         void lightsOff();
         void obecnosc_none();
+        void simulation(bool on);
+        void simulation_holder();
+        void random_off();
 };
 #endif // MYUDP_H

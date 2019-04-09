@@ -4,7 +4,7 @@
 #include "mytimer.h"
 #include "ui_mainwindow.h"
 
-int odb,i;
+int i;
 int q=0;
 unsigned char temp[20];
 unsigned char tempholder[20];
@@ -13,10 +13,13 @@ QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych prz
 QList<QList<unsigned char> > scheduledhexxout; //tablica bitów wyjść definiowanych przez harmonogramy
 QList<int> bgi; //wybór grup zharmonogramowanych przycisków do aktywacji
 extern QList<QList<int> > outmasks;
+QList<QList<int> > rand_masks;
+QList<QList<unsigned char> > rand_hexxs;
 extern QList<QList<int> > scheduledcs;
 extern QList<int> scheduledtime;
 extern QList<int> tspinBox;
 QList<QTimer*> scheduledtimers;
+QList<QTimer*> rand_timers;
 unsigned char temperatura[26];
 int wej241,wej212;
 extern unsigned char maskawysl[10];
@@ -27,14 +30,13 @@ extern int dzien;
 extern int spimy;
 extern int flaga;
 extern int obecnosc;
-extern int t1;
 extern int gn;
-extern int t[3];
-int c[41]; //wejścia (41 pozycji kontenera wliczając 0)
+extern QList<int> t;
+int c[41]; //wejścia (42 pozycji kontenera wliczając 0)
 int odliczG;
-int PIRs=0, PIRs_2=0;
 int LOff=0;
 int scheduledaction=0;
+bool simulating_on;
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -53,6 +55,9 @@ MyUDP::MyUDP(QObject *parent) :
   timer_obecnosc = new QTimer(this);
   connect(timer_obecnosc,SIGNAL(timeout()),this,SLOT(obecnosc_none()));
 
+  //timer do losowego włączania symulacji, użycie funkcji posrednij (qt4.8) w przyszlosci zmiana na lambda expression(qt 5.2)//
+  action = new QTimer(this);
+  connect(action, SIGNAL(timeout()), this, SLOT(simulation_holder()));
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
 void MyUDP::WYSUDP()
@@ -97,9 +102,7 @@ void MyUDP::WYSUDP()
 void MyUDP::readyRead(){
 
      while (socket->hasPendingDatagrams()){
-        QByteArray  Buffer;
-        unsigned char maska = 0x01;
-        unsigned char bufor[30];
+        QByteArray Buffer;
         int i;
         Buffer.resize(socket->pendingDatagramSize());
         QHostAddress sender;
@@ -113,14 +116,18 @@ void MyUDP::readyRead(){
         //qDebug() << "Ramka: " << k;
 
         ips=sender.toString();
-        emit ips;
-        if("192.168.1.102"==ips) {
+
+        if("192.168.1.102"==ips){
             emit changes(); //sygnal do odbierania
-            for (i=3;i<=(Buffer.length());i++){
-                temperatura[i]=Buffer[i];
+            for (i=3;i<(Buffer.length());i++){
+                if((i%2) && (Buffer[i]==0)){ //przerwanie odczytu temperatury dla pól nieparzystych w przypadku braku poprawnego pakietu
+                    i++;//ominięcie części dziesiętnej
+                }else{
+                    temperatura[i]=Buffer[i];
+                }
             }
         }
-        if("192.168.1.100"==ips) {
+        if("192.168.1.100"==ips){
 
             int n=0; //numeracja wejścia
             for (int i=3; i<=(Buffer.length());i++){
@@ -190,7 +197,7 @@ void MyUDP::readyRead(){
                         }
                         if(scheduledtime[j]==0){
                             scheduledtimers.at(j)->setSingleShot(true);
-                            scheduledtimers.at(j)->start(t[tspinBox[j]]);
+                            scheduledtimers.at(j)->start(t.at(tspinBox[j]));
                             //qDebug() << j << tspinBox.at(j);
                         }
                     scheduledaction=1;
@@ -204,17 +211,17 @@ void MyUDP::readyRead(){
 }
 
 //**********FUNKCJA DO WYŁĄCZENIA WSZYSTKICH WYJŚĆ***************//
-void MyUDP :: lightsOff(){
+void MyUDP::lightsOff(){
 
     odliczG--;
     if (odliczG==0){
-    MyUDP client;
+    //MyUDP client;
     maskawysl[0]&=~0xff;
     maskawysl[1]&=~0xff;
     maskawysl[2]&=~0xff;
     maskawysl[4]&=~0xff;
-    client.WYSUDP();
-    client.zerujWyj();
+    WYSUDP();
+    zerujWyj();
     timer_LOff->stop();
     LOff=1;
     emit changes(); //sygnal do odbierania
@@ -224,8 +231,6 @@ void MyUDP :: lightsOff(){
 void MyUDP :: obecnosc_none(){
     timer_obecnosc->stop();
     obecnosc=0;
-    PIRs=0;
-    PIRs_2=0;
 }
 
 void MyUDP::zerujWyj()
@@ -235,4 +240,75 @@ void MyUDP::zerujWyj()
        c[i]=0;
     }
 }
+//*****SYMULACJA OBECNOŚCI*****//
+void MyUDP::simulation(bool on)
+{
+    if(on){
+        action->start((5+qrand()%20)*1000);
+        QList<int> tmp_masks;
+        QList<unsigned char> tmp_hexx;
+        QTime randtime = QTime::currentTime();
+        qsrand(uint(randtime.msec()));
+        int rand_loops = 1+qrand()%4;
+        for(int i=1; i<=rand_loops; i++){
+            int rand_mask = qrand()%5;
+            unsigned char rand_hexx = hexx[1+qrand()%9];
+            if(rand_mask!=3 && !(rand_mask==4 && rand_hexx==0x80)){
+                maskawysl[rand_mask]|=rand_hexx;//zostawiamy póki wszystkie swiatla nie beda mialy ikon
+                WYSUDP();// jak powyzej
+                simulating_on=true;
+                temp[rand_mask]=rand_hexx;
+                emit changes();
+                tmp_masks.insert(i-1,rand_mask);
+                tmp_hexx.insert(i-1, rand_hexx);
+                qDebug() << rand_mask << rand_hexx;
+            }else{
+                tmp_masks.insert(i-1,0);
+                tmp_hexx.insert(i-1, 0);
+                qDebug() << "zle" <<rand_mask << rand_hexx;
+            }
+        }
+        QTimer *rand_off = new QTimer(this);
+        connect(rand_off, SIGNAL(timeout()), this, SLOT(random_off()));
+        rand_off->setSingleShot(true);
+        rand_timers.append(rand_off);
+        rand_masks.append(tmp_masks);
+        rand_hexxs.append(tmp_hexx);
+        rand_off->start((1+(qrand()%15))*1000);
+        qDebug() << rand_masks << rand_hexxs;
+        }else{
+        action->stop();
+        }
+}
 
+void MyUDP::random_off()
+{
+    temp[0]=0;
+    temp[1]=0;
+    temp[2]=0;
+    temp[4]=0;
+    int i=0,j=0;
+    foreach(QTimer *rand_t, rand_timers){
+        if(!(rand_t->isActive())){
+            foreach(unsigned char r, rand_hexxs[j]){
+                maskawysl[rand_masks.value(j)[i]]&=~r;
+                //c[scheduledcs.value(j)[i]]=0;
+                temp[rand_masks.value(j)[i]]+=r;
+                i++;
+            }
+            WYSUDP();
+            simulating_on=true;
+            emit changes();
+            i=0;
+            rand_timers.removeAt(j);
+            rand_masks.removeAt(j);
+            rand_hexxs.removeAt(j);
+            qDebug() << "LOSOWY TIMER NR" << j << "OFF";
+        }
+    j++;
+    }
+}
+void MyUDP::simulation_holder() //do usunięcia w QT 5.2 (lambda exspression)
+{
+    simulation(true);
+}

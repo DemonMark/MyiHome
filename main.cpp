@@ -26,5 +26,7 @@ int main(int argc, char *argv[])
     client.zerujWyj();
     QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
     QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
+    QObject::connect(&w,SIGNAL(simulating(bool)), &client, SLOT(simulation(bool)));
+    QObject::connect(&w,SIGNAL(all_off()), &client, SLOT(lightsOff()));
   return a.exec();
 }

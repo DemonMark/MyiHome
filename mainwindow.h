@@ -24,6 +24,8 @@ public:
     ///MainWindow();
     //void mousePressEvent(QMouseEvent *);
     void readscheduler();
+    void getHumidity();
+    void barometer();
 
 private slots:
 
@@ -48,7 +50,8 @@ private slots:
   void offfff();
   void ClickedbtnFinder();
   void ClickedlabelFinder();
-  void settimers();
+  void settimers(int dial_value);
+  void cyrkulacja_rotation();
   void on_WY25_toggled(bool checked);
   void on_WY26_toggled(bool checked);
   void on_WY27_toggled(bool checked);
@@ -57,7 +60,6 @@ private slots:
   void on_WY30_toggled(bool checked);
   void on_WY31_toggled(bool checked);
   void on_WY32_toggled(bool checked);
-  void on_WY39_toggled(bool checked);
   void on_pushButton_13_toggled(bool checked);
   void on_pushButton_16_pressed();
   void on_pushButton_23_clicked();
@@ -69,6 +71,7 @@ private slots:
   void readTimeFromWWW();
   void on_pushButton_33_toggled(bool checked);
   void on_dial_12_valueChanged(int value);
+  void on_pushButton_32_clicked(bool checked);
 
 private:
 
@@ -80,13 +83,15 @@ private:
     QWebView *webView;
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
-    QMovie *movie_pompa_3;
+    QMovie *movie_cyrkulacja;
+    QMovie *movie_countdown;
 
   protected:
     void timerEvent(QTimerEvent *event);
 
 signals:
-
+    void simulating(bool on);
+    void all_off();
 
 };
 

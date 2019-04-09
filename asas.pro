@@ -16,10 +16,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     myudp.cpp \
     mytimer.cpp \
-    events.cpp \
-    dialog.cpp \
-    dialog2.cpp \
-    zmienne.cpp \
     label_temp.cpp \
     pir_button.cpp \
     bcm2835.c
@@ -28,18 +24,11 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     myudp.h \
     mytimer.h \
-    events.h \
-    dialog.h \
-    dialog2.h \
-    zmienne.h \
     label_temp.h \
     pir_button.h \
     bcm2835.h
 
-FORMS    += mainwindow.ui \
-    events.ui \
-    dialog.ui \
-    dialog2.ui
+FORMS    += mainwindow.ui
 
 RESOURCES += \
     grafika.qrc \
