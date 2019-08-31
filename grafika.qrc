@@ -4,6 +4,7 @@
     </qresource>
     <qresource prefix="/">
         <file>../../../HDD1/admin/iHome/28-02-2018/media/parter.jpg</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/piętro_v2.jpg</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/parter_v2.jpg</file>
     </qresource>
 </RCC>

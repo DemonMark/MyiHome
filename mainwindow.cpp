@@ -3,6 +3,7 @@
 #include "myudp.h"
 #include "zdarzenie.h"
 #include "pir_button.h"
+#include "mydbs.h"
 #include <QtGui>
 #include <QLCDNumber>
 #include <QUdpSocket>
@@ -31,13 +32,14 @@
 #define DHT_BITS 41
 #define DC '\xb0' //znak stopnia
 
-QList<QPushButton*> bList; //lista przycisków
+QList<QPushButton*> bList; //lista przycisków oświetlenia
+QList<QPushButton*> sbList; //lista przycisków scen
 QList<pir_button*> pirList; //lista czujek
 QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[40]={19,19,19,19,19,12,1,0,19,19,15,17,8,11,5,10,4,14,7,24,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13}; //pozycja przycisku na liście
+int bPos[40]={30,27,32,31,28,12,1,0,33,29,15,17,8,11,5,10,4,14,7,24,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -53,7 +55,7 @@ extern QString ips;
 extern int q;           //odebranie konkretnej ramki
 extern int c[41];
 QList<int> t;
-int num;
+int num=0;
 extern unsigned char temp[20];
 extern unsigned char temperatura[27];
 extern unsigned char hexx[9];
@@ -69,9 +71,8 @@ int qu;
 int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0,flaga_8=0,flaga_9=0,flaga_10=0;
 int dzien;  //jeśli = 1 czujki nie włączają świateł
 int spimy;  //jeśli = 1 odliczanie 10min od detekcji do wyłączenia światła(wyjść)
-int obecnosc; //jeśli = 1 wyłączenie świateł(wyjść) o ustalonej godzinie nie odpala się
+int obecnosc=0; //jeśli = 1 wyłączenie świateł(wyjść) o ustalonej godzinie nie odpala się
 int otwarta=0; //status bramy garażowej
-extern int LOff;
 extern int scheduledaction;
 QDate dateTime;
 QString dateStamptext;
@@ -82,6 +83,8 @@ bool persistent;
 int count_up=0;
 int count_down=0;
 extern bool simulating_on;
+bool scene_active;
+bool scene_driving;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -105,18 +108,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer *timer = new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
     timer->start();
-    bList = ui->tab_5->findChildren<QPushButton*>(QRegExp ("pushButton*"));
+    bList = ui->tab_5->findChildren<QPushButton*>(QRegExp ("pushButton*")) + ui->tab_2->findChildren<QPushButton*>(QRegExp ("pushButton*"));
     //bList = MainWindow::findChildren<QPushButton*>();
-    dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*"));
+    sbList = MainWindow::findChildren<QPushButton*>(QRegExp ("button_scene*"));
+    dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*")) + ui->tab_2->findChildren<QDial*>(QRegExp ("dial_temp_*"));
     dpList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_pir_*"));
-    lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*"));
-    ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
+    lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
+    ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pirList = ui->tab_5->findChildren<pir_button*>();
 
     foreach(QPushButton *btn, bList)
     {
         //qDebug() << btn->objectName();
         connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
+    }
+
+    foreach (QPushButton *sbtn, sbList) {
+        connect(sbtn, SIGNAL(toggled(bool)) , this, SLOT(ClickedscenebtnFinder(bool)));
     }
 
     foreach(QDial* dL, dList){
@@ -144,6 +152,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //PARAMETRY POCZĄTKOWE//
 
     ui->label_32->setVisible(false);
+    ui->label_36->setVisible(false);
     ui->label_47->setVisible(false);
     ui->label_48->setVisible(false);
     ui->dial_12->setValue(1);
@@ -159,9 +168,14 @@ MainWindow::MainWindow(QWidget *parent) :
     movie_pompa_1 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_pompa_2 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_cyrkulacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/circulation_on.gif");
+    movie_wentylacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/wentylator.gif");
     movie_countdown = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/countdown.gif");
     ui->label_19->setMovie(movie_countdown);
+    ui->label_wentylator->setMovie(movie_wentylacja);
+    ui->label_wentylator_2->setMovie(movie_wentylacja);
+    movie_wentylacja->start();
 
+    connect(ui->copyButton_8, SIGNAL(toggled(bool)), ui->pushButton_8,SLOT(setChecked(bool))); //wsparcie dla zdublowanego przycisku
     connect(movie_cyrkulacja, SIGNAL(frameChanged(int)), this, SLOT(cyrkulacja_rotation()));
 }
 
@@ -185,11 +199,13 @@ void MainWindow::showTime(){
      if (time_text==ui->timeEdit_3->text() && obecnosc==0){
          spimy=1;
          odliczG=1;
-         MyUDP client;
-         client.lightsOff();         
+         LOff();
+         emit all_off();
+         ui->button_scene_4->setChecked(true);
      }
      else if (time_text==ui->timeEdit_3->text() && obecnosc==1){
-         spimy=1;
+         spimy=1;       
+         ui->button_scene_4->setChecked(true);
      }
 //****************DZIEŃ LUB NOC*********************************//
 
@@ -212,14 +228,13 @@ void MainWindow::showTime(){
         dateStamptext = dateTime.toString("dd/MM/yyyy");
     }
 
-//***************WYŚWIETLANIE TIMERA****************//
+//***************WYŚWIETLANIE TIMERA ORAZ AKTYWACJA ODLICZANIA PO NARUSZENIU STREFY W CZASIE NOCNYM****************//
         ui->label_11->setText(QDateTime::fromTime_t(odliczG).toUTC().toString("mm:ss")); //zamiana ms na minuty
-        if(obecnosc==1 && spimy==1){
+        if(spimy==1 && obecnosc==1){
             movie_countdown->start();
             ui->label_19->setStyleSheet("background-image:none");
-        }else{
-            movie_countdown->stop();
         }
+
 }
 
 /************************************************************** ODBIERANIE *********************************************************************/
@@ -262,10 +277,12 @@ void MainWindow::timerEvent(QTimerEvent *event){
     if(persistent && !humiditywatcher && spimy==0){
         humiditywatcher=true;
         ui->dial_12->setValue(2);
+        movie_wentylacja->setSpeed(200);
     }
     if(!persistent && humiditywatcher){
         ui->dial_12->setValue(humidityholder);
         humiditywatcher=false;
+        movie_wentylacja->setSpeed(100);
     }
 
 }
@@ -313,61 +330,66 @@ void MainWindow::receiving(){
         b11.append(QString("%1").arg(temperatura[23]));
         t11.append(QString("%1").arg(temperatura[24]));
 
-        ui->label_2->setText(b+"."+t + DC);
+        ui->label_temp_9->setText(b+"."+t + DC);
         ui->label_temp_2->setText(b1+"."+t1 + DC);
-        ui->label_10->setText(b2+"."+t2+DC);
+        ui->label_temp_6->setText(b2+"."+t2+DC);
         ui->label_12->setText(b3+"."+t3+DC);
         ui->label_temp_3->setText(b4+"."+t4+DC);
         ui->label_temp_1->setText(b5+"."+t5 + DC);
         ui->label_temp_4->setText(b6+"."+t6 + DC);
         ui->label_temp_5->setText(b7+"."+t7 + DC);
-        ui->label_21->setText(b8+"."+t8 + DC);
-        ui->label_29->setText(b9+"."+t9 + DC);
+        ui->label_temp_8->setText(b8+"."+t8 + DC);
+        ui->label_temp_10->setText(b9+"."+t9 + DC);
         ui->label_31->setText(b10+"."+t10 + DC);
-        ui->label_6->setText(b11+"."+t11 + DC);
+        ui->label_temp_7->setText(b11+"."+t11 + DC);
 
         QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png");
         QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
         QPixmap pompa_off("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
 
-            //**HISTEREZA BIBLIOTEKA**//
-     //   if (((temp[0]*10)+temp[1]-(ui->doubleSpinBox->value())*10) >=(((ui->spinBox->value())*10)+(ui->spinBox_2->value()))){
-        if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_6->value()){
-
+        //**HISTEREZA BIBLIOTEKA**//
+        if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_temp_9->value()){
+            ui->th_10->setPixmap(temp_off);
             flaga=1;
         }
-        if (((temperatura[3]*10)+temperatura[4]+ui->dial_7->value()) <=ui->dial_6->value()){
-
+        if (((temperatura[3]*10)+temperatura[4]+ui->dial_7->value()) <=ui->dial_temp_9->value()){
+            ui->th_10->setPixmap(temp_on);
              flaga=0;
-       }
+        }
         //**HISTEREZA SYPIALNIA**//
-        if (((temperatura[7]*10)+temperatura[8]-ui->dial_7->value()) >=ui->dial_11->value()){
-
+        if (((temperatura[7]*10)+temperatura[8]-ui->dial_7->value()) >=ui->dial_temp_6->value()){
+            ui->th_7->setPixmap(temp_off);
             flaga_7=1;
         }
-        if (((temperatura[7]*10)+temperatura[8]+ui->dial_7->value()) <=ui->dial_11->value()){
-
+        if (((temperatura[7]*10)+temperatura[8]+ui->dial_7->value()) <=ui->dial_temp_6->value()){
+            ui->th_7->setPixmap(temp_on);
             flaga_7=0;
         }
         //**HISTEREZA LOFT**//
-        if(((temperatura[21]*10)+temperatura[22]-ui->dial_7->value())>=ui->dial_10->value()){
+        if(((temperatura[21]*10)+temperatura[22]-ui->dial_7->value())>=ui->dial_temp_10->value()){
+            ui->th_11->setPixmap(temp_off);
             flaga_8=1;
         }
-        if(((temperatura[21]*10)+temperatura[22]+ui->dial_7->value())<=ui->dial_10->value()){
+        if(((temperatura[21]*10)+temperatura[22]+ui->dial_7->value())<=ui->dial_temp_10->value()){
+            ui->th_11->setPixmap(temp_on);
             flaga_8=0;
         }
         //**HISTEREZA ŁAZIENKA GÓRA**//
-        if(((temperatura[23]*10)+temperatura[24]-ui->dial_7->value())>=ui->dial_8->value()){
+        if(((temperatura[23]*10)+temperatura[24]-ui->dial_7->value())>=ui->dial_temp_7->value()){
+            ui->th_8->setPixmap(temp_off);
             flaga_9=1;
         }
-        if(((temperatura[23]*10)+temperatura[24]+ui->dial_7->value())<=ui->dial_8->value()){
+        if(((temperatura[23]*10)+temperatura[24]+ui->dial_7->value())<=ui->dial_temp_7->value()){
+            ui->th_8->setPixmap(temp_on);
             flaga_9=0;
         }
-        //**HISTEREZA BIBLIOTEKA**//
-        if(((temperatura[3]*10)+temperatura[4]-ui->dial_7->value())>=ui->dial_6->value()){
+        //**HISTEREZA POKOJ MYSZKI**//
+        if(((temperatura[19]*10)+temperatura[20]-ui->dial_7->value())>=ui->dial_temp_8->value()){
+            ui->th_9->setPixmap(temp_off);
             flaga_10=1;
         }
-        if(((temperatura[3]*10)+temperatura[4]+ui->dial_7->value())<=ui->dial_6->value()){
+        if(((temperatura[19]*10)+temperatura[20]+ui->dial_7->value())<=ui->dial_temp_8->value()){
+            ui->th_9->setPixmap(temp_on);
             flaga_10=0;
         }
         //**HISTEREZA SALON**//
@@ -638,329 +660,6 @@ if("192.168.1.100"==ips || simulating_on){
             bgi.clear();
         }
     }
-
-    if (LOff==1){
-
-        for(int x=0; x<=39; x++)
-        {
-            int y=bPos[x];
-            if(bList[y]->isChecked() == true){
-
-                bList[y]->setChecked(false);
-            }
-        }
-        LOff=0;
-    }
-
-  }
-
-
-/************************************************************** WYSYLANIE ZAZNACZONYCH WYJSC (CHECKBOX)*********************************************************************/
-   void MainWindow::on_WY1_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-         maskawysl[0]|=(0x01);
-
-         c[1]=1;
-    }
-    else {
-        maskawysl[0]&=~(0x01);
-        c[1]=0;
-    }
-    client.WYSUDP();
-}
-
-   void MainWindow::on_WY2_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-    if(checked) {
-    maskawysl[0]|=0x02;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[0]&=~0x02;
-        client.WYSUDP();
-        }
- }
-   void MainWindow::on_WY3_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[0]|=(0x04);
-
-
-    }
-    else {
-        maskawysl[0]&=~(0x04);
-      //  client.WYSUDP();
-        }
-     client.WYSUDP();
- }
-   void MainWindow::on_WY4_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[0]|=0x08;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[0]&=~0x08;
-        client.WYSUDP();
-        }
- }
-   void MainWindow::on_WY5_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-        if(checked) {
-    maskawysl[0]|=0x10;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[0]&=~0x10;
-        client.WYSUDP();
-        }
-}
-
-
-void MainWindow::on_WY9_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[1]|=0x01;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[1]&=~0x01;
-        client.WYSUDP();
-        }
-}
-   void MainWindow::on_WY10_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[1]|=0x02;
-
-     client.WYSUDP();
-    }
-       else {
-        maskawysl[1]&=~0x02;
-        client.WYSUDP();
-        }
-}
-
-   void MainWindow::on_WY20_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[2]|=0x08;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[2]&=~0x08;
-        client.WYSUDP();
-        }
-}
-   void MainWindow::on_WY21_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[2]|=0x10;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[2]&=~0x10;
-        client.WYSUDP();
-        }
-}
-   void MainWindow::on_WY22_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[2]|=0x20;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[2]&=~0x20;
-        client.WYSUDP();
-        }
-}
-   void MainWindow::on_WY23_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[2]|=0x40;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[2]&=~0x40;
-        client.WYSUDP();
-        }
-}
-   void MainWindow::on_WY24_toggled(bool checked){
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[2]|=0x80;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[2]&=~0x80;
-        client.WYSUDP();
-        }
-}
-
-void MainWindow::on_WY25_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x01;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x01;
-        client.WYSUDP();
-        }
-
-}
-
-void MainWindow::on_WY26_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x02;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x02;
-        client.WYSUDP();
-        }
-
-}
-
-void MainWindow::on_WY27_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x04;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x04;
-        client.WYSUDP();
-        }
-
-}
-
-void MainWindow::on_WY28_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x08;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x08;
-        client.WYSUDP();
-        }
-}
-
-
-void MainWindow::on_WY29_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x10;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x10;
-        client.WYSUDP();
-        }
-}
-
-void MainWindow::on_WY30_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x20;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x20;
-        client.WYSUDP();
-        }
-}
-
-void MainWindow::on_WY31_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x40;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x40;
-        client.WYSUDP();
-        }
-}
-
-void MainWindow::on_WY32_toggled(bool checked)
-{
-    QByteArray tab;
-    MyUDP serwer;
-    MyUDP client;
-     if(checked) {
-    maskawysl[3]|=0x80;
-
-     client.WYSUDP();
-    }
-    else {
-        maskawysl[3]&=~0x80;
-        client.WYSUDP();
-        }
 }
 
 void MainWindow::on_pushButton_16_pressed(){
@@ -968,40 +667,73 @@ void MainWindow::on_pushButton_16_pressed(){
     timer_bramaStykOff->start(500);
 }
 
-//**************wyłączony do czasu rozwiązania problemu zera na liście bList
-void MainWindow::on_pushButton_13_toggled(bool checked)
+void MainWindow::ClickedscenebtnFinder(bool checked)
 {
-
-/*
     if(checked){
-
-        timer_wyjscie = new QTimer(this);
-        connect(timer_wyjscie,SIGNAL(timeout()),this,SLOT(wyjscie()));
-        timer_wyjscie->start(30000);
+        qDebug() << QObject::sender()->objectName();
+        //qDebug() << sbList.indexOf(QPushButton::sender());
+        //qDebug() << QPushButton.toolTip();
+        QString tt = ui->button_scene_2->toolTip();
+        scene_active=true;
+        movie_countdown->start();
+        ui->label_19->setStyleSheet("background-image:none");
+        mydbs baza;
+        QSqlQuery* qry = new QSqlQuery(baza.mydb);
+        qry->prepare("select * from scenes where description ='"+tt+"'");
+        if(qry->exec()){
+            while(qry->next()){
+            odliczG = (qry->value(2).toInt())*60;
+            }
+        }
+    }else{
+        scene_active=false;
+        movie_countdown->stop();
+        odliczG=0;
     }
-
-    if(!checked){
-
-        timer_wyjscie->stop();
-
-    }
-    */
 }
+
+void MainWindow::on_button_scene_1_toggled(bool checked)
+{
+    if(checked){
+        scene_active=true;
+        scene_driving=true;
+        movie_countdown->start();
+        ui->label_19->setStyleSheet("background-image:none");
+        odliczG=600;
+    }else{
+        scene_active=false;
+        scene_driving=false;
+        movie_countdown->stop();
+        odliczG=0;
+    }
+}
+
+void MainWindow::on_button_scene_3_clicked()
+{
+    odliczG=1;
+    emit all_off();
+    MyUDP client;
+    maskawysl[2]|=0x08;
+    client.WYSUDP();
+    temp[2]=0x08;
+    simulating_on=true;
+    receiving();
+    c[20]=1;
+}
+
 //*******************************WYJŚCIE Z DOMU********************//
 void MainWindow::wyjscie(){
 
-    QByteArray tab;
     MyUDP client;
     maskawysl[4]|=0x80;
     client.WYSUDP();
-    ui->pushButton_13->setChecked(false);
-
+    ui->button_scene_1->setChecked(false);
     timer_bramaStykOff->start(500);
 }
 
 void MainWindow::stykOff(){
 
-    QByteArray tab;
+    //QByteArray tab;
     MyUDP client;
     maskawysl[4]&=~0x80;
     client.WYSUDP();
@@ -1149,28 +881,13 @@ void MainWindow::offfff(){
     }
 }
 
-void MainWindow::on_pushButton_29_clicked()
+void MainWindow::on_pushButton_31_toggled(bool checked)
 {
-    ui->pushButton_29->isChecked();
-    ui->pushButton_30->setChecked(false);
-    ui->pushButton_31->setChecked(false);
-    ui->listWidget->setDisabled(false);
-}
-
-void MainWindow::on_pushButton_30_clicked()
-{
-    ui->pushButton_30->isChecked();
-    ui->pushButton_29->setChecked(false);
-    ui->pushButton_31->setChecked(false);
-    ui->listWidget->setDisabled(false);
-}
-
-void MainWindow::on_pushButton_31_clicked()
-{
-    ui->pushButton_31->isChecked();
-    ui->pushButton_29->setChecked(false);
-    ui->pushButton_30->setChecked(false);
-    ui->listWidget->setDisabled(true);
+    if (checked){
+        ui->listWidget->setDisabled(true);
+    }else{
+        ui->listWidget->setDisabled(false);
+    }
 }
 
 void MainWindow::readTimeFromWWW(){
@@ -1247,7 +964,7 @@ void MainWindow::writescheduler(){
 }
 
 void MainWindow::readscheduler(){
-    int dLv[5];
+    int dLv[10];
     int u=0;
     int dLv_n=0;
     int dpLv_n=0;
@@ -1258,9 +975,10 @@ void MainWindow::readscheduler(){
         QDataStream &operator>>(QDataStream &in, unsigned char& dane);
         in >> scheduledhexxout >> scheduledhexxpir >> outmasks >> scheduledcs >> scheduledtime >> scheduledbtns
                 >> outnames >> pirnames >> tspinBox >> startat >> stopat >> gnpos
-                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> t;
+                >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dLv[5] >> dLv[6] >> dLv[7] >> dLv[8]
+                >> dLv[9] >> t;
         target.close();
-        qDebug() << t;
+        qDebug() << dLv[7] << t;
         foreach(QDial* dL, dList){
             dL->setValue(dLv[dLv_n]);
             dLv_n++;
@@ -1319,16 +1037,23 @@ void MainWindow::on_dial_12_valueChanged(int value)
 
 void MainWindow::ClickedlabelFinder(){
 
-    for(int i=0; i<=4; i++){
+    for(int i=0; i<dList.length(); i++){
         if(lList.at(i)==QObject::sender()){
             if(dList.at(i)->isVisible() == true){
                 dList.at(i)->setVisible(false);
                 ldList.at(i)->setVisible(false);
+                ui->label_36->setVisible(false);
                 ui->label_32->setVisible(false);
             }else{
                 dList.at(i)->setVisible(true);
                 ldList.at(i)->setVisible(true);
-                ui->label_32->setVisible(true);
+                if(i>4){
+                    ui->label_36->setVisible(true);
+                    ui->label_32->setVisible(false);
+                }else{
+                    ui->label_32->setVisible(true);
+                    ui->label_36->setVisible(false);
+                }
             }
         }else{
             dList.at(i)->setVisible(false);
@@ -1341,9 +1066,8 @@ void MainWindow::settimers(int dial_value)
 {
     for(int i=0; i<dpList.length(); i++){
         if(dpList.at(i)==QObject::sender()){
-            //t.replace(i,(dpList.at(i)->value()*1000));
             t.replace(i,(dial_value*1000));
-        }
+        }        
     }
     writescheduler();
 }
@@ -1426,14 +1150,14 @@ void MainWindow::getHumidity()
         temp.setNum(temperature);
         ui->label_13->setText(hum +"%");
         ui->label_14->setText(temp + DC);
-        if(humidity>=61){
+        if(humidity>ui->spinBox->value()){
             count_down=0;
             if(++count_up==2){
                 count_up=0;
                 persistent=true;
             }
         }
-        if(humidity<=60){
+        if(humidity<=ui->spinBox->value()){
             count_up=0;
             if(++count_down==2){
                 count_down=0;
@@ -1463,4 +1187,122 @@ void MainWindow::on_pushButton_32_clicked(bool checked)
     }else{
         emit simulating(false);
     }
+}
+
+void MainWindow::LOff()
+{
+    for(int x=0; x<=39; x++){
+        int y=bPos[x];
+        if(bList[y]->isChecked() == true){
+            bList[y]->setChecked(false);
+        }
+    }
+    movie_countdown->stop();
+}
+
+void MainWindow::on_go_floor_clicked()
+{
+    int ci = ui->Tab->currentIndex();
+    ui->Tab->setCurrentIndex(ci+1);
+}
+
+void MainWindow::on_button_wentylator_clicked(bool checked)
+{
+    if(checked){
+        ui->button_wentylator_2->setChecked(false);
+        movie_wentylacja->setSpeed(200);
+        ui->dial_12->setValue(2);
+    }else{
+        ui->button_wentylator_2->setChecked(false);
+        movie_wentylacja->setSpeed(100);
+        ui->dial_12->setValue(1);
+    }
+}
+
+void MainWindow::on_button_wentylator_2_clicked(bool checked)
+{
+    if(checked){
+        movie_wentylacja->setSpeed(300);
+        ui->dial_12->setValue(3);
+    }
+    if(!checked && ui->button_wentylator->isChecked()){
+        movie_wentylacja->setSpeed(200);
+        ui->dial_12->setValue(2);
+    }
+    if(!checked && ui->button_wentylator->isChecked()==false){
+        movie_wentylacja->setSpeed(100);
+        ui->dial_12->setValue(1);
+    }
+}
+
+void MainWindow::on_go_ground_clicked()
+{
+    int ci = ui->Tab->currentIndex();
+    ui->Tab->setCurrentIndex(ci-1);
+}
+
+void MainWindow::on_button_wentylator_3_clicked(bool checked)
+{
+    if(checked){
+        ui->button_wentylator_2->setChecked(false);
+        movie_wentylacja->setSpeed(200);
+        ui->dial_12->setValue(2);
+    }else{
+        ui->button_wentylator_2->setChecked(false);
+        movie_wentylacja->setSpeed(100);
+        ui->dial_12->setValue(1);
+    }
+}
+
+void MainWindow::on_button_scene_4_clicked(bool checked)
+{
+    if(checked){
+        ui->timeEdit_3->setTime(QTime::currentTime());
+    }
+}
+
+void MainWindow::on_pushButton_13_clicked()
+{
+    mydbs baza;
+    /*QSqlQueryModel* mqry = new QSqlQueryModel;
+    QSqlQuery* qry = new QSqlQuery(baza.mydb);
+    qry->prepare("select data,mask from scenes");
+    qry->exec();
+    mqry->setQuery(*qry);
+    ui->comboBox->setModel(mqry);
+    */
+    QSqlQuery* qq = new QSqlQuery(baza.mydb);
+    if(qq->exec("select * from scenes")){
+        MyUDP client;
+        while(qq->next()){
+            maskawysl[qq->value((qq->record().indexOf(ui->comboBox->currentText()))+1).toInt()]|=qq->value(qq->record().indexOf(ui->comboBox->currentText())).toInt();
+            client.WYSUDP();
+            qDebug() << qq->record().indexOf(ui->comboBox->currentText());
+        }
+    }
+}
+
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
+{
+    ui->listWidget_4->clear();
+    mydbs baza;
+    QSqlQuery* qry = new QSqlQuery(baza.mydb);
+    qry->prepare("select * from scenes where description ='"+arg1+"'");
+    if(qry->exec()){
+        while(qry->next()){
+            for (int i=1; i<qry->record().count(); i++){
+                if(qry->value(i).toString() == ""){
+                    //PUSTO
+                }else{
+                    if(qry->record().fieldName(i+1).contains("dane")){
+                        ui->listWidget_4->addItem(qry->record().fieldName(i) +" " + qry->value(i+1).toString());
+                        i++;
+                    }else{
+                        ui->listWidget_4->addItem(qry->record().fieldName(i));
+                    }
+                }
+            }
+        }
+    }
+    baza.conclose();
 }

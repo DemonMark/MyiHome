@@ -32,46 +32,50 @@ private slots:
   void showui();
   void writescheduler();
   void receiving();
-  void on_WY3_toggled(bool checked);
-  void on_WY1_toggled(bool checked);
-  void on_WY2_toggled(bool checked);
-  void on_WY4_toggled(bool checked);
-  void on_WY5_toggled(bool checked);
-  void on_WY9_toggled(bool checked);
-  void on_WY10_toggled(bool checked);
-  void on_WY20_toggled(bool checked);
-  void on_WY21_toggled(bool checked);
-  void on_WY22_toggled(bool checked);
-  void on_WY23_toggled(bool checked);
-  void on_WY24_toggled(bool checked);
   void showTime();
   void wyjscie();
   void stykOff();
   void offfff();
   void ClickedbtnFinder();
+
+  void ClickedscenebtnFinder(bool checked);
+
   void ClickedlabelFinder();
+
   void settimers(int dial_value);
+
   void cyrkulacja_rotation();
-  void on_WY25_toggled(bool checked);
-  void on_WY26_toggled(bool checked);
-  void on_WY27_toggled(bool checked);
-  void on_WY28_toggled(bool checked);
-  void on_WY29_toggled(bool checked);
-  void on_WY30_toggled(bool checked);
-  void on_WY31_toggled(bool checked);
-  void on_WY32_toggled(bool checked);
-  void on_pushButton_13_toggled(bool checked);
+
+  void LOff();
+
+  void on_button_scene_1_toggled(bool checked);
   void on_pushButton_16_pressed();
   void on_pushButton_23_clicked();
   void on_pushButton_27_clicked();
   void on_pushButton_28_clicked();
-  void on_pushButton_29_clicked();
-  void on_pushButton_30_clicked();
-  void on_pushButton_31_clicked();
+  void on_pushButton_31_toggled(bool checked);
   void readTimeFromWWW();
   void on_pushButton_33_toggled(bool checked);
   void on_dial_12_valueChanged(int value);
   void on_pushButton_32_clicked(bool checked);
+
+  void on_button_scene_3_clicked();
+
+  void on_go_floor_clicked();
+
+  void on_button_wentylator_clicked(bool checked);
+
+  void on_button_wentylator_2_clicked(bool checked);
+
+  void on_go_ground_clicked();
+
+  void on_button_wentylator_3_clicked(bool checked);
+
+  void on_button_scene_4_clicked(bool checked);
+
+  void on_pushButton_13_clicked();
+
+  void on_comboBox_currentIndexChanged(const QString &arg1);
 
 private:
 
@@ -84,6 +88,7 @@ private:
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
     QMovie *movie_cyrkulacja;
+    QMovie *movie_wentylacja;
     QMovie *movie_countdown;
 
   protected:

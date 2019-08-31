@@ -18,18 +18,12 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/thermo_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_6.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_6.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_7.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_7.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_8.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_9.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_10.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_8.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_9.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_10.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/leaveCar_off.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/leaveCar_on.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/leave_off.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/leave_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_11.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_11.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_13.png</file>
@@ -43,9 +37,7 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_15.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_14.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_14.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_16.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_17.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_16.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_17.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_18.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_18.png</file>
@@ -104,8 +96,25 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_19.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_19.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/altitude.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/weather_conditions.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/robot_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/robot_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/scene_door_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/scene_door_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/scene_car_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/scene_car_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/scene_watching_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/scene_watching_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/wentylator.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/window_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/window_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/weather_conditions.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/make_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/make_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/sleep_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/sleep_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_16.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_16.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_7.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_7.png</file>
     </qresource>
 </RCC>

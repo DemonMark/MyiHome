@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QTimer>
 
-
 class MyUDP : public QObject
 {
   Q_OBJECT
@@ -22,6 +21,8 @@ private:
 
   signals:
         void changes();
+        void all_off_();
+        void gate();
 
   public slots:
         void readyRead();

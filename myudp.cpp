@@ -11,10 +11,17 @@ unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
 QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych przez harmonogramy
 QList<QList<unsigned char> > scheduledhexxout; //tablica bitów wyjść definiowanych przez harmonogramy
-QList<int> bgi; //wybór grup zharmonogramowanych przycisków do aktywacji
+QList<int> bgi; //wybór grup harmonogramowanych przycisków do aktywacji
 extern QList<QList<int> > outmasks;
 QList<QList<int> > rand_masks;
 QList<QList<unsigned char> > rand_hexxs;
+
+//QList<QList<int> > scene_masks;
+//QList<QList<unsigned char> > scene_hexs;
+//QList<int> scene_mask;
+//QList<unsigned char> scene_hex;
+unsigned char scene_pir=0x10;
+
 extern QList<QList<int> > scheduledcs;
 extern QList<int> scheduledtime;
 extern QList<int> tspinBox;
@@ -34,9 +41,10 @@ extern int gn;
 extern QList<int> t;
 int c[41]; //wejścia (42 pozycji kontenera wliczając 0)
 int odliczG;
-int LOff=0;
 int scheduledaction=0;
 bool simulating_on;
+extern bool scene_active;
+extern bool scene_driving;
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -58,6 +66,7 @@ MyUDP::MyUDP(QObject *parent) :
   //timer do losowego włączania symulacji, użycie funkcji posrednij (qt4.8) w przyszlosci zmiana na lambda expression(qt 5.2)//
   action = new QTimer(this);
   connect(action, SIGNAL(timeout()), this, SLOT(simulation_holder()));
+
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
 void MyUDP::WYSUDP()
@@ -111,9 +120,9 @@ void MyUDP::readyRead(){
         QByteArray k = Buffer.toHex();
         QByteArray z=k.mid(6,8);
 
-        //qDebug() <<" Mss from" << sender.toString();
+        qDebug() <<" Mss from" << sender.toString();
         //qDebug() << "Mss port" << senderPort;
-        //qDebug() << "Ramka: " << k;
+        qDebug() << "Ramka: " << k;
 
         ips=sender.toString();
 
@@ -171,8 +180,8 @@ void MyUDP::readyRead(){
             if(temp[1]&0x01){
                 qDebug() << "ZALANIE";
             }
-            //***TIMER PO URUCHOMIENIU IDE SPAC***//
-            if(spimy==1){
+            //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
+            if(spimy==1 || scene_active){
                 odliczG=600;
                 timer_LOff->start(1000);
             }
@@ -205,7 +214,12 @@ void MyUDP::readyRead(){
                     }
                 }
             }
-        }
+            }
+        //************WYKONYWANIE SCEN**********//
+        //***********SCENA WYJEZDZAM************//
+            if(scene_driving && tempholder[0] & scene_pir){
+                emit gate();
+            }
         }
      }
 }
@@ -215,20 +229,22 @@ void MyUDP::lightsOff(){
 
     odliczG--;
     if (odliczG==0){
-    //MyUDP client;
-    maskawysl[0]&=~0xff;
-    maskawysl[1]&=~0xff;
-    maskawysl[2]&=~0xff;
-    maskawysl[4]&=~0xff;
-    WYSUDP();
-    zerujWyj();
-    timer_LOff->stop();
-    LOff=1;
-    emit changes(); //sygnal do odbierania
+        maskawysl[0]&=~0xff;
+        maskawysl[1]&=~0xff;
+        maskawysl[2]&=~0xff;
+        maskawysl[4]&=~0xff;
+        WYSUDP();
+        zerujWyj();
+        timer_LOff->stop();
+        emit all_off_();
+    }
+    if(odliczG<0){
+        odliczG=0;
+        timer_LOff->stop();
     }
 }
 //***********FUNKCJA ZERUJĄCA OBECNOŚĆ**************************//
-void MyUDP :: obecnosc_none(){
+void MyUDP::obecnosc_none(){
     timer_obecnosc->stop();
     obecnosc=0;
 }
@@ -244,7 +260,7 @@ void MyUDP::zerujWyj()
 void MyUDP::simulation(bool on)
 {
     if(on){
-        action->start((5+qrand()%20)*1000);
+        action->start((5+qrand()%20)*60000);
         QList<int> tmp_masks;
         QList<unsigned char> tmp_hexx;
         QTime randtime = QTime::currentTime();

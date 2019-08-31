@@ -11,7 +11,7 @@
 #include "ui_mainwindow.h"
 #include "zdarzenie.h"
 #include "mytimer.h"
-
+#include "mydbs.h"
 
 extern int q,ram,brakram;
 
@@ -28,5 +28,7 @@ int main(int argc, char *argv[])
     QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
     QObject::connect(&w,SIGNAL(simulating(bool)), &client, SLOT(simulation(bool)));
     QObject::connect(&w,SIGNAL(all_off()), &client, SLOT(lightsOff()));
+    QObject::connect(&client, SIGNAL(all_off_()), &w, SLOT(LOff()));
+    QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjscie()));
   return a.exec();
 }

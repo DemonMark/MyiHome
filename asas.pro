@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network webkit webkitwidgets
+QT       += core gui network webkit webkitwidgets sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     mytimer.cpp \
     label_temp.cpp \
     pir_button.cpp \
-    bcm2835.c
+    bcm2835.c \
+    mydbs.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     mytimer.h \
     label_temp.h \
     pir_button.h \
-    bcm2835.h
+    bcm2835.h \
+    mydbs.h
 
 FORMS    += mainwindow.ui
 
