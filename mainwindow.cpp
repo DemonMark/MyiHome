@@ -212,6 +212,7 @@ void MainWindow::showTime(){
      if (time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
          dzien=1;
          spimy=0;
+         ui->button_scene_4->setChecked(false);
      }
      else {
          dzien=0;
@@ -1258,6 +1259,8 @@ void MainWindow::on_button_scene_4_clicked(bool checked)
 {
     if(checked){
         ui->timeEdit_3->setTime(QTime::currentTime());
+    }else{
+        scene_active=false;
     }
 }
 
