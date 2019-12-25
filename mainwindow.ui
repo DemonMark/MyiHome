@@ -643,6 +643,34 @@ selection-color: rgb(255, 255, 255);</string>
          </time>
         </property>
        </widget>
+       <widget class="QLabel" name="label_37">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>350</y>
+          <width>71</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Roboto Condensed</family>
+          <pointsize>20</pointsize>
+          <weight>9</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(0, 199, 246);
+/*font: 75 20pt &quot;Roboto&quot;;*/
+font: 75 20pt &quot;Roboto Condensed&quot;;</string>
+        </property>
+        <property name="text">
+         <string>000</string>
+        </property>
+       </widget>
        <zorder>label_41</zorder>
        <zorder>label_5</zorder>
        <zorder>dial_7</zorder>
@@ -662,6 +690,7 @@ selection-color: rgb(255, 255, 255);</string>
        <zorder>listWidget_4</zorder>
        <zorder>label_33</zorder>
        <zorder>timeEdit_3</zorder>
+       <zorder>label_37</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1935,7 +1964,8 @@ border: none;
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(237, 32, 36);
-font: 75 10pt &quot;Roboto&quot;;</string>
+/*font: 75 10pt &quot;Roboto&quot;;*/
+font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00.0</string>
@@ -5423,7 +5453,7 @@ border: none;
      <x>0</x>
      <y>0</y>
      <width>1266</width>
-     <height>27</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

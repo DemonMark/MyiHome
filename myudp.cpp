@@ -120,9 +120,9 @@ void MyUDP::readyRead(){
         QByteArray k = Buffer.toHex();
         QByteArray z=k.mid(6,8);
 
-        qDebug() <<" Mss from" << sender.toString();
+        //qDebug() <<" Mss from" << sender.toString();
         //qDebug() << "Mss port" << senderPort;
-        qDebug() << "Ramka: " << k;
+        //qDebug() << "Ramka: " << k;
 
         ips=sender.toString();
 

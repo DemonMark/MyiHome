@@ -28,7 +28,7 @@
 #define GEAR1 RPI_V2_GPIO_P1_16
 #define GEAR2 RPI_V2_GPIO_P1_18
 #define PIN_TH RPI_V2_GPIO_P1_07
-#define DHT_MAXCOUNT 32000 //liczba dobrana do szybkości RPi2 - dotyczy max czasu odczytu powyżej TIMEOUT
+#define DHT_MAXCOUNT 35000 //liczba dobrana do szybkości RPi2 - dotyczy max czasu odczytu powyżej TIMEOUT
 #define DHT_BITS 41
 #define DC '\xb0' //znak stopnia
 
@@ -454,6 +454,16 @@ void MainWindow::receiving(){
            getHumidity();
            barometer();
            if(ui->pushButton_34->isChecked()){
+               if(flaga==0){
+                   maskawysl[2]|=0x20;
+                   MyUDP client;
+                   client.WYSUDP();
+               }
+               if(flaga==1){
+                   maskawysl[2]&=~0x20;
+                   MyUDP client;
+                   client.WYSUDP();
+               }
            if (flaga_7==0){
            maskawysl[2]|=0x10;
            MyUDP client;
@@ -1170,12 +1180,13 @@ void MainWindow::getHumidity()
 
 void MainWindow::barometer()
 {
-    QString pressure;
+    QString pressure, temperature;
     QFile weather_data("/home/pi/plik.txt");
     if(weather_data.open(QIODevice::ReadOnly | QIODevice::Text)){
         QTextStream data(&weather_data);
-        data >> pressure;
+        data >> pressure >> temperature;
         ui->label_35->setText(pressure);
+        ui->label_37->setText(temperature);
     }
     weather_data.close();
 
