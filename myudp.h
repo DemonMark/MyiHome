@@ -10,7 +10,7 @@ class MyUDP : public QObject
   Q_OBJECT
   public:
         explicit MyUDP(QObject *parent = 0);
-        void WYSUDP();
+        void WYSUDP(QString addr);
         QUdpSocket *socket;
         void zerujWyj();
 

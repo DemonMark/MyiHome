@@ -250,7 +250,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
             foreach(unsigned char r, scheduledhexxout[j]){
                 maskawysl[outmasks.value(j)[i]]|=r;
                 MyUDP client;
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 c[scheduledcs.value(j)[i]]=1;
                 i++;
             }
@@ -266,7 +266,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
             foreach(unsigned char r, scheduledhexxout[j]){
                 maskawysl[outmasks.value(j)[i]]&=~r;
                 MyUDP client;
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 c[scheduledcs.value(j)[i]]=1;
                 i++;
             }
@@ -457,128 +457,128 @@ void MainWindow::receiving(){
                if(flaga==0){
                    maskawysl[2]|=0x20;
                    MyUDP client;
-                   client.WYSUDP();
+                   client.WYSUDP("192.168.1.101");
                }
                if(flaga==1){
                    maskawysl[2]&=~0x20;
                    MyUDP client;
-                   client.WYSUDP();
+                   client.WYSUDP("192.168.1.101");
                }
            if (flaga_7==0){
            maskawysl[2]|=0x10;
            MyUDP client;
-           client.WYSUDP();
+           client.WYSUDP("192.168.1.101");
            }
            if (flaga_7==1){
              maskawysl[2]&=~0x10;
              MyUDP client;
-             client.WYSUDP();
+             client.WYSUDP("192.168.1.101");
            }
            if(flaga_8==0){
                maskawysl[2]|=0x40;
                MyUDP client;
-               client.WYSUDP();
+               client.WYSUDP("192.168.1.101");
            }
            if(flaga_8==1){
                maskawysl[2]&=~0x040;
                MyUDP client;
-               client.WYSUDP();
+               client.WYSUDP("192.168.1.101");
            }
            if(flaga_9==0){
                maskawysl[2]|=0x80;
                MyUDP client;
-               client.WYSUDP();
+               client.WYSUDP("192.168.1.101");
            }
            if(flaga_9==1){
                maskawysl[2]&=~0x080;
                MyUDP client;
-               client.WYSUDP();
+               client.WYSUDP("192.168.1.101");
            }
            if(flaga_10==0){
                maskawysl[2]|=0x20;
                MyUDP client;
-               client.WYSUDP();
+               client.WYSUDP("192.168.1.101");
            }
            if(flaga_10==1){
                maskawysl[2]&=~0x020;
                MyUDP client;
-               client.WYSUDP();
+               client.WYSUDP("192.168.1.101");
            }
            if (flaga_1==0){
            maskawysl[3]|=0x04;
            MyUDP client;
-           client.WYSUDP();
+           client.WYSUDP("192.168.1.101");
            }
            if (flaga_1==1){
              maskawysl[3]&=~0x04;
              MyUDP client;
-             client.WYSUDP();
+             client.WYSUDP("192.168.1.101");
            }
            if (flaga_2==0){
            maskawysl[3]|=0x02;
            MyUDP client;
-           client.WYSUDP();
+           client.WYSUDP("192.168.1.101");
            }
            if (flaga_2==1){
              maskawysl[3]&=~0x02;
              MyUDP client;
-             client.WYSUDP();
+             client.WYSUDP("192.168.1.101");
            }
            if (flaga_4==0){
            maskawysl[3]|=0x08;
            MyUDP client;
-           client.WYSUDP();
+           client.WYSUDP("192.168.1.101");
            }
            if (flaga_4==1){
              maskawysl[3]&=~0x08;
              MyUDP client;
-             client.WYSUDP();
+             client.WYSUDP("192.168.1.101");
            }
            if (flaga_5==0){
            maskawysl[3]|=0x10;
            MyUDP client;
-           client.WYSUDP();
+           client.WYSUDP("192.168.1.101");
            }
            if (flaga_5==1){
              maskawysl[3]&=~0x10;
              MyUDP client;
-             client.WYSUDP();
+             client.WYSUDP("192.168.1.101");
            }
            if (flaga_6==0){
            maskawysl[3]|=0x20;
            MyUDP client;
-           client.WYSUDP();
+           client.WYSUDP("192.168.1.101");
            }
            if (flaga_6==1){
              maskawysl[3]&=~0x20;
              MyUDP client;
-             client.WYSUDP();
+             client.WYSUDP("192.168.1.101");
            }
             if (flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0){
                 maskawysl[3]|=0x40;
                 MyUDP client;
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 ui->label_pompa_1->setMovie(movie_pompa_1);
                 movie_pompa_1->start();
             }
             if(flaga_1==1 && flaga_2==1 && flaga_4==1 && flaga_5==1 && flaga_6==1){
                 maskawysl[3]&=~0x40;
                 MyUDP client;
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 movie_pompa_1->stop();
                 ui->label_pompa_1->setPixmap(pompa_off);
             }
             if (flaga==0 || flaga_7==0 || flaga_8==0 || flaga_9==0 || flaga_10==0){
                 maskawysl[3]|=0x80;
                 MyUDP client;
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 ui->label_pompa_2->setMovie(movie_pompa_2);
                 movie_pompa_2->start();
             }
             if (flaga==1 && flaga_7==1 && flaga_8==1 && flaga_9==1 && flaga_10==1){
                 maskawysl[3]&=~0x80;
                 MyUDP client;
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 movie_pompa_2->stop();
                 ui->label_pompa_2->setPixmap(pompa_off);
             }
@@ -725,7 +725,7 @@ void MainWindow::on_button_scene_3_clicked()
     emit all_off();
     MyUDP client;
     maskawysl[2]|=0x08;
-    client.WYSUDP();
+    client.WYSUDP("192.168.1.101");
     temp[2]=0x08;
     simulating_on=true;
     receiving();
@@ -737,7 +737,7 @@ void MainWindow::wyjscie(){
 
     MyUDP client;
     maskawysl[4]|=0x80;
-    client.WYSUDP();
+    client.WYSUDP("192.168.1.101");
     ui->button_scene_1->setChecked(false);
     timer_bramaStykOff->start(500);
 }
@@ -747,7 +747,7 @@ void MainWindow::stykOff(){
     //QByteArray tab;
     MyUDP client;
     maskawysl[4]&=~0x80;
-    client.WYSUDP();
+    client.WYSUDP("192.168.1.101");
     timer_bramaStykOff->stop();
     ui->pushButton_16->setChecked(false);
     c[40]=0;
@@ -881,7 +881,7 @@ void MainWindow::offfff(){
                 foreach(unsigned char r, scheduledhexxout[j]){
                     maskawysl[outmasks.value(j)[i]]&=~r;
                     MyUDP client;
-                    client.WYSUDP();
+                    client.WYSUDP("192.168.1.101");
                     c[scheduledcs.value(j)[i]]=0;
                     bList.at(scheduledbtns.value(j)[i])->setChecked(false);
                     i++;
@@ -924,12 +924,12 @@ void MainWindow::ClickedbtnFinder(){
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
                 if(bList.at(y)->isChecked() && c[m+1]==0){ //warunek z c do usunięcia
                 maskawysl[j]|=(hexx[i]);
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 c[m+1]=1;
                 }
                 if((bList.at(y)->isChecked()==false) && c[m+1]==1){
                 maskawysl[j]&=~(hexx[i]);
-                client.WYSUDP();
+                client.WYSUDP("192.168.1.101");
                 c[m+1]=0;
                 }
             }
@@ -1290,7 +1290,7 @@ void MainWindow::on_pushButton_13_clicked()
         MyUDP client;
         while(qq->next()){
             maskawysl[qq->value((qq->record().indexOf(ui->comboBox->currentText()))+1).toInt()]|=qq->value(qq->record().indexOf(ui->comboBox->currentText())).toInt();
-            client.WYSUDP();
+            client.WYSUDP("192.168.1.101");
             qDebug() << qq->record().indexOf(ui->comboBox->currentText());
         }
     }

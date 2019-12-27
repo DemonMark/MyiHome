@@ -69,9 +69,8 @@ MyUDP::MyUDP(QObject *parent) :
 
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
-void MyUDP::WYSUDP()
+void MyUDP::WYSUDP(QString addr)
 {
-
    QByteArray tab;
    QByteArray Data;
    tab[0]=0x3C;
@@ -104,7 +103,7 @@ void MyUDP::WYSUDP()
                            }
 
    Data.append(tab);
-   socket->writeDatagram(Data,QHostAddress("192.168.1.101"),1200);              // ip do ktorego wysyla + port
+   socket->writeDatagram(Data,QHostAddress(addr),1200);              // ip do ktorego wysyla + port
 
 }
 /*********************************************************************************ODBIERANIE RAMEK UDP****************************************************************************************************************/
@@ -154,12 +153,12 @@ void MyUDP::readyRead(){
                         if (c[n]==1){
                             maskawysl[j]|=(hexx[i]);
                             MyUDP client;
-                            client.WYSUDP();
+                            client.WYSUDP("192.168.1.101");
                          }
                          if (c[n]==2){
                             maskawysl[j]&=~(hexx[i]);
                             MyUDP client;
-                            client.WYSUDP();
+                            client.WYSUDP("192.168.1.101");
                             c[n]=0;
                          }
                     }
@@ -200,7 +199,7 @@ void MyUDP::readyRead(){
 
                             maskawysl[outmasks.value(j)[i]]|=r;
                             MyUDP client;
-                            client.WYSUDP();
+                            client.WYSUDP("192.168.1.101");
                             c[scheduledcs.value(j)[i]]=1;
                             i++;
                         }
@@ -233,7 +232,7 @@ void MyUDP::lightsOff(){
         maskawysl[1]&=~0xff;
         maskawysl[2]&=~0xff;
         maskawysl[4]&=~0xff;
-        WYSUDP();
+        WYSUDP("192.168.1.101");
         zerujWyj();
         timer_LOff->stop();
         emit all_off_();
@@ -271,7 +270,7 @@ void MyUDP::simulation(bool on)
             unsigned char rand_hexx = hexx[1+qrand()%9];
             if(rand_mask!=3 && !(rand_mask==4 && rand_hexx==0x80)){
                 maskawysl[rand_mask]|=rand_hexx;//zostawiamy póki wszystkie swiatla nie beda mialy ikon
-                WYSUDP();// jak powyzej
+                WYSUDP("192.168.1.101");// jak powyzej
                 simulating_on=true;
                 temp[rand_mask]=rand_hexx;
                 emit changes();
@@ -312,7 +311,7 @@ void MyUDP::random_off()
                 temp[rand_masks.value(j)[i]]+=r;
                 i++;
             }
-            WYSUDP();
+            WYSUDP("192.168.1.101");
             simulating_on=true;
             emit changes();
             i=0;
