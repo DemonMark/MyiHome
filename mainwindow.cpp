@@ -1320,3 +1320,15 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     }
     baza.conclose();
 }
+// test modułu 6CH
+void MainWindow::on_test_button_clicked(bool checked)
+{
+    MyUDP client;
+    if(checked){
+        maskawysl[5]|=0x01;
+        client.WYSUDP("192.168.1.111");
+    }else{
+        maskawysl[5]&=~0x01;
+        client.WYSUDP("192.168.1.111");
+    }
+}

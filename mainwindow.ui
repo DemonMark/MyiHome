@@ -4101,7 +4101,7 @@ border: none;
        <widget class="QPushButton" name="button_scene_3">
         <property name="geometry">
          <rect>
-          <x>772</x>
+          <x>728</x>
           <y>26</y>
           <width>41</width>
           <height>31</height>
@@ -4320,6 +4320,43 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QPushButton" name="test_button">
+        <property name="geometry">
+         <rect>
+          <x>790</x>
+          <y>30</y>
+          <width>24</width>
+          <height>36</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#test_button{
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_off.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#test_button:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_on.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -4408,6 +4445,7 @@ border: none;
        <zorder>label_wentylator</zorder>
        <zorder>button_wentylator</zorder>
        <zorder>button_wentylator_2</zorder>
+       <zorder>test_button</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -5472,8 +5510,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="grafika.qrc"/>
   <include location="ikony.qrc"/>
+  <include location="grafika.qrc"/>
  </resources>
  <connections/>
 </ui>

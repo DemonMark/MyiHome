@@ -77,6 +77,8 @@ private slots:
 
   void on_comboBox_currentIndexChanged(const QString &arg1);
 
+  void on_test_button_clicked(bool checked);
+
 private:
 
     Ui::MainWindow *ui;

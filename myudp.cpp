@@ -90,17 +90,22 @@ void MyUDP::WYSUDP(QString addr)
    for(i=0;i<=7;i++){
        if(maskawysl[2] & (0x01<<i)) {tab[5]=tab[5]|(0x01<<i);}
       else {tab[5]=tab[5] & ~(0x01<<i);}
-                     }
+   }
 /************************TAB[D]*******************************/
     for(i=0;i<=7;i++){
           if(maskawysl[3] & (0x01<<i)) {tab[6]=tab[6]|(0x01<<i);}
          else {tab[6]=tab[6] & ~(0x01<<i);}
-                        }
+    }
 /************************TAB[C]*******************************/
       for(i=0;i<=7;i++){
              if(maskawysl[4] & (0x01<<i)) {tab[7]=tab[7]|(0x01<<i);}
             else {tab[7]=tab[7] & ~(0x01<<i);}
-                           }
+      }
+//*************************TAB[6-CH]*****BAJT WYKORZYSTYWANY PRZEZ MODUŁ 6-CH/
+      for(i=0;i<=7;i++){
+             if(maskawysl[5] & (0x01<<i)) {tab[8]=tab[8]|(0x01<<i);}
+            else {tab[8]=tab[8] & ~(0x01<<i);}
+      }
 
    Data.append(tab);
    socket->writeDatagram(Data,QHostAddress(addr),1200);              // ip do ktorego wysyla + port
