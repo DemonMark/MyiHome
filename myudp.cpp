@@ -237,7 +237,9 @@ void MyUDP::lightsOff(){
         maskawysl[1]&=~0xff;
         maskawysl[2]&=~0xff;
         maskawysl[4]&=~0xff;
+        maskawysl[5]&=~0xff;
         WYSUDP("192.168.1.101");
+        WYSUDP("192.168.1.111");
         zerujWyj();
         timer_LOff->stop();
         emit all_off_();
