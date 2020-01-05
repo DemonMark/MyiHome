@@ -39,7 +39,7 @@ QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[40]={30,27,32,31,28,12,1,0,33,29,15,17,8,11,5,10,4,14,7,24,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13}; //pozycja przycisku na liście
+int bPos[40]={30,27,32,31,28,12,1,0,33,29,15,17,8,11,5,10,4,14,7,19,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -455,42 +455,42 @@ void MainWindow::receiving(){
            barometer();
            if(ui->pushButton_34->isChecked()){
                if(flaga==0){
-                   maskawysl[2]|=0x20;
+                   maskawysl[2]|=0x08;
                    MyUDP client;
                    client.WYSUDP("192.168.1.101");
                }
                if(flaga==1){
-                   maskawysl[2]&=~0x20;
+                   maskawysl[2]&=~0x08;
                    MyUDP client;
                    client.WYSUDP("192.168.1.101");
                }
-           if (flaga_7==0){
-           maskawysl[2]|=0x10;
-           MyUDP client;
-           client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_7==1){
-             maskawysl[2]&=~0x10;
-             MyUDP client;
-             client.WYSUDP("192.168.1.101");
-           }
-           if(flaga_8==0){
-               maskawysl[2]|=0x40;
-               MyUDP client;
-               client.WYSUDP("192.168.1.101");
-           }
-           if(flaga_8==1){
-               maskawysl[2]&=~0x040;
-               MyUDP client;
-               client.WYSUDP("192.168.1.101");
-           }
+               if (flaga_7==0){
+                   maskawysl[2]|=0x10;
+                   MyUDP client;
+                   client.WYSUDP("192.168.1.101");
+               }
+               if (flaga_7==1){
+                   maskawysl[2]&=~0x10;
+                   MyUDP client;
+                   client.WYSUDP("192.168.1.101");
+               }
+               if(flaga_8==0){
+                   maskawysl[2]|=0x40;
+                   MyUDP client;
+                   client.WYSUDP("192.168.1.101");
+               }
+               if(flaga_8==1){
+                   maskawysl[2]&=~0x40;
+                   MyUDP client;
+                   client.WYSUDP("192.168.1.101");
+               }
            if(flaga_9==0){
                maskawysl[2]|=0x80;
                MyUDP client;
                client.WYSUDP("192.168.1.101");
            }
            if(flaga_9==1){
-               maskawysl[2]&=~0x080;
+               maskawysl[2]&=~0x80;
                MyUDP client;
                client.WYSUDP("192.168.1.101");
            }
@@ -500,7 +500,7 @@ void MainWindow::receiving(){
                client.WYSUDP("192.168.1.101");
            }
            if(flaga_10==1){
-               maskawysl[2]&=~0x020;
+               maskawysl[2]&=~0x20;
                MyUDP client;
                client.WYSUDP("192.168.1.101");
            }

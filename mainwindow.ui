@@ -2349,9 +2349,9 @@ border: none;
        <widget class="QPushButton" name="pushButton_12">
         <property name="geometry">
          <rect>
-          <x>480</x>
-          <y>50</y>
-          <width>51</width>
+          <x>493</x>
+          <y>52</y>
+          <width>41</width>
           <height>41</height>
          </rect>
         </property>
@@ -2485,10 +2485,10 @@ background-color: transparent;
        <widget class="QPushButton" name="pushButton_17">
         <property name="geometry">
          <rect>
-          <x>542</x>
+          <x>550</x>
           <y>71</y>
-          <width>51</width>
-          <height>41</height>
+          <width>37</width>
+          <height>34</height>
          </rect>
         </property>
         <property name="focusPolicy">
@@ -2511,6 +2511,12 @@ border: none;
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -3273,7 +3279,7 @@ border: none;
        <widget class="QPushButton" name="pushButton_25">
         <property name="geometry">
          <rect>
-          <x>556</x>
+          <x>543</x>
           <y>116</y>
           <width>17</width>
           <height>45</height>
@@ -4323,10 +4329,10 @@ border: none;
        <widget class="QPushButton" name="test_button">
         <property name="geometry">
          <rect>
-          <x>790</x>
-          <y>30</y>
-          <width>24</width>
-          <height>36</height>
+          <x>781</x>
+          <y>29</y>
+          <width>56</width>
+          <height>16</height>
          </rect>
         </property>
         <property name="focusPolicy">
@@ -4335,14 +4341,14 @@ border: none;
         <property name="styleSheet">
          <string notr="true">QPushButton#test_button{
 background-color: transparent;
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_off.png);
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_off_20.png);
 background-repeat: none;
 border: none;
 }
 
 QPushButton#test_button:checked
 {
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_on.png);
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_on_20.png);
 background-color: transparent;
 border: none;
 }</string>
