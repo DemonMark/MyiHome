@@ -4326,7 +4326,7 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="test_button">
+       <widget class="QPushButton" name="pushButton_41">
         <property name="geometry">
          <rect>
           <x>781</x>
@@ -4339,14 +4339,14 @@ border: none;
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#test_button{
+         <string notr="true">QPushButton#pushButton_41{
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_off_20.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#test_button:checked
+QPushButton#pushButton_41:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_on_20.png);
 background-color: transparent;
@@ -4451,7 +4451,7 @@ border: none;
        <zorder>label_wentylator</zorder>
        <zorder>button_wentylator</zorder>
        <zorder>button_wentylator_2</zorder>
-       <zorder>test_button</zorder>
+       <zorder>pushButton_41</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">

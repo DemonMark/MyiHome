@@ -39,7 +39,7 @@ QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[48]={30,27,32,31,28,12,1,0,33,29,15,17,8,11,5,10,4,14,7,19,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13,19,24,19,19,19,19,19,19}; //pozycja przycisku na liście
+int bPos[48]={31,28,33,32,29,12,1,0,34,30,15,17,8,11,5,10,4,14,7,19,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13,27,24,19,19,19,19,19,19}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -53,7 +53,7 @@ QList<QString> pirnames;
 QString time_text;
 extern QString ips;
 extern int q;           //odebranie konkretnej ramki
-extern int c[41];
+extern int c[49];
 QList<int> t;
 int num=0;
 extern unsigned char temp[20];
@@ -934,8 +934,8 @@ void MainWindow::ClickedbtnFinder(){
                 }
             }
             //obsługa modułu 6-CH
-            if(m++>39){
-                IP_holder="192.168.1.111";
+            if(++m>39){
+                IP_holder="192.168.1.104";
             }
         }
     }
@@ -1322,16 +1322,4 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
         }
     }
     baza.conclose();
-}
-// test modułu 6CH
-void MainWindow::on_test_button_clicked(bool checked)
-{
-    MyUDP client;
-    if(checked){
-        maskawysl[5]|=0x02;
-        client.WYSUDP("192.168.1.111");
-    }else{
-        maskawysl[5]&=~0x02;
-        client.WYSUDP("192.168.1.111");
-    }
 }

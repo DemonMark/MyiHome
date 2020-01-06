@@ -257,7 +257,7 @@ void MyUDP::obecnosc_none(){
 
 void MyUDP::zerujWyj()
 {
-    for(int i=0;i<=49;i++)
+    for(int i=0;i<=48;i++)
     {
        c[i]=0;
     }
