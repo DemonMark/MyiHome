@@ -39,7 +39,7 @@ QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[40]={30,27,32,31,28,12,1,0,33,29,15,17,8,11,5,10,4,14,7,19,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13}; //pozycja przycisku na liście
+int bPos[48]={30,27,32,31,28,12,1,0,33,29,15,17,8,11,5,10,4,14,7,19,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13,19,24,19,19,19,19,19,19}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -913,27 +913,30 @@ void MainWindow::readTimeFromWWW(){
 //****************************WYSYŁANIE Z IKON PULPITU**********************//
 
 void MainWindow::ClickedbtnFinder(){
-
+    QString IP_holder="192.168.1.101";
     int m=0; //numeracja pozycji przycisku na liście
-    for (int j=0; j<=4;j++){
+    for (int j=0; j<=5;j++){
         for (int i=1; i<=8;i++){
             int y=bPos[m];
             if(bList.at(y)==QObject::sender()){
                 QByteArray tab;
                 MyUDP client;
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
-                if(bList.at(y)->isChecked() && c[m+1]==0){ //warunek z c do usunięcia
+                if(bList.at(y)->isChecked()){
                 maskawysl[j]|=(hexx[i]);
-                client.WYSUDP("192.168.1.101");
+                client.WYSUDP(IP_holder);
                 c[m+1]=1;
                 }
-                if((bList.at(y)->isChecked()==false) && c[m+1]==1){
+                if(bList.at(y)->isChecked()==false){
                 maskawysl[j]&=~(hexx[i]);
-                client.WYSUDP("192.168.1.101");
+                client.WYSUDP(IP_holder);
                 c[m+1]=0;
                 }
             }
-        m++;
+            //obsługa modułu 6-CH
+            if(m++>39){
+                IP_holder="192.168.1.111";
+            }
         }
     }
 }
@@ -1203,7 +1206,7 @@ void MainWindow::on_pushButton_32_clicked(bool checked)
 
 void MainWindow::LOff()
 {
-    for(int x=0; x<=39; x++){
+    for(int x=0; x<=47; x++){
         int y=bPos[x];
         if(bList[y]->isChecked() == true){
             bList[y]->setChecked(false);
@@ -1325,10 +1328,10 @@ void MainWindow::on_test_button_clicked(bool checked)
 {
     MyUDP client;
     if(checked){
-        maskawysl[5]|=0x01;
+        maskawysl[5]|=0x02;
         client.WYSUDP("192.168.1.111");
     }else{
-        maskawysl[5]&=~0x01;
+        maskawysl[5]&=~0x02;
         client.WYSUDP("192.168.1.111");
     }
 }

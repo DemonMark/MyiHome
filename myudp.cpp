@@ -39,7 +39,7 @@ extern int flaga;
 extern int obecnosc;
 extern int gn;
 extern QList<int> t;
-int c[41]; //wejścia (42 pozycji kontenera wliczając 0)
+int c[49]; //wejścia (49 pozycji kontenera wliczając 0)
 int odliczG;
 int scheduledaction=0;
 bool simulating_on;
@@ -257,7 +257,7 @@ void MyUDP::obecnosc_none(){
 
 void MyUDP::zerujWyj()
 {
-    for(int i=0;i<=40;i++)
+    for(int i=0;i<=49;i++)
     {
        c[i]=0;
     }
