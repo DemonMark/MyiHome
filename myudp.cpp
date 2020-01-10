@@ -130,6 +130,19 @@ void MyUDP::readyRead(){
 
         ips=sender.toString();
 
+        if("192.168.1.104"==ips){
+            qDebug() << "TO JA NOWY MODUL";
+            qDebug() << "Ramka: " << k;
+            for (int i=3; i<=(Buffer.length());i++){
+                temp[i-3]=Buffer[i];
+            }
+            if(temp[5]&0x01){
+                maskawysl[5]|=0x01;
+                MyUDP client;
+                client.WYSUDP("192.168.1.104");
+            }
+        }
+
         if("192.168.1.102"==ips){
             emit changes(); //sygnal do odbierania
             for (i=3;i<(Buffer.length());i++){
@@ -140,37 +153,35 @@ void MyUDP::readyRead(){
                 }
             }
         }
-        if("192.168.1.100"==ips){
-
+        if(("192.168.1.100"==ips)||("192.168.1.104"==ips)){
+            QString IP_holder="192.168.1.101";
             int n=0; //numeracja wejścia
             for (int i=3; i<=(Buffer.length());i++){
-
                 temp[i-3]=Buffer[i];
             }
-
-            for (int j=0; j<=4;j++){
-
+            for (int j=0; j<=5;j++){
+                if(j==5){IP_holder="192.168.1.104";}
                 for (int i=1; i<=8;i++){
                     n++;
                     if(j!=3){ //ominięcie grupy 3 zajętej przez wyjścia systemu ogrzewania
-                    if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
-                        c[n]++;
-                        if (c[n]==1){
-                            maskawysl[j]|=(hexx[i]);
-                            MyUDP client;
-                            client.WYSUDP("192.168.1.101");
-                         }
-                         if (c[n]==2){
-                            maskawysl[j]&=~(hexx[i]);
-                            MyUDP client;
-                            client.WYSUDP("192.168.1.101");
-                            c[n]=0;
-                         }
+                        if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
+                            c[n]++;
+                            if (c[n]==1){
+                                maskawysl[j]|=(hexx[i]);
+                                MyUDP client;
+                                client.WYSUDP(IP_holder);
+                            }
+                            if (c[n]==2){
+                                maskawysl[j]&=~(hexx[i]);
+                                MyUDP client;
+                                client.WYSUDP(IP_holder);
+                                c[n]=0;
+                            }
+                        }
                     }
                 }
             }
-            }
-        emit changes(); //sygnal do odbierania
+            emit changes(); //sygnal do odbierania
         }
 //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
