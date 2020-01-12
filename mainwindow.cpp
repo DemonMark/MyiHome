@@ -620,6 +620,8 @@ void MainWindow::receiving(){
                            bList.at(13)->setIcon(biBrama);
                            bList.at(13)->setIconSize(bBrama.rect().size());
                            otwarta=2;
+                           QTime GOT=QTime::currentTime();
+                           ui->label_otime->setText(GOT.toString());
                        }
                        //***koniec wyjątków
                        if (j!=3){
@@ -651,6 +653,8 @@ void MainWindow::receiving(){
             bList.at(13)->setIcon(biBrama);
             bList.at(13)->setIconSize(bBrama.rect().size());
             otwarta=0;
+            QTime GOT=QTime::currentTime();
+            ui->label_ctime->setText(GOT.toString());
         }
     }
 }

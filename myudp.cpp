@@ -130,19 +130,6 @@ void MyUDP::readyRead(){
 
         ips=sender.toString();
 
-        if("192.168.1.104"==ips){
-            qDebug() << "TO JA NOWY MODUL";
-            qDebug() << "Ramka: " << k;
-            for (int i=3; i<=(Buffer.length());i++){
-                temp[i-3]=Buffer[i];
-            }
-            if(temp[5]&0x01){
-                maskawysl[5]|=0x01;
-                MyUDP client;
-                client.WYSUDP("192.168.1.104");
-            }
-        }
-
         if("192.168.1.102"==ips){
             emit changes(); //sygnal do odbierania
             for (i=3;i<(Buffer.length());i++){
