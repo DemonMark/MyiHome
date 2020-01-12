@@ -587,56 +587,56 @@ void MainWindow::receiving(){
        }
 
 //****************zaznaczanie buttonów po wykryciu pakietu************************//
-if("192.168.1.100"==ips || simulating_on){
-    simulating_on=false;
-    int m=0; //numeracja pozycji przycisku na liście
+       if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
+           simulating_on=false;
+           int m=0; //numeracja pozycji przycisku na liście
 
-    for (int j=0; j<=4;j++){
+           for (int j=0; j<=5;j++){
 
-        for (int i=1; i<=8;i++){
+               for (int i=1; i<=8;i++){
 
-            int y=bPos[m];
-            if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
-                //***wyjątki dla wejść z krańcówek bramy
-                if(temp[3] & 0x01) {
-                    if (otwarta==0){
-                        QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoorup.png");
-                        QIcon biBrama(bBrama);
-                        bList.at(13)->setIcon(biBrama);
-                        bList.at(13)->setIconSize(bBrama.rect().size());
-                        otwarta=1;
-                    }
-                    if (otwarta==2){
-                        QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoordown.png");
-                        QIcon biBrama(bBrama);
-                        bList.at(13)->setIcon(biBrama);
-                        bList.at(13)->setIconSize(bBrama.rect().size());
-                        otwarta=1;
-                    }
-                }
-                if(temp[3] & 0x02) {
-                    QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdooropen.png");
-                    QIcon biBrama(bBrama);
-                    bList.at(13)->setIcon(biBrama);
-                    bList.at(13)->setIconSize(bBrama.rect().size());
-                    otwarta=2;
-                }
-                //***koniec wyjątków
-                if (j!=3){
-                //włączanie/wyłączanie przycisku dla aktywnego wejścia
-                    if(bList.at(y)->isChecked() == true){
+                   int y=bPos[m];
+                   if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
+                       //***wyjątki dla wejść z krańcówek bramy
+                       if(temp[3] & 0x01) {
+                           if (otwarta==0){
+                               QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoorup.png");
+                               QIcon biBrama(bBrama);
+                               bList.at(13)->setIcon(biBrama);
+                               bList.at(13)->setIconSize(bBrama.rect().size());
+                               otwarta=1;
+                           }
+                           if (otwarta==2){
+                               QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoordown.png");
+                               QIcon biBrama(bBrama);
+                               bList.at(13)->setIcon(biBrama);
+                               bList.at(13)->setIconSize(bBrama.rect().size());
+                               otwarta=1;
+                           }
+                       }
+                       if(temp[3] & 0x02) {
+                           QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdooropen.png");
+                           QIcon biBrama(bBrama);
+                           bList.at(13)->setIcon(biBrama);
+                           bList.at(13)->setIconSize(bBrama.rect().size());
+                           otwarta=2;
+                       }
+                       //***koniec wyjątków
+                       if (j!=3){
+                           //włączanie/wyłączanie przycisku dla aktywnego wejścia
+                           if(bList.at(y)->isChecked() == true){
 
-                        bList.at(y)->setChecked(false);
-                    }
-                    else {
-                        bList.at(y)->setChecked(true);
-                    }
-                    temp[j]&=~(hexx[i]);
-                }
-            }
-            m++;
-        }
-    }
+                               bList.at(y)->setChecked(false);
+                           }
+                           else {
+                               bList.at(y)->setChecked(true);
+                           }
+                           temp[j]&=~(hexx[i]);
+                       }
+                   }
+                   m++;
+               }
+           }
 
 
 //**************zmiana statusu/ikony bramy na ZAMKNIĘTA po zamknięciu***********
