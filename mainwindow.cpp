@@ -199,20 +199,20 @@ void MainWindow::showTime(){
      if (time_text==ui->timeEdit_3->text() && obecnosc==0){
          spimy=1;
          odliczG=1;
-         LOff();
+         //LOff();
          emit all_off();
-         ui->button_scene_4->setChecked(true);
+         //ui->button_scene_4->setChecked(true);
      }
      else if (time_text==ui->timeEdit_3->text() && obecnosc==1){
          spimy=1;       
-         ui->button_scene_4->setChecked(true);
+         //ui->button_scene_4->setChecked(true);
      }
 //****************DZIEŃ LUB NOC*********************************//
 
      if (time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
          dzien=1;
          spimy=0;
-         ui->button_scene_4->setChecked(false);
+         //ui->button_scene_4->setChecked(false);
      }
      else {
          dzien=0;
@@ -1115,7 +1115,7 @@ void MainWindow::getHumidity()
     bcm2835_gpio_write(PIN_TH, LOW);
     bcm2835_delay(20);
     bcm2835_gpio_fsel(PIN_TH, BCM2835_GPIO_FSEL_INPT);
-    //bcm2835_delayMicroseconds(30);
+    bcm2835_delayMicroseconds(30); //opóźnienie włączone na RPI4 (wyłączone na RPI2)
     //generowanie małego poóźnienia < 1us
     for (volatile int i = 0; i < 50; ++i) {
      }
@@ -1277,8 +1277,6 @@ void MainWindow::on_button_scene_4_clicked(bool checked)
 {
     if(checked){
         ui->timeEdit_3->setTime(QTime::currentTime());
-    }else{
-        scene_active=false;
     }
 }
 
