@@ -57,7 +57,7 @@ extern int c[49];
 QList<int> t;
 int num=0;
 extern unsigned char temp[20];
-extern unsigned char temperatura[27];
+extern unsigned char temperatura[39];
 extern unsigned char hexx[9];
 extern QList<unsigned char> scheduledhexxpir;
 extern QList<QList<unsigned char> > scheduledhexxout;
@@ -291,269 +291,275 @@ void MainWindow::timerEvent(QTimerEvent *event){
 void MainWindow::receiving(){
 
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
-        QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11;
-        //QString a = ".";
-        //a.split(" ")[0].toInt();
-        //****BIBLIOTEKA****//
-        b.append(QString("%1").arg(temperatura[3]));
-        t.append(QString("%1").arg(temperatura[4]));
-        //****SALON****//
-        b1.append(QString("%1").arg(temperatura[5]));
-        t1.append(QString("%1").arg(temperatura[6]));
-        //****SYPIALNIA****//
-        b2.append(QString("%1").arg(temperatura[7]));
-        t2.append(QString("%1").arg(temperatura[8]));
-        //****KORYTARZ DOL****//
-        b3.append(QString("%1").arg(temperatura[9]));
-        t3.append(QString("%1").arg(temperatura[10]));
-        //****MARYNARSKI****//
-        b4.append(QString("%1").arg(temperatura[11]));
-        t4.append(QString("%1").arg(temperatura[12]));
-        //****LAZIENKA DOL****//
-        b5.append(QString("%1").arg(temperatura[13]));
-        t5.append(QString("%1").arg(temperatura[14]));
-        //****KUCHNIA-JADALNIA****//
-        b6.append(QString("%1").arg(temperatura[15]));
-        t6.append(QString("%1").arg(temperatura[16]));
-        //****WIATROLAP****//
-        b7.append(QString("%1").arg(temperatura[17]));
-        t7.append(QString("%1").arg(temperatura[18]));
-        //****POKOJ MYSZKI****//
-        b8.append(QString("%1").arg(temperatura[19]));
-        t8.append(QString("%1").arg(temperatura[20]));
-        //****LOFT****//
-        b9.append(QString("%1").arg(temperatura[21]));
-        t9.append(QString("%1").arg(temperatura[22]));
-        //****ZEWNATRZ****//
-        b10.append(QString("%1").arg(temperatura[25]));
-        t10.append(QString("%1").arg(temperatura[26]));
-        //****ŁAZIENKA GÓRA****//
-        b11.append(QString("%1").arg(temperatura[23]));
-        t11.append(QString("%1").arg(temperatura[24]));
+    QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11,subzero;
+    //a.split(" ")[0].toInt();
+    //****BIBLIOTEKA****//
+    b.append(QString("%1").arg(temperatura[3]));
+    t.append(QString("%1").arg(temperatura[4]));
+    //****SALON****//
+    b1.append(QString("%1").arg(temperatura[6]));
+    t1.append(QString("%1").arg(temperatura[7]));
+    //****SYPIALNIA****//
+    b2.append(QString("%1").arg(temperatura[9]));
+    t2.append(QString("%1").arg(temperatura[10]));
+    //****KORYTARZ DOL****//
+    b3.append(QString("%1").arg(temperatura[12]));
+    t3.append(QString("%1").arg(temperatura[13]));
+    //****MARYNARSKI****//
+    b4.append(QString("%1").arg(temperatura[15]));
+    t4.append(QString("%1").arg(temperatura[16]));
+    //****LAZIENKA DOL****//
+    b5.append(QString("%1").arg(temperatura[18]));
+    t5.append(QString("%1").arg(temperatura[19]));
+    //****KUCHNIA-JADALNIA****//
+    b6.append(QString("%1").arg(temperatura[21]));
+    t6.append(QString("%1").arg(temperatura[22]));
+    //****WIATROLAP****//
+    b7.append(QString("%1").arg(temperatura[24]));
+    t7.append(QString("%1").arg(temperatura[25]));
+    //****POKOJ MYSZKI****//
+    b8.append(QString("%1").arg(temperatura[27]));
+    t8.append(QString("%1").arg(temperatura[28]));
+    //****LOFT****//
+    b9.append(QString("%1").arg(temperatura[30]));
+    t9.append(QString("%1").arg(temperatura[31]));
+    //****ŁAZIENKA GÓRA****//
+    b11.append(QString("%1").arg(temperatura[33]));
+    t11.append(QString("%1").arg(temperatura[34]));
+    //****ZEWNATRZ****//
+    b10.append(QString("%1").arg(temperatura[36]));
+    t10.append(QString("%1").arg(temperatura[37]));
+    subzero.append(QString("%1").arg(temperatura[38]));
 
-        ui->label_temp_9->setText(b+"."+t + DC);
-        ui->label_temp_2->setText(b1+"."+t1 + DC);
-        ui->label_temp_6->setText(b2+"."+t2+DC);
-        ui->label_12->setText(b3+"."+t3+DC);
-        ui->label_temp_3->setText(b4+"."+t4+DC);
-        ui->label_temp_1->setText(b5+"."+t5 + DC);
-        ui->label_temp_4->setText(b6+"."+t6 + DC);
-        ui->label_temp_5->setText(b7+"."+t7 + DC);
-        ui->label_temp_8->setText(b8+"."+t8 + DC);
-        ui->label_temp_10->setText(b9+"."+t9 + DC);
+    ui->label_temp_9->setText(b+"."+t + DC);
+    ui->label_temp_2->setText(b1+"."+t1 + DC);
+    ui->label_temp_6->setText(b2+"."+t2 + DC);
+    ui->label_12->setText(b3+"."+t3 + DC);
+    ui->label_temp_3->setText(b4+"."+t4 + DC);
+    ui->label_temp_1->setText(b5+"."+t5 + DC);
+    ui->label_temp_4->setText(b6+"."+t6 + DC);
+    ui->label_temp_5->setText(b7+"."+t7 + DC);
+    ui->label_temp_8->setText(b8+"."+t8 + DC);
+    ui->label_temp_10->setText(b9+"."+t9 + DC);
+    //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
+    if(subzero=="1"){
+        ui->label_31->setText("-"+b10+"."+t10 + DC);
+    }else{
         ui->label_31->setText(b10+"."+t10 + DC);
-        ui->label_temp_7->setText(b11+"."+t11 + DC);
+    }
+    //
+    ui->label_temp_7->setText(b11+"."+t11 + DC);
 
-        QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png");
-        QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
-        QPixmap pompa_off("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
+    QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png");
+    QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
+    QPixmap pompa_off("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
 
-        //**HISTEREZA BIBLIOTEKA**//
-        if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_temp_9->value()){
-            ui->th_10->setPixmap(temp_off);
-            flaga=1;
-        }
-        if (((temperatura[3]*10)+temperatura[4]+ui->dial_7->value()) <=ui->dial_temp_9->value()){
-            ui->th_10->setPixmap(temp_on);
-             flaga=0;
-        }
-        //**HISTEREZA SYPIALNIA**//
-        if (((temperatura[7]*10)+temperatura[8]-ui->dial_7->value()) >=ui->dial_temp_6->value()){
-            ui->th_7->setPixmap(temp_off);
-            flaga_7=1;
-        }
-        if (((temperatura[7]*10)+temperatura[8]+ui->dial_7->value()) <=ui->dial_temp_6->value()){
-            ui->th_7->setPixmap(temp_on);
-            flaga_7=0;
-        }
-        //**HISTEREZA LOFT**//
-        if(((temperatura[21]*10)+temperatura[22]-ui->dial_7->value())>=ui->dial_temp_10->value()){
-            ui->th_11->setPixmap(temp_off);
-            flaga_8=1;
-        }
-        if(((temperatura[21]*10)+temperatura[22]+ui->dial_7->value())<=ui->dial_temp_10->value()){
-            ui->th_11->setPixmap(temp_on);
-            flaga_8=0;
-        }
-        //**HISTEREZA ŁAZIENKA GÓRA**//
-        if(((temperatura[23]*10)+temperatura[24]-ui->dial_7->value())>=ui->dial_temp_7->value()){
-            ui->th_8->setPixmap(temp_off);
-            flaga_9=1;
-        }
-        if(((temperatura[23]*10)+temperatura[24]+ui->dial_7->value())<=ui->dial_temp_7->value()){
-            ui->th_8->setPixmap(temp_on);
-            flaga_9=0;
-        }
-        //**HISTEREZA POKOJ MYSZKI**//
-        if(((temperatura[19]*10)+temperatura[20]-ui->dial_7->value())>=ui->dial_temp_8->value()){
-            ui->th_9->setPixmap(temp_off);
-            flaga_10=1;
-        }
-        if(((temperatura[19]*10)+temperatura[20]+ui->dial_7->value())<=ui->dial_temp_8->value()){
-            ui->th_9->setPixmap(temp_on);
-            flaga_10=0;
-        }
-        //**HISTEREZA SALON**//
-         if (((temperatura[5]*10)+temperatura[6]-ui->dial_7->value()) >=ui->dial_temp_2->value()){
+    //**HISTEREZA BIBLIOTEKA**//
+    if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_temp_9->value()){
+        ui->th_10->setPixmap(temp_off);
+        flaga=1;
+    }
+    if (((temperatura[3]*10)+temperatura[4]+ui->dial_7->value()) <=ui->dial_temp_9->value()){
+        ui->th_10->setPixmap(temp_on);
+        flaga=0;
+    }
+    //**HISTEREZA SYPIALNIA**//
+    if (((temperatura[9]*10)+temperatura[10]-ui->dial_7->value()) >=ui->dial_temp_6->value()){
+        ui->th_7->setPixmap(temp_off);
+        flaga_7=1;
+    }
+    if (((temperatura[9]*10)+temperatura[10]+ui->dial_7->value()) <=ui->dial_temp_6->value()){
+        ui->th_7->setPixmap(temp_on);
+        flaga_7=0;
+    }
+    //**HISTEREZA LOFT**//
+    if(((temperatura[30]*10)+temperatura[31]-ui->dial_7->value())>=ui->dial_temp_10->value()){
+        ui->th_11->setPixmap(temp_off);
+        flaga_8=1;
+    }
+    if(((temperatura[30]*10)+temperatura[31]+ui->dial_7->value())<=ui->dial_temp_10->value()){
+        ui->th_11->setPixmap(temp_on);
+        flaga_8=0;
+    }
+    //**HISTEREZA ŁAZIENKA GÓRA**//
+    if(((temperatura[33]*10)+temperatura[34]-ui->dial_7->value())>=ui->dial_temp_7->value()){
+        ui->th_8->setPixmap(temp_off);
+        flaga_9=1;
+    }
+    if(((temperatura[33]*10)+temperatura[34]+ui->dial_7->value())<=ui->dial_temp_7->value()){
+        ui->th_8->setPixmap(temp_on);
+        flaga_9=0;
+    }
+    //**HISTEREZA POKOJ MYSZKI**//
+    if(((temperatura[27]*10)+temperatura[28]-ui->dial_7->value())>=ui->dial_temp_8->value()){
+        ui->th_9->setPixmap(temp_off);
+        flaga_10=1;
+    }
+    if(((temperatura[27]*10)+temperatura[28]+ui->dial_7->value())<=ui->dial_temp_8->value()){
+        ui->th_9->setPixmap(temp_on);
+        flaga_10=0;
+    }
+    //**HISTEREZA SALON**//
+    if (((temperatura[6]*10)+temperatura[7]-ui->dial_7->value()) >=ui->dial_temp_2->value()){
 
-            ui->th_2->setPixmap(temp_off);
-            flaga_1=1;
-         }
-        if (((temperatura[5]*10)+temperatura[6]+ui->dial_7->value()) <=ui->dial_temp_2->value()){
+        ui->th_2->setPixmap(temp_off);
+        flaga_1=1;
+    }
+    if (((temperatura[6]*10)+temperatura[7]+ui->dial_7->value()) <=ui->dial_temp_2->value()){
 
-            ui->th_2->setPixmap(temp_on);
-            flaga_1=0;
-        }
-        //**KUCHNIA-JADALNIA**//
-         if (((temperatura[15]*10)+temperatura[16]-ui->dial_7->value()) >=ui->dial_temp_4->value()){
+        ui->th_2->setPixmap(temp_on);
+        flaga_1=0;
+    }
+    //**KUCHNIA-JADALNIA**//
+    if (((temperatura[21]*10)+temperatura[22]-ui->dial_7->value()) >=ui->dial_temp_4->value()){
 
-             ui->th_5->setPixmap(temp_off);
-             flaga_2=1;
-         }
-        if (((temperatura[15]*10)+temperatura[16]+ui->dial_7->value()) <=ui->dial_temp_4->value()){
+        ui->th_5->setPixmap(temp_off);
+        flaga_2=1;
+    }
+    if (((temperatura[21]*10)+temperatura[22]+ui->dial_7->value()) <=ui->dial_temp_4->value()){
 
-             ui->th_5->setPixmap(temp_on);
-             flaga_2=0;
-        }
-        //**MARYNARSKI**//
-         if (((temperatura[11]*10)+temperatura[12]-ui->dial_7->value()) >=ui->dial_temp_3->value()){
+        ui->th_5->setPixmap(temp_on);
+        flaga_2=0;
+    }
+    //**MARYNARSKI**//
+    if (((temperatura[15]*10)+temperatura[16]-ui->dial_7->value()) >=ui->dial_temp_3->value()){
 
-             ui->th_3->setPixmap(temp_off);
-             flaga_4=1;
-         }
-        if (((temperatura[11]*10)+temperatura[12]+ui->dial_7->value()) <=ui->dial_temp_3->value()){
+        ui->th_3->setPixmap(temp_off);
+        flaga_4=1;
+    }
+    if (((temperatura[15]*10)+temperatura[16]+ui->dial_7->value()) <=ui->dial_temp_3->value()){
 
-            ui->th_3->setPixmap(temp_on);
-            flaga_4=0;
-        }
-        //**LAZIENKA DOL**//
-        if (((temperatura[13]*10)+temperatura[14]-ui->dial_7->value()) >=ui->dial_temp_1->value()){
+        ui->th_3->setPixmap(temp_on);
+        flaga_4=0;
+    }
+    //**LAZIENKA DOL**//
+    if (((temperatura[18]*10)+temperatura[19]-ui->dial_7->value()) >=ui->dial_temp_1->value()){
 
-            ui->th_1->setPixmap(temp_off);
-            flaga_5=1;
-        }
-        if (((temperatura[13]*10)+temperatura[14]+ui->dial_7->value()) <=ui->dial_temp_1->value()){
+        ui->th_1->setPixmap(temp_off);
+        flaga_5=1;
+    }
+    if (((temperatura[18]*10)+temperatura[19]+ui->dial_7->value()) <=ui->dial_temp_1->value()){
 
-            ui->th_1->setPixmap(temp_on);
-            flaga_5=0;
-        }
-        //**WIATROLAP**//
-         if (((temperatura[17]*10)+temperatura[18]-ui->dial_7->value()) >=ui->dial_temp_5->value()){
+        ui->th_1->setPixmap(temp_on);
+        flaga_5=0;
+    }
+    //**WIATROLAP**//
+    if (((temperatura[24]*10)+temperatura[25]-ui->dial_7->value()) >=ui->dial_temp_5->value()){
 
-            ui->th_6->setPixmap(temp_off);
-            flaga_6=1;
-         }
-        if (((temperatura[17]*10)+temperatura[18]+ui->dial_7->value()) <=ui->dial_temp_5->value()){
+        ui->th_6->setPixmap(temp_off);
+        flaga_6=1;
+    }
+    if (((temperatura[24]*10)+temperatura[25]+ui->dial_7->value()) <=ui->dial_temp_5->value()){
 
-            ui->th_6->setPixmap(temp_on);
-            flaga_6=0;
-        }
+        ui->th_6->setPixmap(temp_on);
+        flaga_6=0;
+    }
 
-       qu++;
-       if (qu==15){
-           getHumidity();
-           barometer();
-           if(ui->pushButton_34->isChecked()){
-               if(flaga==0){
-                   maskawysl[2]|=0x08;
-                   MyUDP client;
-                   client.WYSUDP("192.168.1.101");
-               }
-               if(flaga==1){
-                   maskawysl[2]&=~0x08;
-                   MyUDP client;
-                   client.WYSUDP("192.168.1.101");
-               }
-               if (flaga_7==0){
-                   maskawysl[2]|=0x10;
-                   MyUDP client;
-                   client.WYSUDP("192.168.1.101");
-               }
-               if (flaga_7==1){
-                   maskawysl[2]&=~0x10;
-                   MyUDP client;
-                   client.WYSUDP("192.168.1.101");
-               }
-               if(flaga_8==0){
-                   maskawysl[2]|=0x40;
-                   MyUDP client;
-                   client.WYSUDP("192.168.1.101");
-               }
-               if(flaga_8==1){
-                   maskawysl[2]&=~0x40;
-                   MyUDP client;
-                   client.WYSUDP("192.168.1.101");
-               }
-           if(flaga_9==0){
-               maskawysl[2]|=0x80;
-               MyUDP client;
-               client.WYSUDP("192.168.1.101");
-           }
-           if(flaga_9==1){
-               maskawysl[2]&=~0x80;
-               MyUDP client;
-               client.WYSUDP("192.168.1.101");
-           }
-           if(flaga_10==0){
-               maskawysl[2]|=0x20;
-               MyUDP client;
-               client.WYSUDP("192.168.1.101");
-           }
-           if(flaga_10==1){
-               maskawysl[2]&=~0x20;
-               MyUDP client;
-               client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_1==0){
-           maskawysl[3]|=0x04;
-           MyUDP client;
-           client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_1==1){
-             maskawysl[3]&=~0x04;
-             MyUDP client;
-             client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_2==0){
-           maskawysl[3]|=0x02;
-           MyUDP client;
-           client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_2==1){
-             maskawysl[3]&=~0x02;
-             MyUDP client;
-             client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_4==0){
-           maskawysl[3]|=0x08;
-           MyUDP client;
-           client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_4==1){
-             maskawysl[3]&=~0x08;
-             MyUDP client;
-             client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_5==0){
-           maskawysl[3]|=0x10;
-           MyUDP client;
-           client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_5==1){
-             maskawysl[3]&=~0x10;
-             MyUDP client;
-             client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_6==0){
-           maskawysl[3]|=0x20;
-           MyUDP client;
-           client.WYSUDP("192.168.1.101");
-           }
-           if (flaga_6==1){
-             maskawysl[3]&=~0x20;
-             MyUDP client;
-             client.WYSUDP("192.168.1.101");
-           }
+    qu++;
+    if (qu==15){
+        getHumidity();
+        barometer();
+        if(ui->pushButton_34->isChecked()){
+            if(flaga==0){
+                maskawysl[2]|=0x08;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga==1){
+                maskawysl[2]&=~0x08;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_7==0){
+                maskawysl[2]|=0x10;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_7==1){
+                maskawysl[2]&=~0x10;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga_8==0){
+                maskawysl[2]|=0x40;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga_8==1){
+                maskawysl[2]&=~0x40;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga_9==0){
+                maskawysl[2]|=0x80;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga_9==1){
+                maskawysl[2]&=~0x80;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga_10==0){
+                maskawysl[2]|=0x20;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if(flaga_10==1){
+                maskawysl[2]&=~0x20;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_1==0){
+                maskawysl[3]|=0x04;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_1==1){
+                maskawysl[3]&=~0x04;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_2==0){
+                maskawysl[3]|=0x02;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_2==1){
+                maskawysl[3]&=~0x02;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_4==0){
+                maskawysl[3]|=0x08;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_4==1){
+                maskawysl[3]&=~0x08;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_5==0){
+                maskawysl[3]|=0x10;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_5==1){
+                maskawysl[3]&=~0x10;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_6==0){
+                maskawysl[3]|=0x20;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
+            if (flaga_6==1){
+                maskawysl[3]&=~0x20;
+                MyUDP client;
+                client.WYSUDP("192.168.1.101");
+            }
             if (flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0){
                 maskawysl[3]|=0x40;
                 MyUDP client;
@@ -583,8 +589,8 @@ void MainWindow::receiving(){
                 ui->label_pompa_2->setPixmap(pompa_off);
             }
         }
-       qu=0;
-       }
+        qu=0;
+    }
 
 //****************zaznaczanie buttonów po wykryciu pakietu************************//
        if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){

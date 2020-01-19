@@ -27,7 +27,7 @@ extern QList<int> scheduledtime;
 extern QList<int> tspinBox;
 QList<QTimer*> scheduledtimers;
 QList<QTimer*> rand_timers;
-unsigned char temperatura[26];
+unsigned char temperatura[38];
 int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;
@@ -131,13 +131,10 @@ void MyUDP::readyRead(){
         ips=sender.toString();
 
         if("192.168.1.102"==ips){
+            qDebug() << "Ramka: " << k;
             emit changes(); //sygnal do odbierania
             for (i=3;i<(Buffer.length());i++){
-                if((i%2) && (Buffer[i]==0)){ //przerwanie odczytu temperatury dla pól nieparzystych w przypadku braku poprawnego pakietu
-                    i++;//ominięcie części dziesiętnej
-                }else{
-                    temperatura[i]=Buffer[i];
-                }
+                    temperatura[i]=Buffer[i];       
             }
         }
         if(("192.168.1.100"==ips)||("192.168.1.104"==ips)){
