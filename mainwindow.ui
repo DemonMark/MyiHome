@@ -757,6 +757,49 @@ font: 75 16pt &quot;PibotoLt&quot;;</string>
          <string>00:00:00</string>
         </property>
        </widget>
+       <widget class="QLabel" name="label_18">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>510</y>
+          <width>181</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Utracone połączenia CT:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_50">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>510</y>
+          <width>90</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>PibotoLt</family>
+          <pointsize>16</pointsize>
+          <weight>9</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(255, 255, 255);
+font: 75 16pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
        <zorder>label_41</zorder>
        <zorder>label_5</zorder>
        <zorder>dial_7</zorder>
@@ -781,6 +824,8 @@ font: 75 16pt &quot;PibotoLt&quot;;</string>
        <zorder>label_9</zorder>
        <zorder>label_10</zorder>
        <zorder>label_ctime</zorder>
+       <zorder>label_18</zorder>
+       <zorder>label_50</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1750,7 +1795,7 @@ border: none;
        <widget class="QLabel" name="th_1">
         <property name="geometry">
          <rect>
-          <x>501</x>
+          <x>499</x>
           <y>300</y>
           <width>9</width>
           <height>22</height>
@@ -1818,15 +1863,15 @@ border: none;
        <widget class="label_temp" name="label_temp_1">
         <property name="geometry">
          <rect>
-          <x>513</x>
-          <y>302</y>
+          <x>511</x>
+          <y>307</y>
           <width>41</width>
-          <height>30</height>
+          <height>20</height>
          </rect>
         </property>
         <property name="font">
          <font>
-          <family>Roboto</family>
+          <family>PibotoLt</family>
           <pointsize>10</pointsize>
           <weight>9</weight>
           <italic>false</italic>
@@ -1839,7 +1884,7 @@ border: none;
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(237, 32, 36);
-font: 75 10pt &quot;Roboto&quot;;</string>
+font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00.0</string>
@@ -1867,7 +1912,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo_1.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -1880,9 +1925,9 @@ font: 75 10pt &quot;Roboto&quot;;</string>
         <property name="geometry">
          <rect>
           <x>738</x>
-          <y>138</y>
+          <y>142</y>
           <width>41</width>
-          <height>30</height>
+          <height>21</height>
          </rect>
         </property>
         <property name="mouseTracking">
@@ -1891,7 +1936,8 @@ font: 75 10pt &quot;Roboto&quot;;</string>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(237, 32, 36);
-font: 75 10pt &quot;Roboto&quot;;</string>
+/*font: 75 10pt &quot;Roboto&quot;;*/
+font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00.0</string>
@@ -2030,7 +2076,7 @@ border: none;
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo.png</pixmap>
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo_1.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2043,8 +2089,8 @@ border: none;
         <property name="geometry">
          <rect>
           <x>772</x>
-          <y>227</y>
-          <width>41</width>
+          <y>226</y>
+          <width>44</width>
           <height>21</height>
          </rect>
         </property>
@@ -2104,7 +2150,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(237, 32, 36);
-font: 75 10pt &quot;Roboto&quot;;</string>
+font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00.0</string>
@@ -2150,10 +2196,10 @@ border: none;
        <widget class="label_temp" name="label_temp_4">
         <property name="geometry">
          <rect>
-          <x>412</x>
-          <y>90</y>
+          <x>413</x>
+          <y>94</y>
           <width>41</width>
-          <height>31</height>
+          <height>21</height>
          </rect>
         </property>
         <property name="mouseTracking">
@@ -2162,7 +2208,7 @@ border: none;
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(237, 32, 36);
-font: 75 10pt &quot;Roboto&quot;;</string>
+font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00.0</string>
@@ -2276,8 +2322,8 @@ border: none;
        <widget class="QLabel" name="th_6">
         <property name="geometry">
          <rect>
-          <x>341</x>
-          <y>213</y>
+          <x>335</x>
+          <y>218</y>
           <width>9</width>
           <height>22</height>
          </rect>
@@ -2307,8 +2353,8 @@ border: none;
        <widget class="label_temp" name="label_temp_5">
         <property name="geometry">
          <rect>
-          <x>353</x>
-          <y>220</y>
+          <x>347</x>
+          <y>224</y>
           <width>41</width>
           <height>21</height>
          </rect>
@@ -2319,7 +2365,7 @@ border: none;
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(237, 32, 36);
-font: 75 10pt &quot;Roboto&quot;;</string>
+font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00.0</string>
@@ -2618,10 +2664,10 @@ border: none;
        <widget class="QPushButton" name="pushButton_18">
         <property name="geometry">
          <rect>
-          <x>520</x>
-          <y>450</y>
-          <width>191</width>
-          <height>51</height>
+          <x>406</x>
+          <y>326</y>
+          <width>160</width>
+          <height>36</height>
          </rect>
         </property>
         <property name="focusPolicy">
@@ -4453,6 +4499,338 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QLabel" name="th_12">
+        <property name="geometry">
+         <rect>
+          <x>1031</x>
+          <y>520</y>
+          <width>9</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo_1.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>1043</x>
+          <y>527</y>
+          <width>43</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(237, 32, 36);
+/*font: 75 10pt &quot;Roboto&quot;;*/
+font: 75 10pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00.0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_16">
+        <property name="geometry">
+         <rect>
+          <x>582</x>
+          <y>467</y>
+          <width>42</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(237, 32, 36);
+font: 75 10pt &quot;Roboto&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00.0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="th_13">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>460</y>
+          <width>9</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/thermo_1.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_2">
+        <property name="geometry">
+         <rect>
+          <x>735</x>
+          <y>127</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_4">
+        <property name="geometry">
+         <rect>
+          <x>489</x>
+          <y>173</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_5">
+        <property name="geometry">
+         <rect>
+          <x>771</x>
+          <y>212</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_6">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>292</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_7">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>80</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_8">
+        <property name="geometry">
+         <rect>
+          <x>345</x>
+          <y>211</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_12">
+        <property name="geometry">
+         <rect>
+          <x>1060</x>
+          <y>564</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_13">
+        <property name="geometry">
+         <rect>
+          <x>1042</x>
+          <y>511</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_14">
+        <property name="geometry">
+         <rect>
+          <x>581</x>
+          <y>452</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_21">
+        <property name="geometry">
+         <rect>
+          <x>1004</x>
+          <y>580</y>
+          <width>41</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(237, 32, 36);
+font: 87 10pt &quot;Lato Black&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00.0</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_15">
+        <property name="geometry">
+         <rect>
+          <x>1071</x>
+          <y>350</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="boiler">
+        <property name="geometry">
+         <rect>
+          <x>957</x>
+          <y>560</y>
+          <width>104</width>
+          <height>62</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/boiler.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -4542,6 +4920,22 @@ border: none;
        <zorder>button_wentylator</zorder>
        <zorder>button_wentylator_2</zorder>
        <zorder>pushButton_41</zorder>
+       <zorder>th_12</zorder>
+       <zorder>label_15</zorder>
+       <zorder>label_16</zorder>
+       <zorder>th_13</zorder>
+       <zorder>con_err_2</zorder>
+       <zorder>con_err_4</zorder>
+       <zorder>con_err_5</zorder>
+       <zorder>con_err_6</zorder>
+       <zorder>con_err_7</zorder>
+       <zorder>con_err_8</zorder>
+       <zorder>con_err_13</zorder>
+       <zorder>con_err_14</zorder>
+       <zorder>con_err_15</zorder>
+       <zorder>boiler</zorder>
+       <zorder>label_21</zorder>
+       <zorder>con_err_12</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -5534,6 +5928,101 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QLabel" name="con_err_1">
+        <property name="geometry">
+         <rect>
+          <x>700</x>
+          <y>100</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_3">
+        <property name="geometry">
+         <rect>
+          <x>464</x>
+          <y>470</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_9">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>102</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_10">
+        <property name="geometry">
+         <rect>
+          <x>772</x>
+          <y>194</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="con_err_11">
+        <property name="geometry">
+         <rect>
+          <x>444</x>
+          <y>196</y>
+          <width>13</width>
+          <height>13</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/con_err_on.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_pietro</zorder>
        <zorder>label_36</zorder>
        <zorder>go_ground</zorder>
@@ -5568,6 +6057,11 @@ border: none;
        <zorder>label_dsc_8</zorder>
        <zorder>label_dsc_9</zorder>
        <zorder>label_dsc_10</zorder>
+       <zorder>con_err_1</zorder>
+       <zorder>con_err_3</zorder>
+       <zorder>con_err_9</zorder>
+       <zorder>con_err_10</zorder>
+       <zorder>con_err_11</zorder>
       </widget>
      </widget>
     </item>

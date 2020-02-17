@@ -27,7 +27,7 @@ extern QList<int> scheduledtime;
 extern QList<int> tspinBox;
 QList<QTimer*> scheduledtimers;
 QList<QTimer*> rand_timers;
-unsigned char temperatura[38];
+unsigned char temperatura[63];
 int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;

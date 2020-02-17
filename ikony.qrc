@@ -35,8 +35,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gdoorclose_white.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_15.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_15.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_14.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_14.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_17.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_17.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_18.png</file>
@@ -119,5 +117,10 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_20.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_11_v2.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_11_v2.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/con_err_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/con_err_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_14.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_14.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/boiler.png</file>
     </qresource>
 </RCC>

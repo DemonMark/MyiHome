@@ -31,7 +31,7 @@
 #define DHT_MAXCOUNT 35000 //liczba dobrana do szybkości RPi2 - dotyczy max czasu odczytu powyżej TIMEOUT
 #define DHT_BITS 41
 #define DC '\xb0' //znak stopnia
-
+QList<QLabel*> c_e;
 QList<QPushButton*> bList; //lista przycisków oświetlenia
 QList<QPushButton*> sbList; //lista przycisków scen
 QList<pir_button*> pirList; //lista czujek
@@ -57,7 +57,7 @@ extern int c[49];
 QList<int> t;
 int num=0;
 extern unsigned char temp[20];
-extern unsigned char temperatura[39];
+extern unsigned char temperatura[63];
 extern unsigned char hexx[9];
 extern QList<unsigned char> scheduledhexxpir;
 extern QList<QList<unsigned char> > scheduledhexxout;
@@ -116,6 +116,12 @@ MainWindow::MainWindow(QWidget *parent) :
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pirList = ui->tab_5->findChildren<pir_button*>();
+    int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
+    for(int lf=1; lf<=tmp; lf++){
+        QString ln=QString::number(lf);
+        c_e.append(MainWindow::findChildren<QLabel*>("con_err_"+ln));
+    }
+    qDebug() << c_e;
 
     foreach(QPushButton *btn, bList)
     {
@@ -291,7 +297,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
 void MainWindow::receiving(){
 
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
-    QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11,subzero;
+    QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11,b12,t12,b13,t13,b14,t14,subzero;
     //a.split(" ")[0].toInt();
     //****BIBLIOTEKA****//
     b.append(QString("%1").arg(temperatura[3]));
@@ -326,10 +332,19 @@ void MainWindow::receiving(){
     //****ŁAZIENKA GÓRA****//
     b11.append(QString("%1").arg(temperatura[33]));
     t11.append(QString("%1").arg(temperatura[34]));
+    //****ZASOBNIK C.W.U.*****//
+    b14.append(QString("%1").arg(temperatura[36]));
+    t14.append(QString("%1").arg(temperatura[37]));
+    //****KOTŁOWNIA****//
+    b12.append(QString("%1").arg(temperatura[39]));
+    t12.append(QString("%1").arg(temperatura[40]));
     //****ZEWNATRZ****//
-    b10.append(QString("%1").arg(temperatura[36]));
-    t10.append(QString("%1").arg(temperatura[37]));
-    subzero.append(QString("%1").arg(temperatura[38]));
+    b10.append(QString("%1").arg(temperatura[45]));
+    t10.append(QString("%1").arg(temperatura[46]));
+    subzero.append(QString("%1").arg(temperatura[47]));
+    //****GARAŻ****//
+    b13.append(QString("%1").arg(temperatura[42]));
+    t13.append(QString("%1").arg(temperatura[43]));
 
     ui->label_temp_9->setText(b+"."+t + DC);
     ui->label_temp_2->setText(b1+"."+t1 + DC);
@@ -341,6 +356,10 @@ void MainWindow::receiving(){
     ui->label_temp_5->setText(b7+"."+t7 + DC);
     ui->label_temp_8->setText(b8+"."+t8 + DC);
     ui->label_temp_10->setText(b9+"."+t9 + DC);
+    ui->label_temp_7->setText(b11+"."+t11 + DC);
+    ui->label_15->setText(b12+"."+t12 + DC);
+    ui->label_16->setText(b13+"."+t13 + DC);
+    ui->label_21->setText(b14+"."+t14 + DC);
     //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
     if(subzero=="1"){
         ui->label_31->setText("-"+b10+"."+t10 + DC);
@@ -348,11 +367,12 @@ void MainWindow::receiving(){
         ui->label_31->setText(b10+"."+t10 + DC);
     }
     //
-    ui->label_temp_7->setText(b11+"."+t11 + DC);
 
     QPixmap temp_on("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png");
     QPixmap temp_off("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
     QPixmap pompa_off("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
+    QPixmap con_err_off("/media/HDD1/admin/iHome/28-02-2018/media/con_err_off.png");
+    QPixmap con_err_on("/media/HDD1/admin/iHome/28-02-2018/media/con_err_on.png");
 
     //**HISTEREZA BIBLIOTEKA**//
     if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_temp_9->value()){
@@ -591,9 +611,19 @@ void MainWindow::receiving(){
         }
         qu=0;
     }
+//****************sprawdzanie obecności czujników CT**********************************//
+    uint8_t id[15]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40}; //numer czujnika
+    int tn[15]={48,48,48,48,48,48,48,48,49,49,49,49,49,49,49}; //numer bajtu kontrolnego stan czujnika
+    for(int i=0; i<15;i++){
+        if(temperatura[tn[i]]&id[i]){
+            c_e.at(i)->setPixmap(con_err_off);
+        }else{
+            c_e.at(i)->setPixmap(con_err_on);
+        }
+    }
 
-//****************zaznaczanie buttonów po wykryciu pakietu************************//
-       if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
+    //****************zaznaczanie buttonów po wykryciu pakietu************************//
+    if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
            simulating_on=false;
            int m=0; //numeracja pozycji przycisku na liście
 
