@@ -6,6 +6,7 @@
 
 int i;
 int q=0;
+unsigned char shell[1];
 unsigned char temp[20];
 unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
@@ -45,6 +46,9 @@ int scheduledaction=0;
 bool simulating_on;
 extern bool scene_active;
 extern bool scene_driving;
+extern bool jestem;
+extern bool shelly_on;
+extern QByteArray plugsocket;
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -131,7 +135,7 @@ void MyUDP::readyRead(){
         ips=sender.toString();
 
         if("192.168.1.102"==ips){
-            qDebug() << "Ramka: " << k;
+            //qDebug() << "Ramka: " << k;
             emit changes(); //sygnal do odbierania
             for (i=3;i<(Buffer.length());i++){
                     temperatura[i]=Buffer[i];       
@@ -219,6 +223,21 @@ void MyUDP::readyRead(){
             if(scene_driving && tempholder[0] & scene_pir){
                 emit gate();
             }
+        }
+
+        //****************SHELLY1**********************//
+        if(ips=="192.168.1.105"){
+            if(Buffer[1]&0x53){
+                jestem=true;
+            }
+            if(Buffer[2]&0x01){
+                shelly_on=true;
+                plugsocket[1]=0x01;
+            }else{
+                shelly_on=false;
+                plugsocket[1]=0x00;
+            }
+            emit changes();
         }
      }
 }

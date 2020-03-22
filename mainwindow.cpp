@@ -3,6 +3,7 @@
 #include "myudp.h"
 #include "zdarzenie.h"
 #include "pir_button.h"
+#include "shelly.h"
 #include "mydbs.h"
 #include <QtGui>
 #include <QLCDNumber>
@@ -56,6 +57,7 @@ extern int q;           //odebranie konkretnej ramki
 extern int c[49];
 QList<int> t;
 int num=0;
+extern unsigned char shell[1];
 extern unsigned char temp[20];
 extern unsigned char temperatura[63];
 extern unsigned char hexx[9];
@@ -85,6 +87,8 @@ int count_down=0;
 extern bool simulating_on;
 bool scene_active;
 bool scene_driving;
+bool jestem;
+bool shelly_on;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -612,7 +616,7 @@ void MainWindow::receiving(){
         qu=0;
     }
 //****************sprawdzanie obecności czujników CT**********************************//
-    uint8_t id[15]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40}; //numer czujnika
+    uint16_t id[15]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40}; //numer czujnika
     int tn[15]={48,48,48,48,48,48,48,48,49,49,49,49,49,49,49}; //numer bajtu kontrolnego stan czujnika
     for(int i=0; i<15;i++){
         if(temperatura[tn[i]]&id[i]){
@@ -621,7 +625,16 @@ void MainWindow::receiving(){
             c_e.at(i)->setPixmap(con_err_on);
         }
     }
-
+//*****************sprawdzanie obecności gniazdek*************************************//
+    if(jestem && !(shelly_on)){
+        ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_off.png"));
+    }
+    if(jestem && shelly_on){
+        ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_on.png"));
+    }
+    if(!(jestem)){
+        ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png"));
+    }
     //****************zaznaczanie buttonów po wykryciu pakietu************************//
     if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
            simulating_on=false;
@@ -1360,4 +1373,10 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
         }
     }
     baza.conclose();
+}
+
+void MainWindow::on_resetButton_clicked()
+{
+    MyUDP reset;
+    reset.WYSUDP("192.168.1.102");
 }

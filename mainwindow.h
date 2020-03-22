@@ -77,10 +77,12 @@ private slots:
 
   void on_comboBox_currentIndexChanged(const QString &arg1);
 
+  void on_resetButton_clicked();
+
 private:
 
     Ui::MainWindow *ui;
-    QUdpSocket *socket;
+
     int timerId;
     QTimer *timer_wyjscie;
     QTimer *timer_bramaStykOff;

@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     label_temp.cpp \
     pir_button.cpp \
     bcm2835.c \
-    mydbs.cpp
+    mydbs.cpp \
+    shelly.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -28,12 +29,15 @@ HEADERS  += mainwindow.h \
     label_temp.h \
     pir_button.h \
     bcm2835.h \
-    mydbs.h
+    mydbs.h \
+    shelly.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES += \
     grafika.qrc \
     ikony.qrc
+
+DISTFILES +=
 
 

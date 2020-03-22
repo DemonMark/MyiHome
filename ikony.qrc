@@ -122,5 +122,10 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_14.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_14.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/boiler.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/restart_t_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/restart_t_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</file>
     </qresource>
 </RCC>
