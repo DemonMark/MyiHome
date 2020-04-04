@@ -33,6 +33,7 @@ int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;
 QString ips;
+QString rssi;
 extern QString time_text;
 extern int dzien;
 extern int spimy;
@@ -156,13 +157,11 @@ void MyUDP::readyRead(){
                             c[n]++;
                             if (c[n]==1){
                                 maskawysl[j]|=(hexx[i]);
-                                MyUDP client;
-                                client.WYSUDP(IP_holder);
+                                WYSUDP(IP_holder);
                             }
                             if (c[n]==2){
                                 maskawysl[j]&=~(hexx[i]);
-                                MyUDP client;
-                                client.WYSUDP(IP_holder);
+                                WYSUDP(IP_holder);
                                 c[n]=0;
                             }
                         }
@@ -202,8 +201,7 @@ void MyUDP::readyRead(){
                         foreach(unsigned char r, scheduledhexxout[j]){
 
                             maskawysl[outmasks.value(j)[i]]|=r;
-                            MyUDP client;
-                            client.WYSUDP("192.168.1.101");
+                            WYSUDP("192.168.1.101");
                             c[scheduledcs.value(j)[i]]=1;
                             i++;
                         }
@@ -232,11 +230,12 @@ void MyUDP::readyRead(){
             }
             if(Buffer[2]&0x01){
                 shelly_on=true;
-                plugsocket[1]=0x01;
             }else{
                 shelly_on=false;
-                plugsocket[1]=0x00;
             }
+            bool ok;
+            uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
+            rssi = QString::number(signal) + "%";
             emit changes();
         }
      }

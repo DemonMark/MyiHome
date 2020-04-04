@@ -4862,10 +4862,28 @@ border: none;
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</iconset>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="signal">
+        <property name="geometry">
+         <rect>
+          <x>858</x>
+          <y>128</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
         </property>
        </widget>
        <zorder>label_parter</zorder>
@@ -4974,6 +4992,7 @@ border: none;
        <zorder>label_21</zorder>
        <zorder>con_err_12</zorder>
        <zorder>shelly1_1</zorder>
+       <zorder>signal</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -6143,8 +6162,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="grafika.qrc"/>
   <include location="ikony.qrc"/>
+  <include location="grafika.qrc"/>
  </resources>
  <connections/>
 </ui>

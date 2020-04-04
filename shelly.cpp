@@ -16,6 +16,7 @@ shelly::shelly(QWidget *parent) : QPushButton(parent)
 void shelly::answer(){
 
     plugsocket[0]=0x53;
+    plugsocket[1]=0x02; //bram zmiany stanu przekaznika
     psData.clear();
     psData.append(plugsocket);
     shellsock->writeDatagram(psData,QHostAddress("192.168.1.105"),4210);
@@ -25,7 +26,6 @@ void shelly::answer(){
 
 void shelly::mousePressEvent(QMouseEvent *ev){
 
-    plugsocket[0]=plugsocket[0];
     if(plugsocket[1]&0x01){
         plugsocket[1]=0x00;
     }else{

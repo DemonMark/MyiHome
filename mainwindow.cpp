@@ -53,6 +53,7 @@ QList<QString> outnames;
 QList<QString> pirnames;
 QString time_text;
 extern QString ips;
+extern QString rssi;
 extern int q;           //odebranie konkretnej ramki
 extern int c[49];
 QList<int> t;
@@ -634,7 +635,10 @@ void MainWindow::receiving(){
     }
     if(!(jestem)){
         ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png"));
+        rssi = "OFF";
     }
+
+    ui->signal->setText(rssi);
     //****************zaznaczanie buttonów po wykryciu pakietu************************//
     if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
            simulating_on=false;
@@ -976,14 +980,14 @@ void MainWindow::ClickedbtnFinder(){
                 MyUDP client;
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
                 if(bList.at(y)->isChecked()){
-                maskawysl[j]|=(hexx[i]);
-                client.WYSUDP(IP_holder);
-                c[m+1]=1;
+                    maskawysl[j]|=(hexx[i]);
+                    client.WYSUDP(IP_holder);
+                    c[m+1]=1;
                 }
                 if(bList.at(y)->isChecked()==false){
-                maskawysl[j]&=~(hexx[i]);
-                client.WYSUDP(IP_holder);
-                c[m+1]=0;
+                    maskawysl[j]&=~(hexx[i]);
+                    client.WYSUDP(IP_holder);
+                    c[m+1]=0;
                 }
             }
             //obsługa modułu 6-CH
