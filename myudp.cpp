@@ -33,7 +33,7 @@ int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;
 QString ips;
-QString rssi;
+QString rssi[4];
 extern QString time_text;
 extern int dzien;
 extern int spimy;
@@ -50,6 +50,10 @@ extern bool scene_driving;
 extern bool jestem;
 extern bool shelly_on;
 extern QByteArray plugsocket;
+QString ips_list[3] = {"192.168.1.106", "192.168.1.105", "192.168.1.107"}; //IP w kolejnosci QListy
+QString ico_off_list[3] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png"};
+QString ico_on_list[3] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png"};
+extern QList<shelly*> shList;
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -224,19 +228,43 @@ void MyUDP::readyRead(){
         }
 
         //****************SHELLY1**********************//
-        if(ips=="192.168.1.105"){
-            if(Buffer[1]&0x53){
-                jestem=true;
+        for(int i=0; i<=2; i++){
+            if(ips==ips_list[i]){
+
+                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)){
+
+                    shList.at(i)->setIcon(QIcon(ico_off_list[i]));
+                }
+                if(Buffer[2]&0x01){
+                    shList.at(i)->setIcon(QIcon(ico_on_list[i]));
+                }
+                if(Buffer[3]&0x01){
+
+                    QByteArray plugsockett;
+                    QByteArray psDataa;
+
+                    QUdpSocket *shellsockk = new QUdpSocket(this);
+
+                    plugsockett[0]=0x53;
+                    plugsockett[1]=0x01;
+
+                    psDataa.clear();
+                    psDataa.append(plugsockett);
+                    shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
+                    delete shellsockk;
+                }else{
+                    //
+                }
+                bool ok;
+                uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
+                rssi[i] = QString::number(signal) + "%";
+                //wyjątek dla Shelly2.5 - termistor
+                if(ips=="192.168.1.107"){
+                    signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
+                    rssi[3]= QString::number(signal);
+                }
+                //emit changes();
             }
-            if(Buffer[2]&0x01){
-                shelly_on=true;
-            }else{
-                shelly_on=false;
-            }
-            bool ok;
-            uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
-            rssi = QString::number(signal) + "%";
-            emit changes();
         }
      }
 }
@@ -250,7 +278,7 @@ void MyUDP::lightsOff(){
         maskawysl[1]&=~0xff;
         maskawysl[2]&=~0xff;
         maskawysl[4]&=~0xff;
-        maskawysl[5]&=~0xff;
+        //maskawysl[5]&=~0xff;
         WYSUDP("192.168.1.101");
         WYSUDP("192.168.1.104");
         zerujWyj();

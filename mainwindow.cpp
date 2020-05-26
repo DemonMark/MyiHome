@@ -40,7 +40,8 @@ QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
-int bPos[48]={31,28,33,32,29,12,1,0,34,30,15,17,8,11,5,10,4,14,7,19,19,19,19,19,20,19,19,19,19,19,19,19,9,16,6,18,2,3,25,13,27,24,19,19,19,19,19,19}; //pozycja przycisku na liście
+QList<shelly*> shList; //Lista modułów wifi Shelly
+int bPos[48]={31,28,33,32,29,12,1,0,34,30,15,17,8,11,5,10,4,14,7,26,26,26,26,26,19,26,26,26,26,26,26,26,9,16,6,18,2,3,24,13,25,23,27,26,26,26,26,26}; //pozycja przycisku na liście
 QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
@@ -53,7 +54,7 @@ QList<QString> outnames;
 QList<QString> pirnames;
 QString time_text;
 extern QString ips;
-extern QString rssi;
+extern QString rssi[4];
 extern int q;           //odebranie konkretnej ramki
 extern int c[49];
 QList<int> t;
@@ -104,6 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     bcm2835_init();
     initGPIO();
 
@@ -121,6 +123,8 @@ MainWindow::MainWindow(QWidget *parent) :
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pirList = ui->tab_5->findChildren<pir_button*>();
+    shList = ui->tab_5->findChildren<shelly*>();
+    qDebug() << shList;
     int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
     for(int lf=1; lf<=tmp; lf++){
         QString ln=QString::number(lf);
@@ -130,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     foreach(QPushButton *btn, bList)
     {
-        //qDebug() << btn->objectName();
+        qDebug() << btn->objectName();
         connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
     }
 
@@ -626,19 +630,13 @@ void MainWindow::receiving(){
             c_e.at(i)->setPixmap(con_err_on);
         }
     }
-//*****************sprawdzanie obecności gniazdek*************************************//
-    if(jestem && !(shelly_on)){
-        ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_off.png"));
-    }
-    if(jestem && shelly_on){
-        ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_on.png"));
-    }
-    if(!(jestem)){
-        ui->shelly1_1->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png"));
-        rssi = "OFF";
-    }
+//*****************Shelly signal*************************************//
 
-    ui->signal->setText(rssi);
+    ui->signal->setText(rssi[1]);
+    ui->signal_2->setText(rssi[0]);
+    ui->signal_3->setText(rssi[2]);
+    ui->signal_4->setText(rssi[3]+DC);
+
     //****************zaznaczanie buttonów po wykryciu pakietu************************//
     if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
            simulating_on=false;
@@ -739,6 +737,7 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
 {
     if(checked){
         qDebug() << QObject::sender()->objectName();
+
         //qDebug() << sbList.indexOf(QPushButton::sender());
         //qDebug() << QPushButton.toolTip();
         QString tt = ui->button_scene_2->toolTip();

@@ -799,6 +799,94 @@ background-color: transparent;
          <string>Restart modułów:</string>
         </property>
        </widget>
+       <widget class="QDial" name="dial_12">
+        <property name="geometry">
+         <rect>
+          <x>683</x>
+          <y>400</y>
+          <width>44</width>
+          <height>44</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">selection-color: rgb(0, 0, 0);
+selection-background-color: rgb(0, 0, 0);
+border: none;</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>3</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
+        </property>
+        <property name="notchTarget">
+         <double>1.000000000000000</double>
+        </property>
+        <property name="notchesVisible">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_34">
+        <property name="geometry">
+         <rect>
+          <x>660</x>
+          <y>370</y>
+          <width>91</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+image: url(:/HDD1/admin/iHome/28-02-2018/media/reku.png);</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_32">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>230</y>
+          <width>51</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#pushButton_32 {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/robot_off.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#pushButton_32:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/robot_on.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <zorder>label_34</zorder>
        <zorder>label_41</zorder>
        <zorder>label_5</zorder>
        <zorder>dial_7</zorder>
@@ -825,6 +913,8 @@ background-color: transparent;
        <zorder>label_ctime</zorder>
        <zorder>resetButton</zorder>
        <zorder>label_18</zorder>
+       <zorder>dial_12</zorder>
+       <zorder>pushButton_32</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1180,7 +1270,7 @@ background-color: transparent;
         </item>
         <item>
          <property name="text">
-          <string>Obieg kuchnia/jadalnia/korytarz</string>
+          <string>*</string>
          </property>
          <property name="foreground">
           <brush brushstyle="NoBrush">
@@ -2844,26 +2934,56 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_22">
+       <widget class="shelly" name="door_bell">
         <property name="geometry">
          <rect>
-          <x>1190</x>
-          <y>610</y>
-          <width>51</width>
-          <height>51</height>
+          <x>590</x>
+          <y>145</y>
+          <width>28</width>
+          <height>29</height>
          </rect>
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="statusTip">
+         <string>&quot;/media/HDD1/admin/iHome/28-02-2018/media/bell_offline.png&quot;</string>
+        </property>
+        <property name="accessibleName">
+         <string>192.168.1.106</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>1</string>
+        </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">QPushButton#door_bell {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/bell_off.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#door_bell:pressed
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/bell_on.png);
+background-color: transparent;
+border: none;
+}</string>
         </property>
         <property name="text">
          <string/>
         </property>
+        <property name="iconSize">
+         <size>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
         <property name="checkable">
          <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
@@ -3059,62 +3179,6 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QDial" name="dial_12">
-        <property name="geometry">
-         <rect>
-          <x>16</x>
-          <y>164</y>
-          <width>44</width>
-          <height>44</height>
-         </rect>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">selection-color: rgb(0, 0, 0);
-selection-background-color: rgb(0, 0, 0);
-border: none;</string>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>3</number>
-        </property>
-        <property name="pageStep">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>1</number>
-        </property>
-        <property name="tracking">
-         <bool>true</bool>
-        </property>
-        <property name="notchTarget">
-         <double>1.000000000000000</double>
-        </property>
-        <property name="notchesVisible">
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_34">
-        <property name="geometry">
-         <rect>
-          <x>-7</x>
-          <y>134</y>
-          <width>91</width>
-          <height>91</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;
-image: url(:/HDD1/admin/iHome/28-02-2018/media/reku.png);</string>
-        </property>
-        <property name="text">
-         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="label_32">
@@ -3882,28 +3946,6 @@ font: 75 7pt &quot;Roboto&quot;;</string>
          <string>00°</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_7">
-        <property name="geometry">
-         <rect>
-          <x>610</x>
-          <y>178</y>
-          <width>20</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/Humidity Sensor.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-       </widget>
        <widget class="QLabel" name="label_35">
         <property name="geometry">
          <rect>
@@ -3970,37 +4012,6 @@ font: 75 6pt &quot;Roboto Condensed&quot;;</string>
         </property>
         <property name="text">
          <string>hPa</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_32">
-        <property name="geometry">
-         <rect>
-          <x>13</x>
-          <y>230</y>
-          <width>51</width>
-          <height>81</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_32 {
-background-color: transparent;
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/robot_off.png);
-background-repeat: none;
-border: none;
-}
-
-QPushButton#pushButton_32:checked
-{
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/robot_on.png);
-background-color: transparent;
-border: none;
-}</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
         </property>
        </widget>
        <widget class="pir_button" name="pir_btn_5">
@@ -4833,23 +4844,34 @@ font: 87 10pt &quot;Lato Black&quot;;</string>
        <widget class="shelly" name="shelly1_1">
         <property name="geometry">
          <rect>
-          <x>830</x>
-          <y>140</y>
-          <width>28</width>
-          <height>17</height>
+          <x>10</x>
+          <y>180</y>
+          <width>27</width>
+          <height>33</height>
          </rect>
+        </property>
+        <property name="statusTip">
+         <string>&quot;/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png&quot;</string>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="accessibleName">
+         <string>192.168.1.105</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>1</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#shelly1_1{
 background-color: transparent;
-/*background-image: url(:/HDD1/admin/iHome/28-02-2018/media/shelly1_off.png);*/
 background-repeat: none;
 border: none;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png);
 }
 
 QPushButton#shelly1_1:checked
 {
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/shelly1_on.png);
 background-color: transparent;
 border: none;
 }</string>
@@ -4858,8 +4880,14 @@ border: none;
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</iconset>
+         <iconset>
+          <normaloff>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</normaloff>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>27</width>
+          <height>33</height>
+         </size>
         </property>
         <property name="checkable">
          <bool>false</bool>
@@ -4871,8 +4899,8 @@ border: none;
        <widget class="QLabel" name="signal">
         <property name="geometry">
          <rect>
-          <x>858</x>
-          <y>128</y>
+          <x>40</x>
+          <y>175</y>
           <width>35</width>
           <height>22</height>
          </rect>
@@ -4884,6 +4912,190 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00%</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_22">
+        <property name="geometry">
+         <rect>
+          <x>1130</x>
+          <y>610</y>
+          <width>41</width>
+          <height>45</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+background-repeat: none;
+border: none;
+
+
+</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="signal_2">
+        <property name="geometry">
+         <rect>
+          <x>621</x>
+          <y>140</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
+        </property>
+       </widget>
+       <widget class="shelly" name="Shelly25">
+        <property name="geometry">
+         <rect>
+          <x>47</x>
+          <y>411</y>
+          <width>58</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="accessibleName">
+         <string>192.168.1.107</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>2</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#Shelly25 {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/gate_1_side.png);
+background-repeat: none;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="shelly" name="Shelly25_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>413</y>
+          <width>46</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="accessibleName">
+         <string>192.168.1.107</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>1</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#Shelly25_2{
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/gate_2_side.png);
+background-repeat: none;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="signal_3">
+        <property name="geometry">
+         <rect>
+          <x>105</x>
+          <y>406</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="signal_4">
+        <property name="geometry">
+         <rect>
+          <x>97</x>
+          <y>465</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_42">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>170</y>
+          <width>32</width>
+          <height>65</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#pushButton_42 {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_off_21.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#pushButton_42:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_on_21.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
        <zorder>label_parter</zorder>
@@ -4921,14 +5133,12 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>pushButton_19</zorder>
        <zorder>pushButton_20</zorder>
        <zorder>pushButton_21</zorder>
-       <zorder>pushButton_22</zorder>
+       <zorder>door_bell</zorder>
        <zorder>pushButton_33</zorder>
        <zorder>label_pompa_1</zorder>
        <zorder>label_pompa_2</zorder>
        <zorder>pushButton_28</zorder>
        <zorder>pushButton_34</zorder>
-       <zorder>label_34</zorder>
-       <zorder>dial_12</zorder>
        <zorder>label_32</zorder>
        <zorder>dial_temp_1</zorder>
        <zorder>dial_temp_2</zorder>
@@ -4956,11 +5166,9 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>label_3</zorder>
        <zorder>pushButton_26</zorder>
        <zorder>label_14</zorder>
-       <zorder>label_7</zorder>
        <zorder>label_35</zorder>
        <zorder>label_8</zorder>
        <zorder>label_17</zorder>
-       <zorder>pushButton_32</zorder>
        <zorder>pir_btn_5</zorder>
        <zorder>pir_btn_6</zorder>
        <zorder>dial_pir_5</zorder>
@@ -4993,6 +5201,13 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>con_err_12</zorder>
        <zorder>shelly1_1</zorder>
        <zorder>signal</zorder>
+       <zorder>pushButton_22</zorder>
+       <zorder>signal_2</zorder>
+       <zorder>Shelly25</zorder>
+       <zorder>Shelly25_2</zorder>
+       <zorder>signal_3</zorder>
+       <zorder>signal_4</zorder>
+       <zorder>pushButton_42</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -6162,8 +6377,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="ikony.qrc"/>
   <include location="grafika.qrc"/>
+  <include location="ikony.qrc"/>
  </resources>
  <connections/>
 </ui>

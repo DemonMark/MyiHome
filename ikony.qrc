@@ -127,5 +127,11 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_21.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_21.png</file>
     </qresource>
 </RCC>
