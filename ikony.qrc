@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>../../../HDD1/admin/iHome/28-02-2018/media/thermo.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/bulb_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/bulb_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on.png</file>
@@ -133,5 +132,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_21.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_21.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/boiler_off.png</file>
     </qresource>
 </RCC>

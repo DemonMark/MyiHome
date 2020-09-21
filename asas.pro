@@ -8,6 +8,8 @@ QT       += core gui network webkit webkitwidgets sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+CONFIG += c++11
+
 TARGET = asas
 TEMPLATE = app
 
@@ -40,4 +42,5 @@ RESOURCES += \
 
 DISTFILES +=
 
+QMAKE_CXXFLAGS += -std=gnu++11
 

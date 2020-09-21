@@ -185,7 +185,7 @@ background : url( /home/bananapi/Desktop/21370_03_10_09_6_59_36.png)
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -802,8 +802,8 @@ background-color: transparent;
        <widget class="QDial" name="dial_12">
         <property name="geometry">
          <rect>
-          <x>683</x>
-          <y>400</y>
+          <x>740</x>
+          <y>300</y>
           <width>44</width>
           <height>44</height>
          </rect>
@@ -841,8 +841,8 @@ border: none;</string>
        <widget class="QLabel" name="label_34">
         <property name="geometry">
          <rect>
-          <x>660</x>
-          <y>370</y>
+          <x>717</x>
+          <y>270</y>
           <width>91</width>
           <height>91</height>
          </rect>
@@ -886,6 +886,197 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="shelly" name="shelly1_2">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>360</y>
+          <width>27</width>
+          <height>33</height>
+         </rect>
+        </property>
+        <property name="statusTip">
+         <string>&quot;/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png&quot;</string>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="accessibleName">
+         <string>192.168.1.108</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>1</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#shelly1_1{
+background-color: transparent;
+background-repeat: none;
+border: none;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png);
+}
+
+QPushButton#shelly1_1:checked
+{
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</normaloff>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>27</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="signal_5">
+        <property name="geometry">
+         <rect>
+          <x>361</x>
+          <y>352</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_22">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>430</y>
+          <width>221</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Zarządzanie temperaturą CWU:</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="cwu_ob">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>460</y>
+          <width>91</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="minimum">
+         <number>30</number>
+        </property>
+        <property name="maximum">
+         <number>51</number>
+        </property>
+        <property name="value">
+         <number>39</number>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="cwu_nob">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>520</y>
+          <width>91</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="minimum">
+         <number>30</number>
+        </property>
+        <property name="maximum">
+         <number>45</number>
+        </property>
+        <property name="value">
+         <number>35</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_23">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>480</y>
+          <width>61</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>obecni</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_27">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>540</y>
+          <width>71</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>nieobecni</string>
+        </property>
+       </widget>
        <zorder>label_34</zorder>
        <zorder>label_41</zorder>
        <zorder>label_5</zorder>
@@ -915,6 +1106,13 @@ border: none;
        <zorder>label_18</zorder>
        <zorder>dial_12</zorder>
        <zorder>pushButton_32</zorder>
+       <zorder>shelly1_2</zorder>
+       <zorder>signal_5</zorder>
+       <zorder>label_22</zorder>
+       <zorder>cwu_ob</zorder>
+       <zorder>cwu_nob</zorder>
+       <zorder>label_23</zorder>
+       <zorder>label_27</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1043,7 +1241,7 @@ border: none;
           <string>Pokój Myszki</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1053,7 +1251,7 @@ border: none;
           <string>Sypialnia</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1063,7 +1261,7 @@ border: none;
           <string>Garderoba</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1073,7 +1271,7 @@ border: none;
           <string>Łazienka góra</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1083,7 +1281,7 @@ border: none;
           <string>Łazienka luksfery</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1093,7 +1291,7 @@ border: none;
           <string>Łazienka dół lustro</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1103,7 +1301,7 @@ border: none;
           <string>Łazienka dół</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1113,7 +1311,7 @@ border: none;
           <string>Loft</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1123,7 +1321,7 @@ border: none;
           <string>Korytarz góra</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1133,7 +1331,7 @@ border: none;
           <string>Garaż</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1143,7 +1341,7 @@ border: none;
           <string>Wiatrołap</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1153,7 +1351,7 @@ border: none;
           <string>Kuchnia</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1163,7 +1361,7 @@ border: none;
           <string>Barek</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1173,7 +1371,7 @@ border: none;
           <string>Jadalnia</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1183,7 +1381,7 @@ border: none;
           <string>Kuchnia zlewozmywak</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1193,7 +1391,7 @@ border: none;
           <string>Taras tył</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1203,7 +1401,7 @@ border: none;
           <string>Kinkiet kominek</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1213,7 +1411,7 @@ border: none;
           <string>Schody</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1338,7 +1536,7 @@ border: none;
           <string>Kuchnia blat</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1348,7 +1546,7 @@ border: none;
           <string>Kotłownia</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1358,7 +1556,7 @@ border: none;
           <string>Marynarski</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1368,7 +1566,7 @@ border: none;
           <string>Korytarz dół</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1378,7 +1576,7 @@ border: none;
           <string>Salon 2</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1388,7 +1586,7 @@ border: none;
           <string>Salon 1</string>
          </property>
          <property name="icon">
-          <iconset resource="ikony.qrc">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1398,7 +1596,47 @@ border: none;
           <string>Wejście przód</string>
          </property>
          <property name="icon">
+          <iconset>
+           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Brama garaż</string>
+         </property>
+         <property name="icon">
           <iconset resource="ikony.qrc">
+           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gdoorclose.png</normaloff>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/gdoorup.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/gdoorclose.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>LED kominek</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Kinkiet obrazy</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Podjazd</string>
+         </property>
+         <property name="icon">
+          <iconset>
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/bulb_off.png</iconset>
          </property>
@@ -1629,8 +1867,8 @@ border:none;
          <rect>
           <x>940</x>
           <y>26</y>
-          <width>81</width>
-          <height>81</height>
+          <width>73</width>
+          <height>70</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1807,6 +2045,55 @@ background-repeat: none;</string>
           <minute>17</minute>
           <second>0</second>
          </time>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="trackButton">
+        <property name="geometry">
+         <rect>
+          <x>994</x>
+          <y>76</y>
+          <width>41</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#trackButton {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/timer_tracking_off.png);
+background-repeat: none;
+border:none;
+}
+
+QPushButton#trackButton:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/timer_tracking_on.png);
+background-color: transparent;
+border:none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </widget>
@@ -4419,14 +4706,20 @@ border: none;</string>
          <rect>
           <x>503</x>
           <y>145</y>
-          <width>22</width>
-          <height>20</height>
+          <width>29</width>
+          <height>24</height>
          </rect>
         </property>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 background-repeat: none;
-border: none;</string>
+border: none;
+
+QPushButton#button_wentylator:checked
+{
+background-color: transparent;
+border: none;
+}</string>
         </property>
         <property name="text">
          <string/>
@@ -4819,28 +5112,6 @@ font: 87 10pt &quot;Lato Black&quot;;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="boiler">
-        <property name="geometry">
-         <rect>
-          <x>957</x>
-          <y>560</y>
-          <width>104</width>
-          <height>62</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/boiler.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-       </widget>
        <widget class="shelly" name="shelly1_1">
         <property name="geometry">
          <rect>
@@ -5098,6 +5369,55 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QPushButton" name="cwu">
+        <property name="geometry">
+         <rect>
+          <x>957</x>
+          <y>560</y>
+          <width>100</width>
+          <height>62</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#cwu{
+background-color: transparent;
+background-repeat: none;
+border: none;
+}
+
+QPushButton#cwu:checked
+{
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="grafika.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</normaloff>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>104</width>
+          <height>62</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+        <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -5196,8 +5516,6 @@ border: none;
        <zorder>con_err_13</zorder>
        <zorder>con_err_14</zorder>
        <zorder>con_err_15</zorder>
-       <zorder>boiler</zorder>
-       <zorder>label_21</zorder>
        <zorder>con_err_12</zorder>
        <zorder>shelly1_1</zorder>
        <zorder>signal</zorder>
@@ -5208,6 +5526,8 @@ border: none;
        <zorder>signal_3</zorder>
        <zorder>signal_4</zorder>
        <zorder>pushButton_42</zorder>
+       <zorder>cwu</zorder>
+       <zorder>label_21</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -5581,7 +5901,7 @@ background-repeat: none;
 border: none;
 }
 
-QPushButton#button_scene_4:checked
+QPushButton#button_scene_4:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sleep_on.png);
 background-color: transparent;
@@ -5592,7 +5912,7 @@ border: none;
          <string/>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="flat">
          <bool>true</bool>

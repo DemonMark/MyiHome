@@ -13,8 +13,6 @@
 #include "mytimer.h"
 #include "mydbs.h"
 
-extern int q,ram,brakram;
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

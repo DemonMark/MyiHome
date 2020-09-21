@@ -18,6 +18,7 @@ private:
         QTimer *timer_LOff;
         QTimer *timer_obecnosc;
         QTimer *action;
+        QTimer *ping;
 
   signals:
         void changes();
@@ -31,5 +32,6 @@ private:
         void simulation(bool on);
         void simulation_holder();
         void random_off();
+        void ping_slot();
 };
 #endif // MYUDP_H

@@ -5,7 +5,6 @@
 #include "ui_mainwindow.h"
 
 int i;
-int q=0;
 unsigned char shell[1];
 unsigned char temp[20];
 unsigned char tempholder[20];
@@ -33,7 +32,7 @@ int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;
 QString ips;
-QString rssi[4];
+QString rssi[5];
 extern QString time_text;
 extern int dzien;
 extern int spimy;
@@ -76,6 +75,10 @@ MyUDP::MyUDP(QObject *parent) :
   action = new QTimer(this);
   connect(action, SIGNAL(timeout()), this, SLOT(simulation_holder()));
 
+  //timer do pukania do modułu (nowy router usypia połączenie z hostami)
+  ping = new QTimer(this);
+  connect(ping, SIGNAL(timeout()),this,SLOT(ping_slot()));
+  ping->start(60000);
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
 void MyUDP::WYSUDP(QString addr)
@@ -133,7 +136,7 @@ void MyUDP::readyRead(){
         QByteArray k = Buffer.toHex();
         QByteArray z=k.mid(6,8);
 
-        //qDebug() <<" Mss from" << sender.toString();
+        //qDebug() <<" Mss from" << sender.toString() << " Ramka: " << k;
         //qDebug() << "Mss port" << senderPort;
         //qDebug() << "Ramka: " << k;
 
@@ -183,9 +186,6 @@ void MyUDP::readyRead(){
             obecnosc=1;
             timer_obecnosc->start(300000);
             emit changes();
-            if(temp[1]&0x01){
-                qDebug() << "ZALANIE";
-            }
             //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
             if(spimy==1 || scene_active){
                 odliczG=600;
@@ -205,8 +205,12 @@ void MyUDP::readyRead(){
                         foreach(unsigned char r, scheduledhexxout[j]){
 
                             maskawysl[outmasks.value(j)[i]]|=r;
-                            WYSUDP("192.168.1.101");
                             c[scheduledcs.value(j)[i]]=1;
+                            if(outmasks.value(j)[i]<5){
+                                WYSUDP("192.168.1.101");
+                            }else{
+                                WYSUDP("192.168.1.104");
+                            }
                             i++;
                         }
                         if(scheduledtime[j]==0){
@@ -238,7 +242,7 @@ void MyUDP::readyRead(){
                 if(Buffer[2]&0x01){
                     shList.at(i)->setIcon(QIcon(ico_on_list[i]));
                 }
-                if(Buffer[3]&0x01){
+                if((Buffer[3]&0x01)&&(ips=="192.168.1.105")){
 
                     QByteArray plugsockett;
                     QByteArray psDataa;
@@ -374,4 +378,10 @@ void MyUDP::random_off()
 void MyUDP::simulation_holder() //do usunięcia w QT 5.2 (lambda exspression)
 {
     simulation(true);
+}
+
+void MyUDP::ping_slot()
+{
+    WYSUDP("192.168.1.101");
+    WYSUDP("192.168.1.104");
 }

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QtWebKit/QWebView>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,7 @@ public:
     void readscheduler();
     void getHumidity();
     void barometer();
+    void sunTimeWatcher(QList<QString> suntime, QString source, QListWidget *widget, int pos, QList<QString> ssTIME);
 
 private slots:
 
@@ -71,13 +73,17 @@ private slots:
 
   void on_button_wentylator_3_clicked(bool checked);
 
-  void on_button_scene_4_clicked(bool checked);
+  void on_button_scene_4_clicked();
 
   void on_pushButton_13_clicked();
 
   void on_comboBox_currentIndexChanged(const QString &arg1);
 
   void on_resetButton_clicked();
+
+  void on_cwu_toggled(bool checked);
+
+  void on_pushButton_24_toggled(bool checked);
 
 private:
 

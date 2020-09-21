@@ -12,7 +12,6 @@
 #include <QTimer>
 #include "QDebug"
 #include <QSlider>
-#include <QLabel>
 #include <QDateTime>
 #include "mytimer.h"
 #include <QtCore/QCoreApplication>
@@ -46,18 +45,19 @@ QList<QList<int> > outmasks; //lista masek dla harmonogramu czujek
 QList<QList<int> > scheduledcs; //lista zmiennych "c" harmonogramów
 QList<QList<int> > scheduledbtns; //lista przycisków harmonogramów
 QList<int> scheduledtime; //lista znaczników dla włączania harmonogramu wg czasu wieczornego lub innego
+QList<QString> sunsetTime; //lista czasów zachodu słońca w momencie dodawania zdarzenia harmonogramu
+QList<QString> sunriseTime; //lista czasów wschodu słońca w momencie dodawania zdarzenia harmonogramu
 QList<int> tspinBox;
-QList<int> gnpos;
+QList<int> gnpos, gn2pos;
 QList<QString> startat;
 QList<QString> stopat;
 QList<QString> outnames;
 QList<QString> pirnames;
 QString time_text;
 extern QString ips;
-extern QString rssi[4];
-extern int q;           //odebranie konkretnej ramki
+extern QString rssi[5];
 extern int c[49];
-QList<int> t;
+QList<int> t({0,0,0,0,0,0,0});
 int num=0;
 extern unsigned char shell[1];
 extern unsigned char temp[20];
@@ -71,6 +71,7 @@ unsigned char maskawysl[10];
 extern int odliczG;
 int a=0;
 int gn=-1;
+int gn2=0;
 int qu;
 int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0,flaga_8=0,flaga_9=0,flaga_10=0;
 int dzien;  //jeśli = 1 czujki nie włączają świateł
@@ -91,6 +92,7 @@ bool scene_active;
 bool scene_driving;
 bool jestem;
 bool shelly_on;
+bool write_off=false;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -123,18 +125,17 @@ MainWindow::MainWindow(QWidget *parent) :
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pirList = ui->tab_5->findChildren<pir_button*>();
-    shList = ui->tab_5->findChildren<shelly*>();
-    qDebug() << shList;
+    shList = ui->tab_5->findChildren<shelly*>()+ui->tab->findChildren<shelly*>();
+
     int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
     for(int lf=1; lf<=tmp; lf++){
         QString ln=QString::number(lf);
         c_e.append(MainWindow::findChildren<QLabel*>("con_err_"+ln));
     }
-    qDebug() << c_e;
 
     foreach(QPushButton *btn, bList)
     {
-        qDebug() << btn->objectName();
+        //qDebug() << btn->objectName();
         connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
     }
 
@@ -153,7 +154,6 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach(QDial* dpL, dpList){
         dpL->setVisible(false);
         connect(dpL, SIGNAL(valueChanged(int)), this, SLOT(settimers(int)));
-
     }
     //sprawa do opanowania - dostep do UI z subklasy
     foreach (pir_button* ere, pirList) {
@@ -250,7 +250,23 @@ void MainWindow::showTime(){
             movie_countdown->start();
             ui->label_19->setStyleSheet("background-image:none");
         }
-
+//***************zarządzanie temperaturą cwu*******************//
+        double temp_cwu = ui->label_21->text().split(DC)[0].toDouble();
+        switch(obecnosc){
+        case 1:
+            if(temp_cwu < (ui->cwu_ob->value())){
+                ui->cwu->setChecked(true);
+            }else {
+                ui->cwu->setChecked(false);
+            }
+            break;
+        case 0:
+            if(temp_cwu < (ui->cwu_nob->value())){
+                ui->cwu->setChecked(true);
+            }else {
+                ui->cwu->setChecked(false);
+            }
+        }
 }
 
 /************************************************************** ODBIERANIE *********************************************************************/
@@ -265,8 +281,13 @@ void MainWindow::timerEvent(QTimerEvent *event){
             foreach(unsigned char r, scheduledhexxout[j]){
                 maskawysl[outmasks.value(j)[i]]|=r;
                 MyUDP client;
-                client.WYSUDP("192.168.1.101");
+                if(outmasks.value(j)[i]<5){
+                    client.WYSUDP("192.168.1.101");
+                }else{
+                    client.WYSUDP("192.168.1.104");
+                }
                 c[scheduledcs.value(j)[i]]=1;
+                bList.at(scheduledbtns.value(j)[i])->setChecked(true);
                 i++;
             }
             qDebug() << "START";
@@ -281,8 +302,13 @@ void MainWindow::timerEvent(QTimerEvent *event){
             foreach(unsigned char r, scheduledhexxout[j]){
                 maskawysl[outmasks.value(j)[i]]&=~r;
                 MyUDP client;
-                client.WYSUDP("192.168.1.101");
+                if(outmasks.value(j)[i]<5){
+                    client.WYSUDP("192.168.1.101");
+                }else{
+                    client.WYSUDP("192.168.1.104");
+                }
                 c[scheduledcs.value(j)[i]]=1;
+                bList.at(scheduledbtns.value(j)[i])->setChecked(false);
                 i++;
             }
             qDebug() << "STOP";
@@ -636,6 +662,7 @@ void MainWindow::receiving(){
     ui->signal_2->setText(rssi[0]);
     ui->signal_3->setText(rssi[2]);
     ui->signal_4->setText(rssi[3]+DC);
+    ui->signal_5->setText(rssi[4]);
 
     //****************zaznaczanie buttonów po wykryciu pakietu************************//
     if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
@@ -811,7 +838,7 @@ void MainWindow::stykOff(){
 
 void MainWindow::on_pushButton_23_clicked()
 {
-    if(ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0){
+    if((ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0) || (ui->pushButton_31->isChecked() && ui->listWidget_2->currentRow()>=0)){
         int hexxpos;
         int om;
         gn++;
@@ -845,6 +872,10 @@ void MainWindow::on_pushButton_23_clicked()
                 hexxpos=32;
                 om=4;
             }
+            if(rows.row()>39){
+                hexxpos=40;
+                om=5;
+            }
             ingridiens.insert(a,hexx[(rows.row())-hexxpos+1]);
             outmask.insert(a,om);
             scheduledc.insert(a,(rows.row())+1);
@@ -858,6 +889,7 @@ void MainWindow::on_pushButton_23_clicked()
         scheduledcs.insert(gn,scheduledc);
         scheduledbtns.insert(gn,scheduledbtn);
         outnames.insert(gn,tempnames);
+        gn2pos.insert(gn,gn2);
         a=0;
         if(ui->pushButton_29->isChecked()){
             scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
@@ -878,21 +910,29 @@ void MainWindow::on_pushButton_23_clicked()
             pirnames.insert(gn,ui->listWidget->currentItem()->text());
         }
         if(ui->pushButton_31->isChecked()){
-            startat.insert(gn,ui->timeEdit->text());
-            stopat.insert(gn,ui->timeEdit_2->text());
+            startat.insert(gn2,ui->timeEdit->text());
+            stopat.insert(gn2,ui->timeEdit_2->text());
             scheduledhexxpir.insert(gn,0);
             scheduledtime.insert(gn,2);
             scheduledtimers.insert(gn,0);
             tspinBox.insert(gn,0);
-            gnpos.insert(gn,gn);
-            new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+            gnpos.insert(gn2,gn);
+            if(ui->trackButton->isChecked()){
+                sunsetTime.insert(gn2,ui->label_26->text());
+                sunriseTime.insert(gn2,ui->label_25->text());
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_tracking.png"));
+            }else{
+                sunsetTime.insert(gn2,"0");
+                sunriseTime.insert(gn2,"0");
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+            }
+            //new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
             new_item->setText(ui->timeEdit->text()+" - "+ui->timeEdit_2->text()+" -> "+tempnames);
+            gn2++;
         }
-        //new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
         ui->listWidget_3->addItem(new_item);
         ui->listWidget->clearSelection();
         ui->listWidget_2->clearSelection();
-        qDebug() << scheduledhexxpir;
     }
     writescheduler();
 }
@@ -901,7 +941,9 @@ void MainWindow::on_pushButton_27_clicked()
 {
     int cr = ui->listWidget_3->currentRow();
     if(cr>=0){
-        delete ui->listWidget_3->currentItem();
+        if(scheduledtime[cr]==2){
+            gn2--;
+        }
         scheduledhexxout.removeAt(cr);
         scheduledhexxpir.removeAt(cr);
         outmasks.removeAt(cr);
@@ -912,11 +954,15 @@ void MainWindow::on_pushButton_27_clicked()
         tspinBox.removeAt(cr);
         outnames.removeAt(cr);
         pirnames.removeAt(cr);
-        gnpos.removeAt(cr);
-        startat.removeAt(cr);
-        stopat.removeAt(cr);
-        gn--;
+        gnpos.removeAt(gn2pos[cr]);
+        startat.removeAt(gn2pos[cr]);
+        stopat.removeAt(gn2pos[cr]);
+        sunsetTime.removeAt(gn2pos[cr]);
+        sunriseTime.removeAt(gn2pos[cr]);
+
+        delete ui->listWidget_3->currentItem();
         writescheduler();
+        gn--;
     }
 }
 
@@ -964,6 +1010,8 @@ void MainWindow::readTimeFromWWW(){
     ui->label_25->setText(swTime.mid(51,5));
     ui->label_26->setText(swTime.mid(73,5));
     QObject::disconnect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+    sunTimeWatcher(sunsetTime, ui->label_26->text(), ui->listWidget_3, 0, startat);
+    sunTimeWatcher(sunriseTime, ui->label_25->text(), ui->listWidget_3, 11, stopat);
 }
 
 //****************************WYSYŁANIE Z IKON PULPITU**********************//
@@ -1028,6 +1076,9 @@ void MainWindow::writescheduler(){
             out << dL->value();
         }
         out << t;
+        out << sunsetTime;
+        out << sunriseTime;
+        out << gn2pos;
         target.flush();
         target.close();
     }
@@ -1046,7 +1097,7 @@ void MainWindow::readscheduler(){
         in >> scheduledhexxout >> scheduledhexxpir >> outmasks >> scheduledcs >> scheduledtime >> scheduledbtns
                 >> outnames >> pirnames >> tspinBox >> startat >> stopat >> gnpos
                 >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dLv[5] >> dLv[6] >> dLv[7] >> dLv[8]
-                >> dLv[9] >> t;
+                >> dLv[9] >> t >> sunsetTime >> sunriseTime >> gn2pos;
         target.close();
         qDebug() << dLv[7] << t;
         foreach(QDial* dL, dList){
@@ -1074,7 +1125,11 @@ void MainWindow::readscheduler(){
                 scheduledtimers.insert(gn,0);
             }
             if(time==2){
-                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+                if(!(sunriseTime[time2_u]=="0")){
+                    new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_tracking.png"));
+                }else{
+                    new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+                }
                 new_item->setText(startat.at(time2_u) + " - " + stopat.at(time2_u) + " -> " + outnames.at(u));
                 ui->listWidget_3->addItem(new_item);
                 scheduledtimers.insert(gn,0);
@@ -1083,6 +1138,7 @@ void MainWindow::readscheduler(){
             u++;
         }
     }
+    qDebug() << startat;
 }
 
 void MainWindow::on_dial_12_valueChanged(int value)
@@ -1137,9 +1193,9 @@ void MainWindow::settimers(int dial_value)
     for(int i=0; i<dpList.length(); i++){
         if(dpList.at(i)==QObject::sender()){
             t.replace(i,(dial_value*1000));
+            writescheduler();
         }        
     }
-    writescheduler();
 }
 
 void MainWindow::showui()
@@ -1212,7 +1268,7 @@ void MainWindow::getHumidity()
        }
 
     if (data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF)){
-        qDebug() << "DANE OK";
+        //qDebug() << "DANE OK";
         humidity = (float) (data[0]);
         float temperature = (float) (data[2]);
         QString hum, temp;
@@ -1325,11 +1381,9 @@ void MainWindow::on_button_wentylator_3_clicked(bool checked)
     }
 }
 
-void MainWindow::on_button_scene_4_clicked(bool checked)
+void MainWindow::on_button_scene_4_clicked()
 {
-    if(checked){
         ui->timeEdit_3->setTime(QTime::currentTime());
-    }
 }
 
 void MainWindow::on_pushButton_13_clicked()
@@ -1382,4 +1436,66 @@ void MainWindow::on_resetButton_clicked()
 {
     MyUDP reset;
     reset.WYSUDP("192.168.1.102");
+}
+
+void MainWindow::on_cwu_toggled(bool checked)
+{
+    QFile plik("/media/HDD1/admin/iHome/28-02-2018/cwu.txt");
+    MyUDP cwu;
+    if (checked){  
+        maskawysl[5]|=0x08;
+        if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
+            QTextStream on(&plik);
+            on << ui->datatime->text() << " ON: " << time_text << " " << ui->label_21->text();
+            plik.close();
+        }
+        write_off=true;
+    }else if ((!checked) && write_off){
+        maskawysl[5]&=~0x08;
+        if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
+            QTextStream off(&plik);
+            off << " OFF: " << time_text << " " << ui->label_21->text() << "\n";
+            plik.close();
+        }
+        write_off=false;
+    }
+    cwu.WYSUDP("192.168.1.104");
+}
+
+void MainWindow::on_pushButton_24_toggled(bool checked)
+{
+    MyUDP sink;
+    if(checked){
+        maskawysl[5]|=0x10;
+    }else{
+        maskawysl[5]&=~0x10;
+    }
+    sink.WYSUDP("192.168.1.104");
+}
+//***śledzenie czasu wschodu/zachodu złońca i zmiana czasu świecenia źródła***
+void MainWindow::sunTimeWatcher(QList<QString> suntime, QString source, QListWidget *widget, int pos, QList<QString> ssTIME)
+{
+    int i=0;
+    foreach(QString time, suntime){
+        if(!(time=="0")){
+            QTime old_sun_time = QTime::fromString(time, "HH:mm");
+            QTime now_sun_time = QTime::fromString(source, "HH:mm");
+            QTime old_oo_time = QTime::fromString(ssTIME[i], "hh:mm:ss");
+            QTime new_oo_time = QTime::fromString(ssTIME[i], "hh:mm:ss").addSecs((now_sun_time.secsTo(old_sun_time))*(-1));
+            //QTime dif_time = QTime(0,0).addSecs(now_sun_time.secsTo(old_sun_time)) ;
+            suntime.replace(i,now_sun_time.toString("hh:mm"));
+            //new_oo_time.setHMS(old_oo_time.hour() - dif_time.hour(), old_oo_time.minute() - dif_time.minute(), 0);
+            ssTIME.replace(i, new_oo_time.toString());
+            QList<QListWidgetItem*> item = widget->findItems(old_oo_time.toString(), Qt::MatchContains);
+            int rowi = widget->row(item.at(i));
+            QString row = widget->item(rowi)->text();
+            row.replace(pos,8, new_oo_time.toString());
+            widget->item(rowi)->setText(row);
+
+            qDebug() << "OLD OO TIME:" << old_oo_time;
+            qDebug() << new_oo_time;
+            qDebug() << "START/STOP:" << ssTIME;
+        }
+        i++;
+    }
 }
