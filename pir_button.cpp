@@ -1,13 +1,12 @@
 #include "pir_button.h"
 #include "ui_mainwindow.h"
-extern QString time_text;
+
 extern QList<QPushButton*> pirList;
 extern QList<QDial*> dpList;
 extern unsigned char temp[20];
 extern unsigned char hexx[9];
 extern QString ips;
 QList<QTimer*> ptimers;
-extern int spimy; // tylko do celów sprawdzenia ruchu w nocy - do wykasowania po analizie
 
 pir_button::pir_button(QWidget *parent) :
     QPushButton(parent)
@@ -32,9 +31,6 @@ void pir_button::naruszeniestrefy(){
                 pirList.at(i-1)->setChecked(true);
                 ptimers.at(i)->setSingleShot(true);
                 ptimers.at(i)->start(300000);
-                if (spimy==1){
-                    qDebug() << time_text << pirList.at(i-1)->objectName();
-                }
             }
         }
     }

@@ -90,9 +90,10 @@ int count_down=0;
 extern bool simulating_on;
 bool scene_active;
 bool scene_driving;
-bool jestem;
+bool jestem = true;
 bool shelly_on;
 bool write_off=false;
+extern QByteArray plugsocket;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -125,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent) :
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pirList = ui->tab_5->findChildren<pir_button*>();
-    shList = ui->tab_5->findChildren<shelly*>()+ui->tab->findChildren<shelly*>();
+    shList = ui->tab_5->findChildren<shelly*>(QRegExp ("shelly*"));
 
     int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
     for(int lf=1; lf<=tmp; lf++){
@@ -326,7 +327,22 @@ void MainWindow::timerEvent(QTimerEvent *event){
         humiditywatcher=false;
         movie_wentylacja->setSpeed(100);
     }
-
+    //*************GEOLOKALIZACJA**************
+   QFile comming("/home/pi/GDrive/comming_home.csv");
+   if(comming.exists()){
+        if(!jestem){
+            qDebug() << "EXIST";
+            comming.remove();
+            QPoint point(0, 413.0);
+            ui->pushButton_16->click();
+            QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
+            QCoreApplication::sendEvent(ui->_helly25_2,me);
+            jestem=true; //flaga wprowadzona ze wzgledu na sprawdzanie obecnosci pliku 2x/s a odswiezanie GDrive co 1st
+        }
+   }else{
+       //qDebug() << "N_EXIST";
+       jestem=false;
+   }
 }
 
 void MainWindow::receiving(){
@@ -615,6 +631,7 @@ void MainWindow::receiving(){
                 MyUDP client;
                 client.WYSUDP("192.168.1.101");
             }
+            //*************flaga dla pomp podłogówki*******
             if (flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0){
                 maskawysl[3]|=0x40;
                 MyUDP client;
@@ -643,6 +660,12 @@ void MainWindow::receiving(){
                 movie_pompa_2->stop();
                 ui->label_pompa_2->setPixmap(pompa_off);
             }
+            //********flaga dla pompy C.O.*************************
+            if(flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0 || flaga==0 || flaga_7==0 || flaga_8==0 || flaga_9==0 || flaga_10==0){
+                plugsocket[2]=0x01;
+            } else{
+                plugsocket[2]=0x00;
+            }
         }
         qu=0;
     }
@@ -661,8 +684,8 @@ void MainWindow::receiving(){
     ui->signal->setText(rssi[1]);
     ui->signal_2->setText(rssi[0]);
     ui->signal_3->setText(rssi[2]);
-    ui->signal_4->setText(rssi[3]+DC);
-    ui->signal_5->setText(rssi[4]);
+    ui->signal_4->setText(rssi[4]+DC); //temperatura układu Shelly2.5
+    ui->signal_5->setText(rssi[3]);
 
     //****************zaznaczanie buttonów po wykryciu pakietu************************//
     if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
@@ -917,6 +940,7 @@ void MainWindow::on_pushButton_23_clicked()
             scheduledtimers.insert(gn,0);
             tspinBox.insert(gn,0);
             gnpos.insert(gn2,gn);
+            pirnames.insert(gn, "-");
             if(ui->trackButton->isChecked()){
                 sunsetTime.insert(gn2,ui->label_26->text());
                 sunriseTime.insert(gn2,ui->label_25->text());
@@ -942,7 +966,14 @@ void MainWindow::on_pushButton_27_clicked()
     int cr = ui->listWidget_3->currentRow();
     if(cr>=0){
         if(scheduledtime[cr]==2){
-            gn2--;
+            gnpos.removeAt(gn2pos[cr]);
+            startat.removeAt(gn2pos[cr]);
+            stopat.removeAt(gn2pos[cr]);
+            sunsetTime.removeAt(gn2pos[cr]);
+            sunriseTime.removeAt(gn2pos[cr]);
+            if(--gn2<0){
+                gn2=0;
+            }
         }
         scheduledhexxout.removeAt(cr);
         scheduledhexxpir.removeAt(cr);
@@ -954,11 +985,7 @@ void MainWindow::on_pushButton_27_clicked()
         tspinBox.removeAt(cr);
         outnames.removeAt(cr);
         pirnames.removeAt(cr);
-        gnpos.removeAt(gn2pos[cr]);
-        startat.removeAt(gn2pos[cr]);
-        stopat.removeAt(gn2pos[cr]);
-        sunsetTime.removeAt(gn2pos[cr]);
-        sunriseTime.removeAt(gn2pos[cr]);
+        gn2pos.removeAt(cr);
 
         delete ui->listWidget_3->currentItem();
         writescheduler();
@@ -1099,7 +1126,7 @@ void MainWindow::readscheduler(){
                 >> dLv[0] >> dLv[1] >> dLv[2] >> dLv[3] >> dLv[4] >> dLv[5] >> dLv[6] >> dLv[7] >> dLv[8]
                 >> dLv[9] >> t >> sunsetTime >> sunriseTime >> gn2pos;
         target.close();
-        qDebug() << dLv[7] << t;
+
         foreach(QDial* dL, dList){
             dL->setValue(dLv[dLv_n]);
             dLv_n++;
@@ -1138,7 +1165,7 @@ void MainWindow::readscheduler(){
             u++;
         }
     }
-    qDebug() << startat;
+    qDebug() << startat << stopat;
 }
 
 void MainWindow::on_dial_12_valueChanged(int value)
@@ -1440,23 +1467,23 @@ void MainWindow::on_resetButton_clicked()
 
 void MainWindow::on_cwu_toggled(bool checked)
 {
-    QFile plik("/media/HDD1/admin/iHome/28-02-2018/cwu.txt");
+    //QFile plik("/media/HDD1/admin/iHome/28-02-2018/cwu.txt");
     MyUDP cwu;
     if (checked){  
         maskawysl[5]|=0x08;
-        if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
-            QTextStream on(&plik);
-            on << ui->datatime->text() << " ON: " << time_text << " " << ui->label_21->text();
-            plik.close();
-        }
+        //if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
+            //QTextStream on(&plik);
+            //on << ui->datatime->text() << " ON: " << time_text << " " << ui->label_21->text();
+            //plik.close();
+        //}
         write_off=true;
     }else if ((!checked) && write_off){
         maskawysl[5]&=~0x08;
-        if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
-            QTextStream off(&plik);
-            off << " OFF: " << time_text << " " << ui->label_21->text() << "\n";
-            plik.close();
-        }
+        //if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
+            //QTextStream off(&plik);
+            //off << " OFF: " << time_text << " " << ui->label_21->text() << "\n";
+            //plik.close();
+        //}
         write_off=false;
     }
     cwu.WYSUDP("192.168.1.104");
@@ -1473,10 +1500,12 @@ void MainWindow::on_pushButton_24_toggled(bool checked)
     sink.WYSUDP("192.168.1.104");
 }
 //***śledzenie czasu wschodu/zachodu złońca i zmiana czasu świecenia źródła***
-void MainWindow::sunTimeWatcher(QList<QString> suntime, QString source, QListWidget *widget, int pos, QList<QString> ssTIME)
+void MainWindow::sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME)
 {
     int i=0;
+    qDebug() << "JESTEM PRZED FOREM";
     foreach(QString time, suntime){
+        qDebug() << "JESTEM PRZED 0";
         if(!(time=="0")){
             QTime old_sun_time = QTime::fromString(time, "HH:mm");
             QTime now_sun_time = QTime::fromString(source, "HH:mm");
@@ -1486,16 +1515,36 @@ void MainWindow::sunTimeWatcher(QList<QString> suntime, QString source, QListWid
             suntime.replace(i,now_sun_time.toString("hh:mm"));
             //new_oo_time.setHMS(old_oo_time.hour() - dif_time.hour(), old_oo_time.minute() - dif_time.minute(), 0);
             ssTIME.replace(i, new_oo_time.toString());
+            qDebug () << "JESTEM PRZED ZMIANA TEKSTU LISTY";
             QList<QListWidgetItem*> item = widget->findItems(old_oo_time.toString(), Qt::MatchContains);
             int rowi = widget->row(item.at(i));
             QString row = widget->item(rowi)->text();
             row.replace(pos,8, new_oo_time.toString());
             widget->item(rowi)->setText(row);
-
-            qDebug() << "OLD OO TIME:" << old_oo_time;
-            qDebug() << new_oo_time;
-            qDebug() << "START/STOP:" << ssTIME;
+            writescheduler();
         }
         i++;
     }
+}
+
+void MainWindow::on_test_pressed()
+{
+    sunTimeWatcher(sunsetTime, ui->label_26->text(), ui->listWidget_3, 0, startat);
+    sunTimeWatcher(sunriseTime, ui->label_25->text(), ui->listWidget_3, 11, stopat);
+    qDebug() << scheduledhexxout;
+    qDebug() << outmasks;
+    qDebug() << scheduledcs;
+    qDebug() << scheduledbtns;
+    qDebug() << outnames;
+    qDebug() << gnpos;
+    qDebug() << gn2pos;
+    qDebug() << scheduledhexxpir;
+    qDebug() << scheduledtime;
+    qDebug() << scheduledtimers;
+    qDebug() << tspinBox;
+    qDebug() << pirnames;
+    qDebug() << startat;
+    qDebug() << stopat;
+    qDebug() << sunriseTime;
+    qDebug() << sunsetTime;
 }

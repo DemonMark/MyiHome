@@ -27,7 +27,7 @@ public:
     void readscheduler();
     void getHumidity();
     void barometer();
-    void sunTimeWatcher(QList<QString> suntime, QString source, QListWidget *widget, int pos, QList<QString> ssTIME);
+    void sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME);
 
 private slots:
 
@@ -84,6 +84,8 @@ private slots:
   void on_cwu_toggled(bool checked);
 
   void on_pushButton_24_toggled(bool checked);
+
+  void on_test_pressed();
 
 private:
 

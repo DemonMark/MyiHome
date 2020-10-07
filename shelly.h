@@ -15,7 +15,7 @@ public:
 
     QUdpSocket *shellsock;
     void mousePressEvent(QMouseEvent *ev);
-
+    void clicked();
 private:
 
 signals:

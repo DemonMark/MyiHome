@@ -48,10 +48,10 @@ extern bool scene_active;
 extern bool scene_driving;
 extern bool jestem;
 extern bool shelly_on;
-extern QByteArray plugsocket;
-QString ips_list[3] = {"192.168.1.106", "192.168.1.105", "192.168.1.107"}; //IP w kolejnosci QListy
-QString ico_off_list[3] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png"};
-QString ico_on_list[3] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png"};
+
+QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.168.1.108"}; //IP w kolejnosci QListy
+QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png"};
+QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.png"};
 extern QList<shelly*> shList;
 
 MyUDP::MyUDP(QObject *parent) :
@@ -232,7 +232,7 @@ void MyUDP::readyRead(){
         }
 
         //****************SHELLY1**********************//
-        for(int i=0; i<=2; i++){
+        for(int i=0; i<=shList.count()-1; i++){
             if(ips==ips_list[i]){
 
                 if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)){
@@ -265,7 +265,7 @@ void MyUDP::readyRead(){
                 //wyjątek dla Shelly2.5 - termistor
                 if(ips=="192.168.1.107"){
                     signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
-                    rssi[3]= QString::number(signal);
+                    rssi[4]= QString::number(signal);
                 }
                 //emit changes();
             }
