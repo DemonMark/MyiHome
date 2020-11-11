@@ -27,6 +27,6 @@ int main(int argc, char *argv[])
     QObject::connect(&w,SIGNAL(simulating(bool)), &client, SLOT(simulation(bool)));
     QObject::connect(&w,SIGNAL(all_off()), &client, SLOT(lightsOff()));
     QObject::connect(&client, SIGNAL(all_off_()), &w, SLOT(LOff()));
-    QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjscie()));
+    QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjezdzam()));
   return a.exec();
 }

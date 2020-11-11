@@ -39,6 +39,8 @@ extern int spimy;
 extern int flaga;
 extern int obecnosc;
 extern int gn;
+extern int arg[12];
+extern int arg_check;
 extern QList<int> t;
 int c[49]; //wejścia (49 pozycji kontenera wliczając 0)
 int odliczG;
@@ -50,7 +52,7 @@ extern bool jestem;
 extern bool shelly_on;
 
 QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.168.1.108"}; //IP w kolejnosci QListy
-QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png"};
+QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png"};
 QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.png"};
 extern QList<shelly*> shList;
 
@@ -188,7 +190,13 @@ void MyUDP::readyRead(){
             emit changes();
             //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
             if(spimy==1 || scene_active){
-                odliczG=600;
+                switch(scene_active){
+                case true:
+                    odliczG=arg[2]*60;
+                    break;
+                default:
+                    odliczG=600;
+                }
                 timer_LOff->start(1000);
             }
             //***WYKONYWANIE HARMONOGRAMU***//
@@ -224,9 +232,9 @@ void MyUDP::readyRead(){
                 }
             }
             }
-        //************WYKONYWANIE SCEN**********//
-        //***********SCENA WYJEZDZAM************//
-            if(scene_driving && tempholder[0] & scene_pir){
+        //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
+            //***********SCENA WYJEZDZAM************//
+            if(scene_driving && tempholder[0]&scene_pir){
                 emit gate();
             }
         }
@@ -276,7 +284,6 @@ void MyUDP::readyRead(){
 //**********FUNKCJA DO WYŁĄCZENIA WSZYSTKICH WYJŚĆ***************//
 void MyUDP::lightsOff(){
 
-    odliczG--;
     if (odliczG==0){
         maskawysl[0]&=~0xff;
         maskawysl[1]&=~0xff;
@@ -286,9 +293,11 @@ void MyUDP::lightsOff(){
         WYSUDP("192.168.1.101");
         WYSUDP("192.168.1.104");
         zerujWyj();
-        timer_LOff->stop();
         emit all_off_();
+        arg_check--;
+        qDebug() << arg_check;
     }
+    odliczG--;
     if(odliczG<0){
         odliczG=0;
         timer_LOff->stop();

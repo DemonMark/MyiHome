@@ -390,29 +390,64 @@ color: rgb(255, 255, 255);</string>
 selection-color: rgb(255, 255, 255);</string>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>-1</number>
         </property>
         <property name="maxCount">
          <number>10</number>
         </property>
         <item>
          <property name="text">
-          <string>wyjeżdżam</string>
+          <string>wyjezdzam</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/scene_car_off.png</selectedoff>
+           <selectedon>:/HDD1/admin/iHome/28-02-2018/media/scene_car_on.png</selectedon>
+          </iconset>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>wychodzę</string>
+          <string>wychodze</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/scene_door_off.png</selectedoff>
+           <selectedon>:/HDD1/admin/iHome/28-02-2018/media/scene_door_on.png</selectedon>
+          </iconset>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>oglądam TV</string>
+          <string>TV</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/scene_watching_off.png</selectedoff>
+           <selectedon>:/HDD1/admin/iHome/28-02-2018/media/scene_watching_on.png</selectedon>
+          </iconset>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>idę spać</string>
+          <string>ide spac</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/sleep_off.png</selectedoff>
+           <selectedon>:/HDD1/admin/iHome/28-02-2018/media/sleep_on.png</selectedon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Matylda</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/cat_off.png</selectedoff>
+           <selectedon>:/HDD1/admin/iHome/28-02-2018/media/cat_on.png</selectedon>
+          </iconset>
          </property>
         </item>
        </widget>
@@ -432,20 +467,33 @@ selection-color: rgb(255, 255, 255);</string>
          <string>scena</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_13">
+       <widget class="QPushButton" name="config">
         <property name="geometry">
          <rect>
-          <x>890</x>
-          <y>340</y>
-          <width>221</width>
-          <height>31</height>
+          <x>830</x>
+          <y>400</y>
+          <width>56</width>
+          <height>74</height>
          </rect>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#config {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/conf_check_off.png);
+background-repeat: none;
+}
+
+QPushButton#config:pressed
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/conf_check_on.png);
+background-color: transparent;
+}</string>
+        </property>
         <property name="text">
-         <string>konfiguruj scenę</string>
+         <string/>
         </property>
         <property name="flat">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QLabel" name="label_4">
@@ -464,12 +512,12 @@ selection-color: rgb(255, 255, 255);</string>
          <string>zdażenia sceny</string>
         </property>
        </widget>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="conf_ch_1">
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>160</y>
-          <width>141</width>
+          <y>70</y>
+          <width>281</width>
           <height>26</height>
          </rect>
         </property>
@@ -477,14 +525,17 @@ selection-color: rgb(255, 255, 255);</string>
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>odliczanie [min]</string>
+         <string>wyłącz wszystkie  światła po [min]</string>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
         </property>
        </widget>
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="conf_ch_2">
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>190</y>
+          <y>100</y>
           <width>211</width>
           <height>26</height>
          </rect>
@@ -495,12 +546,15 @@ selection-color: rgb(255, 255, 255);</string>
         <property name="text">
          <string>wyłącz wszystkie  światła</string>
         </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
        </widget>
-       <widget class="QCheckBox" name="checkBox_3">
+       <widget class="QCheckBox" name="conf_ch_3">
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>220</y>
+          <y>130</y>
           <width>161</width>
           <height>26</height>
          </rect>
@@ -512,11 +566,11 @@ selection-color: rgb(255, 255, 255);</string>
          <string>wyłącz rekuperację</string>
         </property>
        </widget>
-       <widget class="QCheckBox" name="checkBox_4">
+       <widget class="QCheckBox" name="conf_ch_4">
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>250</y>
+          <y>160</y>
           <width>201</width>
           <height>26</height>
          </rect>
@@ -528,11 +582,11 @@ selection-color: rgb(255, 255, 255);</string>
          <string>obniż temperaturę o [C]</string>
         </property>
        </widget>
-       <widget class="QCheckBox" name="checkBox_5">
+       <widget class="QCheckBox" name="conf_ch_5">
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>280</y>
+          <y>190</y>
           <width>121</width>
           <height>26</height>
          </rect>
@@ -547,8 +601,8 @@ selection-color: rgb(255, 255, 255);</string>
        <widget class="QSpinBox" name="spinBox_2">
         <property name="geometry">
          <rect>
-          <x>1070</x>
-          <y>160</y>
+          <x>1110</x>
+          <y>70</y>
           <width>61</width>
           <height>31</height>
          </rect>
@@ -569,8 +623,8 @@ selection-color: rgb(255, 255, 255);</string>
        <widget class="QSpinBox" name="spinBox_3">
         <property name="geometry">
          <rect>
-          <x>1070</x>
-          <y>250</y>
+          <x>1110</x>
+          <y>160</y>
           <width>61</width>
           <height>31</height>
          </rect>
@@ -1004,6 +1058,115 @@ border: none;
          <string>nieobecni</string>
         </property>
        </widget>
+       <widget class="QCheckBox" name="conf_ch_6">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>220</y>
+          <width>141</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>włącz telewizor</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="conf_ch_7">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>250</y>
+          <width>211</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>otwórz bramę garażową</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="conf_ch_8">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>280</y>
+          <width>211</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>otwórz bramę wjazdową</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="conf_ch_9">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>310</y>
+          <width>211</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>uchyl bramę garażową</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="conf_ch_10">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>340</y>
+          <width>211</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>uchyl bramę wjazdową</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="config_cl">
+        <property name="geometry">
+         <rect>
+          <x>920</x>
+          <y>400</y>
+          <width>56</width>
+          <height>74</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#config_cl {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/conf_ncheck_off.png);
+background-repeat: none;
+}
+
+QPushButton#config_cl:pressed
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/conf_ncheck_on.png);
+background-color: transparent;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_34</zorder>
        <zorder>label_41</zorder>
        <zorder>label_5</zorder>
@@ -1012,13 +1175,13 @@ border: none;
        <zorder>spinBox</zorder>
        <zorder>comboBox</zorder>
        <zorder>label_2</zorder>
-       <zorder>pushButton_13</zorder>
+       <zorder>config</zorder>
        <zorder>label_4</zorder>
-       <zorder>checkBox</zorder>
-       <zorder>checkBox_2</zorder>
-       <zorder>checkBox_3</zorder>
-       <zorder>checkBox_4</zorder>
-       <zorder>checkBox_5</zorder>
+       <zorder>conf_ch_1</zorder>
+       <zorder>conf_ch_2</zorder>
+       <zorder>conf_ch_3</zorder>
+       <zorder>conf_ch_4</zorder>
+       <zorder>conf_ch_5</zorder>
        <zorder>spinBox_2</zorder>
        <zorder>spinBox_3</zorder>
        <zorder>listWidget_4</zorder>
@@ -1038,6 +1201,12 @@ border: none;
        <zorder>cwu_nob</zorder>
        <zorder>label_23</zorder>
        <zorder>label_27</zorder>
+       <zorder>conf_ch_6</zorder>
+       <zorder>conf_ch_7</zorder>
+       <zorder>conf_ch_8</zorder>
+       <zorder>conf_ch_9</zorder>
+       <zorder>conf_ch_10</zorder>
+       <zorder>config_cl</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -2019,27 +2188,6 @@ border:none;
         </property>
         <property name="flat">
          <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="test">
-        <property name="geometry">
-         <rect>
-          <x>660</x>
-          <y>380</y>
-          <width>121</width>
-          <height>81</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>TEST</string>
         </property>
        </widget>
       </widget>
@@ -4397,7 +4545,7 @@ selection-background-color: transparent;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="button_scene_1">
+       <widget class="QPushButton" name="scene_wyjezdzam">
         <property name="geometry">
          <rect>
           <x>162</x>
@@ -4410,14 +4558,14 @@ selection-background-color: transparent;</string>
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#button_scene_1 {
+         <string notr="true">QPushButton#scene_wyjezdzam {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/scene_car_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#button_scene_1:checked
+QPushButton#scene_wyjezdzam:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/scene_car_on.png);
 background-color: transparent;
@@ -4430,11 +4578,14 @@ border: none;
         <property name="checkable">
          <bool>true</bool>
         </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
         <property name="flat">
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="button_scene_2">
+       <widget class="QPushButton" name="scene_wychodze">
         <property name="geometry">
          <rect>
           <x>278</x>
@@ -4450,14 +4601,14 @@ border: none;
          <string>wychodzę</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#button_scene_2 {
+         <string notr="true">QPushButton#scene_wychodze {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/scene_door_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#button_scene_2:checked
+QPushButton#scene_wychodze:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/scene_door_on.png);
 background-color: transparent;
@@ -4473,6 +4624,9 @@ border: none;
         <property name="autoRepeat">
          <bool>false</bool>
         </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
         <property name="autoRepeatDelay">
          <number>1000</number>
         </property>
@@ -4483,7 +4637,7 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="button_scene_3">
+       <widget class="QPushButton" name="scene_TV">
         <property name="geometry">
          <rect>
           <x>728</x>
@@ -4496,14 +4650,14 @@ border: none;
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#button_scene_3 {
+         <string notr="true">QPushButton#scene_TV {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/scene_watching_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#button_scene_3:pressed
+QPushButton#scene_TV:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/scene_watching_on.png);
 background-color: transparent;
@@ -4514,6 +4668,9 @@ border: none;
          <string/>
         </property>
         <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive">
          <bool>false</bool>
         </property>
         <property name="flat">
@@ -5341,9 +5498,9 @@ border: none;
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="grafika.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</normaloff>
-          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
+         <iconset>
+          <normaloff>../../../HDD1/admin/iHome/28-02-2018/media/boiler_off.png</normaloff>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler.png</normalon>../../../HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -5390,7 +5547,7 @@ border: none;
 background-color: transparent;
 background-repeat: none;
 border: none;
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png);
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off_w.png);
 }
 
 QPushButton#shelly1_2:checked
@@ -5435,6 +5592,46 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00%</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="scene_Matylda">
+        <property name="geometry">
+         <rect>
+          <x>245</x>
+          <y>374</y>
+          <width>35</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#scene_Matylda {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/cat_off.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#scene_Matylda:pressed
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/cat_on.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
        <zorder>label_parter</zorder>
@@ -5512,9 +5709,9 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>pir_btn_6</zorder>
        <zorder>dial_pir_5</zorder>
        <zorder>dial_pir_6</zorder>
-       <zorder>button_scene_1</zorder>
-       <zorder>button_scene_2</zorder>
-       <zorder>button_scene_3</zorder>
+       <zorder>scene_wyjezdzam</zorder>
+       <zorder>scene_wychodze</zorder>
+       <zorder>scene_TV</zorder>
        <zorder>pir_btn_7</zorder>
        <zorder>dial_pir_7</zorder>
        <zorder>go_floor</zorder>
@@ -5549,6 +5746,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>label_21</zorder>
        <zorder>shelly1_2</zorder>
        <zorder>signal_5</zorder>
+       <zorder>scene_Matylda</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -6718,8 +6916,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="grafika.qrc"/>
   <include location="ikony.qrc"/>
+  <include location="grafika.qrc"/>
  </resources>
  <connections/>
 </ui>

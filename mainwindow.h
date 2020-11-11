@@ -28,6 +28,9 @@ public:
     void getHumidity();
     void barometer();
     void sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME);
+    void WoL(QString macc, QString addr);
+    void scene_executor(int *arg);
+    enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
 
 private slots:
 
@@ -35,7 +38,7 @@ private slots:
   void writescheduler();
   void receiving();
   void showTime();
-  void wyjscie();
+  void wyjezdzam();
   void stykOff();
   void offfff();
   void ClickedbtnFinder();
@@ -50,7 +53,6 @@ private slots:
 
   void LOff();
 
-  void on_button_scene_1_toggled(bool checked);
   void on_pushButton_16_pressed();
   void on_pushButton_23_clicked();
   void on_pushButton_27_clicked();
@@ -61,8 +63,6 @@ private slots:
   void on_dial_12_valueChanged(int value);
   void on_pushButton_32_clicked(bool checked);
 
-  void on_button_scene_3_clicked();
-
   void on_go_floor_clicked();
 
   void on_button_wentylator_clicked(bool checked);
@@ -71,11 +71,11 @@ private slots:
 
   void on_go_ground_clicked();
 
-  void on_button_wentylator_3_clicked(bool checked);
-
   void on_button_scene_4_clicked();
 
-  void on_pushButton_13_clicked();
+  void on_button_wentylator_3_clicked(bool checked);
+
+  void on_config_clicked();
 
   void on_comboBox_currentIndexChanged(const QString &arg1);
 
@@ -85,7 +85,9 @@ private slots:
 
   void on_pushButton_24_toggled(bool checked);
 
-  void on_test_pressed();
+  void on_config_cl_clicked();
+
+  void autoEx();
 
 private:
 
