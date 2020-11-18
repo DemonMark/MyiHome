@@ -284,18 +284,18 @@ void MyUDP::readyRead(){
 //**********FUNKCJA DO WYŁĄCZENIA WSZYSTKICH WYJŚĆ***************//
 void MyUDP::lightsOff(){
 
-    if (odliczG==0){
+    if(odliczG==0){
         maskawysl[0]&=~0xff;
         maskawysl[1]&=~0xff;
         maskawysl[2]&=~0xff;
         maskawysl[4]&=~0xff;
-        //maskawysl[5]&=~0xff;
+        maskawysl[5]&=~0x3b;//ominięto wyjscie oswietlania podjazdu
         WYSUDP("192.168.1.101");
         WYSUDP("192.168.1.104");
         zerujWyj();
         emit all_off_();
         arg_check--;
-        qDebug() << arg_check;
+        qDebug() << "ARG_CH: " << arg_check;
     }
     odliczG--;
     if(odliczG<0){

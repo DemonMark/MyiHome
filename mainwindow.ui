@@ -450,6 +450,16 @@ selection-color: rgb(255, 255, 255);</string>
           </iconset>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>wracam</string>
+         </property>
+         <property name="icon">
+          <iconset resource="ikony.qrc">
+           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/back_off.png</normaloff>
+           <normalon>:/HDD1/admin/iHome/28-02-2018/media/back_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/back_off.png</iconset>
+         </property>
+        </item>
        </widget>
        <widget class="QLabel" name="label_2">
         <property name="geometry">
@@ -471,7 +481,7 @@ selection-color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>400</y>
+          <y>420</y>
           <width>56</width>
           <height>74</height>
          </rect>
@@ -856,8 +866,8 @@ background-color: transparent;
        <widget class="QDial" name="dial_12">
         <property name="geometry">
          <rect>
-          <x>740</x>
-          <y>300</y>
+          <x>110</x>
+          <y>255</y>
           <width>44</width>
           <height>44</height>
          </rect>
@@ -895,8 +905,8 @@ border: none;</string>
        <widget class="QLabel" name="label_34">
         <property name="geometry">
          <rect>
-          <x>717</x>
-          <y>270</y>
+          <x>87</x>
+          <y>225</y>
           <width>91</width>
           <height>91</height>
          </rect>
@@ -1142,7 +1152,7 @@ border: none;
         <property name="geometry">
          <rect>
           <x>920</x>
-          <y>400</y>
+          <y>420</y>
           <width>56</width>
           <height>74</height>
          </rect>
@@ -1165,6 +1175,22 @@ background-color: transparent;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="conf_ch_11">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>370</y>
+          <width>211</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>źródła do włączenia</string>
         </property>
        </widget>
        <zorder>label_34</zorder>
@@ -1207,6 +1233,7 @@ background-color: transparent;
        <zorder>conf_ch_9</zorder>
        <zorder>conf_ch_10</zorder>
        <zorder>config_cl</zorder>
+       <zorder>conf_ch_11</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -2792,8 +2819,8 @@ border: none;
        <widget class="QLabel" name="th_6">
         <property name="geometry">
          <rect>
-          <x>339</x>
-          <y>211</y>
+          <x>338</x>
+          <y>218</y>
           <width>9</width>
           <height>22</height>
          </rect>
@@ -2823,8 +2850,8 @@ border: none;
        <widget class="label_temp" name="label_temp_5">
         <property name="geometry">
          <rect>
-          <x>351</x>
-          <y>217</y>
+          <x>350</x>
+          <y>224</y>
           <width>41</width>
           <height>21</height>
          </rect>
@@ -3245,7 +3272,7 @@ border: none;
         <property name="geometry">
          <rect>
           <x>284</x>
-          <y>242</y>
+          <y>248</y>
           <width>61</width>
           <height>22</height>
          </rect>
@@ -4830,6 +4857,9 @@ border: none;
         <property name="checkable">
          <bool>true</bool>
         </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
        </widget>
        <widget class="QPushButton" name="button_wentylator_2">
         <property name="geometry">
@@ -5102,8 +5132,8 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_8">
         <property name="geometry">
          <rect>
-          <x>349</x>
-          <y>204</y>
+          <x>348</x>
+          <y>211</y>
           <width>13</width>
           <height>13</height>
          </rect>
@@ -5340,7 +5370,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
         <property name="geometry">
          <rect>
           <x>47</x>
-          <y>411</y>
+          <y>413</y>
           <width>58</width>
           <height>71</height>
          </rect>
@@ -5498,9 +5528,9 @@ border: none;
          <string/>
         </property>
         <property name="icon">
-         <iconset>
-          <normaloff>../../../HDD1/admin/iHome/28-02-2018/media/boiler_off.png</normaloff>
-          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler.png</normalon>../../../HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</normaloff>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -5634,6 +5664,58 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QPushButton" name="scene_wracam">
+        <property name="geometry">
+         <rect>
+          <x>155</x>
+          <y>312</y>
+          <width>33</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="toolTip">
+         <string>wychodzę</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#scene_wracam {
+background-color: transparent;
+//background-image: url(:/HDD1/admin/iHome/28-02-2018/media/back_off.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#scene_wracam:checked
+{
+//background-image: url(:/HDD1/admin/iHome/28-02-2018/media/back_on.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoRepeat">
+         <bool>false</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>false</bool>
+        </property>
+        <property name="autoRepeatDelay">
+         <number>1000</number>
+        </property>
+        <property name="autoRepeatInterval">
+         <number>1000</number>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -5747,6 +5829,7 @@ border: none;
        <zorder>shelly1_2</zorder>
        <zorder>signal_5</zorder>
        <zorder>scene_Matylda</zorder>
+       <zorder>scene_wracam</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -5789,10 +5872,10 @@ border: none;</string>
        <widget class="QPushButton" name="button_wentylator_3">
         <property name="geometry">
          <rect>
-          <x>495</x>
-          <y>144</y>
-          <width>22</width>
-          <height>20</height>
+          <x>498</x>
+          <y>135</y>
+          <width>32</width>
+          <height>29</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -5805,6 +5888,12 @@ border: none;</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QLabel" name="label_wentylator_2">
@@ -6837,7 +6926,6 @@ border: none;
        <zorder>label_pietro</zorder>
        <zorder>label_36</zorder>
        <zorder>go_ground</zorder>
-       <zorder>button_wentylator_3</zorder>
        <zorder>label_wentylator_2</zorder>
        <zorder>pushButton_14</zorder>
        <zorder>pushButton_35</zorder>
@@ -6873,6 +6961,7 @@ border: none;
        <zorder>con_err_9</zorder>
        <zorder>con_err_10</zorder>
        <zorder>con_err_11</zorder>
+       <zorder>button_wentylator_3</zorder>
       </widget>
      </widget>
     </item>

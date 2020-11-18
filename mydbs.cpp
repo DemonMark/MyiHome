@@ -14,5 +14,7 @@ mydbs::mydbs(QObject *parent) :
 void mydbs::conclose()
 {
     mydb.close();
+    QSqlDatabase::removeDatabase("QSQLITE");
     mydb.removeDatabase(QSqlDatabase::defaultConnection);
+
 }

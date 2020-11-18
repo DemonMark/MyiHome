@@ -29,7 +29,9 @@ public:
     void barometer();
     void sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME);
     void WoL(QString macc, QString addr);
-    void scene_executor(int *arg);
+    void scene_executor(int *arg, QString &wracam, QString &maska, QString &hex, QString &buttons, QString &c);
+    void gates(int type, bool timer, int ms, int x);
+    void selected_sources(QList<unsigned char> &ingridiens, QList<int> &outmask, QList<int> &scheduledc, QList<int> &scheduledbtn, QString &tempnames);
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
 
 private slots:
@@ -65,15 +67,13 @@ private slots:
 
   void on_go_floor_clicked();
 
-  void on_button_wentylator_clicked(bool checked);
+  void on_button_wentylator_toggled(bool checked);
 
-  void on_button_wentylator_2_clicked(bool checked);
+  void on_button_wentylator_2_toggled(bool checked);
 
   void on_go_ground_clicked();
 
   void on_button_scene_4_clicked();
-
-  void on_button_wentylator_3_clicked(bool checked);
 
   void on_config_clicked();
 
@@ -86,8 +86,6 @@ private slots:
   void on_pushButton_24_toggled(bool checked);
 
   void on_config_cl_clicked();
-
-  void autoEx();
 
 private:
 

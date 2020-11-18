@@ -98,6 +98,7 @@ extern QByteArray plugsocket;
 int arg[13];
 int arg_check;//potwierdzenie wykonania składników sceny
 int arg_config[13];
+QString last_scene;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -112,7 +113,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-
     bcm2835_init();
     initGPIO();
 
@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer *timer = new QTimer(this);
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
     timer->start();
+
     bList = ui->tab_5->findChildren<QPushButton*>(QRegExp ("pushButton*")) + ui->tab_2->findChildren<QPushButton*>(QRegExp ("pushButton*"));
     //bList = MainWindow::findChildren<QPushButton*>();
     sbList = MainWindow::findChildren<QPushButton*>(QRegExp ("scene_*"));
@@ -195,8 +196,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_wentylator->setMovie(movie_wentylacja);
     ui->label_wentylator_2->setMovie(movie_wentylacja);
     movie_wentylacja->start();
+    //wsparcie dla zdublowanych przycisków
+    connect(ui->button_wentylator, SIGNAL(toggled(bool)), ui->button_wentylator_3, SLOT(setChecked(bool)));
+    connect(ui->button_wentylator_3, SIGNAL(toggled(bool)), ui->button_wentylator, SLOT(setChecked(bool)));
+    connect(ui->copyButton_8, SIGNAL(toggled(bool)), ui->pushButton_8,SLOT(setChecked(bool)));
+    connect(ui->pushButton_8, SIGNAL(toggled(bool)), ui->copyButton_8,SLOT(setChecked(bool)));
 
-    connect(ui->copyButton_8, SIGNAL(toggled(bool)), ui->pushButton_8,SLOT(setChecked(bool))); //wsparcie dla zdublowanego przycisku
     connect(movie_cyrkulacja, SIGNAL(frameChanged(int)), this, SLOT(cyrkulacja_rotation()));
 }
 
@@ -220,18 +225,15 @@ void MainWindow::showTime(){
      if (time_text==ui->timeEdit_3->text() && obecnosc==0){
          spimy=1;
          emit all_off();
-         //ui->button_scene_4->setChecked(true);
      }
      else if (time_text==ui->timeEdit_3->text() && obecnosc==1){
          spimy=1;
-         //ui->button_scene_4->setChecked(true);
      }
 //****************DZIEŃ LUB NOC*********************************//
 
      if (time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
          dzien=1;
          spimy=0;
-         //ui->button_scene_4->setChecked(false);
      }
      else {
          dzien=0;
@@ -334,18 +336,11 @@ void MainWindow::timerEvent(QTimerEvent *event){
    QFile comming("/home/pi/GDrive/comming_home.csv");
    if(comming.exists()){
         if(!jestem){
-            qDebug() << "EXIST";
             comming.remove();
-            if(otwarta==0){
-                ui->pushButton_16->click();
-            }
-            QPoint point(0, 413.0);
-            QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
-            QCoreApplication::sendEvent(ui->_helly25_2,me);
+            ui->scene_wracam->setChecked(true);
             jestem=true; //flaga wprowadzona ze wzgledu na sprawdzanie obecnosci pliku 2x/s a odswiezanie GDrive co 1st
         }
    }else{
-       //qDebug() << "N_EXIST";
        jestem=false;
    }
    //********WYLACZANIE SCEN PO WYKONANIU*************
@@ -799,15 +794,26 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
 {
     if(checked){
         arg_check=0;
+        QString mask, hex, buttons, c;
         QString objname = QObject::sender()->objectName();
         QString scena = objname.split("_")[1];
 
+       /* if(scena=="wracam"){
+            if(!(last_scene=="")){
+                scena=last_scene;//odwrócenie działań ostatniej sceny po powrocie
+                last_scene="";
+            }
+        }else{
+            last_scene=scena;//zapamiętanie ostatniej sceny
+        }*/
+
         mydbs baza;
+        qDebug() << &baza;
         QSqlQuery* qry = new QSqlQuery(baza.mydb);
         qry->prepare("select * from scenes where description ='"+scena+"'");
         if(qry->exec()){
             while(qry->next()){
-                for (int i=1; i<qry->record().count(); i++){
+                for (int i=1; i<qry->record().count()-5; i++){//nie pobieramy wartości wykonawczych opcji: źródła
                     if(qry->value(i).toString() == "0"){
                         arg[i] = 0;
                     }else{
@@ -815,14 +821,21 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
                         arg_check++;
                     }
                 }
+                //wartości wykonawcze opcji źródla
+                mask = qry->value(15).toString();
+                hex = qry->value(16).toString();
+                buttons = qry->value(17).toString();
+                c = qry->value(18).toString();
             }
             qDebug() << arg_check;
-            scene_executor(arg);
+            scene_executor(arg, scena, mask, hex, buttons, c);
         }
+        baza.conclose();
 }else{
         scene_active=false;
+        scene_driving=false;
         movie_countdown->stop();
-        odliczG=0;
+        odliczG=-1;
     }
 }
 
@@ -832,52 +845,34 @@ void MainWindow::wyjezdzam(){
     MyUDP bramy;
     switch(driving){
     case garage_gate:
-        maskawysl[4]|=0x80;
-        bramy.WYSUDP("192.168.1.101");
-        timer_bramaStykOff->start(500);
-        arg_check--;
-        scene_driving=false;
+        if(otwarta==0){
+            gates(0,false,0,0);
+        }
         break;
     case main_gate:
     {
-        QPoint point(0, 413.0);
-        QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
-        QCoreApplication::sendEvent(ui->_helly25_2,me);
-        arg_check--;
-        scene_driving=false;
+        gates(1,false,0,0);
         break;
     }
     case both:
     {
         if(otwarta==0){
-            maskawysl[4]|=0x80;
-            bramy.WYSUDP("192.168.1.101");
-            timer_bramaStykOff->start(500);
-            QTimer::singleShot(20000,this,SLOT(wyjezdzam()));//18s czas otwierania bramy do stanu =2
-            scene_driving=false;
+            gates(0,true,20000,0);
         }
         if(otwarta==2){
-            QPoint point(0, 413.0);
-            QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
-            QCoreApplication::sendEvent(ui->_helly25_2,me);
-            arg_check-=2;
-            QTimer::singleShot(5000,this,SLOT(wyjezdzam()));
+            gates(1,true,5000,0);
         }
         break;
     }
     case Matylda:
-        maskawysl[4]|=0x80;
-        bramy.WYSUDP("192.168.1.101");
-        timer_bramaStykOff->start(500);
-        QTimer::singleShot(4000,this,SLOT(wyjezdzam()));
+        gates(0,true, 4000,0);
         driving=deactivated;
         break;
     case deactivated:
-        maskawysl[4]|=0x80;
-        bramy.WYSUDP("192.168.1.101");
-        timer_bramaStykOff->start(500);
+        gates(0,false,0,0);
         break;
     case main_gate_prt:
+        gates(1,false,0,47);
         break;
     }
     //delete bramy;
@@ -1084,7 +1079,7 @@ void MainWindow::ClickedbtnFinder(){
         for (int i=1; i<=8;i++){
             int y=bPos[m];
             if(bList.at(y)==QObject::sender()){
-                QByteArray tab;
+                //QByteArray tab;
                 MyUDP client;
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
                 if(bList.at(y)->isChecked()){
@@ -1395,7 +1390,7 @@ void MainWindow::on_go_floor_clicked()
     ui->Tab->setCurrentIndex(ci+1);
 }
 
-void MainWindow::on_button_wentylator_clicked(bool checked)
+void MainWindow::on_button_wentylator_toggled(bool checked)
 {
     if(checked){
         ui->button_wentylator_2->setChecked(false);
@@ -1408,7 +1403,7 @@ void MainWindow::on_button_wentylator_clicked(bool checked)
     }
 }
 
-void MainWindow::on_button_wentylator_2_clicked(bool checked)
+void MainWindow::on_button_wentylator_2_toggled(bool checked)
 {
     if(checked){
         movie_wentylacja->setSpeed(300);
@@ -1428,19 +1423,6 @@ void MainWindow::on_go_ground_clicked()
 {
     int ci = ui->Tab->currentIndex();
     ui->Tab->setCurrentIndex(ci-1);
-}
-
-void MainWindow::on_button_wentylator_3_clicked(bool checked)
-{
-    if(checked){
-        ui->button_wentylator_2->setChecked(false);
-        movie_wentylacja->setSpeed(200);
-        ui->dial_12->setValue(2);
-    }else{
-        ui->button_wentylator_2->setChecked(false);
-        movie_wentylacja->setSpeed(100);
-        ui->dial_12->setValue(1);
-    }
 }
 
 void MainWindow::on_button_scene_4_clicked()
@@ -1464,7 +1446,7 @@ void MainWindow::on_config_clicked()
                  "'uchyl brame wjazdowa' ) VALUES (1,1,1,1,1,1,1,1,1,1,1,1)");*/
     qry->prepare("UPDATE scenes SET odliczanie=?, 'wylacz wszystkie swiatla'=?, 'wylacz rekuperacje'=?, "
                      "'obniz temperature o'=?, 'uzbroj alarm'=?, 'TV on'=?, 'Brama garazowa'=?, 'Brama wjazdowa'=?, 'uchyl brame garazowa'=?,"
-                     "'uchyl brame wjazdowa'=?, dane=?, dane_2=? WHERE description='"+sc+"'");
+                     "'uchyl brame wjazdowa'=?, zrodla=?, dane=?, dane_2=?, maska=?, hex=?, names=?, buttons=?, c=? WHERE description='"+sc+"'");
     foreach(QCheckBox *chbox, chlist){
         qDebug() << &chbox;
         if(chbox->isChecked()==false){
@@ -1482,9 +1464,34 @@ void MainWindow::on_config_clicked()
         qry->addBindValue(arg_config[i]);
         i++;
     }
-    //aktaulizacja zmiennych 'dane' oraz 'dane_2' w bazie danych
+    //aktaulizacja komórek 'dane', 'dane_2' oraz źródeł do załączenia w bazie danych
+
+    QList<unsigned char> scene_ingridiens;
+    QList<int> scene_outmask;
+    QList<int> scene_scheduledc;
+    QList<int> scene_scheduledbtn;
+    QString scene_tempnames, array_mask_holder, array_hex_holder, array_buttons_holder, array_c_holder;
+    selected_sources(scene_ingridiens,scene_outmask,scene_scheduledc,scene_scheduledbtn,scene_tempnames);
+    for(int i=0; i<scene_outmask.count(); i++){
+        array_mask_holder += QString::number(scene_outmask.value(i)) + ",";
+    }
+    for(int i=0; i<scene_ingridiens.count(); i++){
+        array_hex_holder += QString::number(scene_ingridiens.value(i)) + ",";
+    }
+    for(int i=0; i<scene_ingridiens.count(); i++){
+        array_c_holder += QString::number(scene_scheduledc.value(i)) + ",";
+    }
+    for(int i=0; i<scene_ingridiens.count(); i++){
+        array_buttons_holder += QString::number(scene_scheduledbtn.value(i)) + ",";
+    }
     qry->addBindValue(dt[0]);
     qry->addBindValue(dt[1]);
+    qry->addBindValue(array_mask_holder);
+    qry->addBindValue(array_hex_holder);
+    qry->addBindValue(scene_tempnames);
+    qry->addBindValue(array_buttons_holder);
+    qry->addBindValue(array_c_holder);
+
     qry->exec();
     baza.conclose();
     ui->comboBox->setCurrentIndex(-1);
@@ -1501,12 +1508,12 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     qry->prepare("SELECT * FROM scenes WHERE description ='"+arg1+"'");
     if(qry->exec()){
         while(qry->next()){
-            for (int i=1; i<qry->record().count(); i++){
+            for (int i=1; i<qry->record().count()-5; i++){
                 if(qry->value(i).toString() == "0"){
                     //PUSTO
                 }else{
-                    if(qry->record().fieldName(i+1).contains("dane")){
-                        ui->listWidget_4->addItem(qry->record().fieldName(i) + " " + qry->value(i+1).toString());
+                    if(qry->record().fieldName(i+1).contains("dane") ||qry->record().fieldName(i+1).contains("names")) {
+                        ui->listWidget_4->addItem(qry->record().fieldName(i) + ": " + qry->value(i+1).toString());
                         i++;
                     }else{
                         ui->listWidget_4->addItem(qry->record().fieldName(i));
@@ -1608,7 +1615,7 @@ void MainWindow::WoL(QString macc, QString addr)
     WOL->writeDatagram(woldata, QHostAddress(addr),7);
 }
 
-void MainWindow::scene_executor(int *arg)
+void MainWindow::scene_executor(int *arg, QString &wracam, QString &maska, QString &hex, QString &buttons, QString &c)
 {
     if(arg[1]==1){//timer
         scene_active = true;
@@ -1640,24 +1647,81 @@ void MainWindow::scene_executor(int *arg)
     if(arg[9]==1){//brama garazowa
         scene_driving=true;
         driving=garage_gate;
+        if(wracam=="wracam"){
+            wyjezdzam();
+        }
     }
     if(arg[10]==1){//brama wjazdowa
         scene_driving=true;
         driving=main_gate;
+        if(wracam=="wracam"){
+            wyjezdzam();
+        }
     }
-    if(arg[9]==1 && arg[10]==1){//obie
+    if(arg[9]==1 && arg[10]==1 && !(wracam=="wracam")){//obie
         driving=both;
     }
     if(arg[11]){//Matylka
         driving=Matylda;
         wyjezdzam();
-        arg_check--;
     }
     if(arg[12]){//Skrzydło bramy wjazdowej
         driving=main_gate_prt;
         wyjezdzam();
         arg_check--;
     }
+    if(arg[13]&&!dzien){//źródła
+        int i=0;
+        bool ok;
+        QList<unsigned char> scene_ingridiens;
+        QList<int> scene_outmask;
+        QList<int> scene_scheduledc;
+        QList<int> scene_scheduledbtn;
+        QString scene_tempnames;
+        MyUDP scene_UDP;
+
+        for(int i=0;i<(maska.split(',').count()); i++){
+            scene_outmask.insert(i,maska.split(",")[i].toInt(&ok));
+        }
+        for(int i=0;i<hex.split(",").count(); i++){
+            scene_ingridiens.insert(i, (hex.split(",")[i].toInt(&ok)));
+        }
+        for(int i=0;i<hex.split(",").count(); i++){
+            scene_scheduledbtn.insert(i, (buttons.split(",")[i].toInt(&ok)));
+        }
+        for(int i=0;i<hex.split(",").count(); i++){
+            scene_scheduledc.insert(i, (c.split(",")[i].toInt(&ok)));
+        }
+        foreach(unsigned char hex, scene_ingridiens){
+            maskawysl[scene_outmask.value(i)]|=hex;
+            bList.at(scene_scheduledbtn.value(i))->setChecked(true);
+            c[scene_scheduledc.value(i)]=1;
+            if(scene_outmask.value(i)<5){
+                scene_UDP.WYSUDP("192.168.1.101");
+            }else{
+                scene_UDP.WYSUDP("192.168.1.104");
+            }
+            i++;
+        }
+        arg_check--;
+    }
+}
+
+void MainWindow::gates(int type, bool timer, int ms, int x)
+{
+    switch(type){
+    case 0:
+        ui->pushButton_16->click();
+        break;
+    case 1:
+        QPoint point(x, 413.0);
+        QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
+        QCoreApplication::sendEvent(ui->_helly25_2,me);
+        break;
+    }
+    if(timer){QTimer::singleShot(ms,this,SLOT(wyjezdzam()));}
+    arg_check--;
+    scene_driving=false;
 }
 
 void MainWindow::on_config_cl_clicked()
@@ -1672,7 +1736,7 @@ void MainWindow::on_config_cl_clicked()
 
 }
 //*********slot do wylaczania autoExclusive*************(OPCJA ZAMIAST QObject::sender) - slot nie używany
-void MainWindow::autoEx()
+/*void MainWindow::autoEx()
 {
    QAbstractButton* button = static_cast<QAbstractButton*>(sender());
    if (button->isChecked()) {
@@ -1682,4 +1746,45 @@ void MainWindow::autoEx()
       button->setAutoExclusive(true);
                   qDebug() << "EXCL";
    }
+}*/
+//zmiany w dodawaniu harmonogramu - uzycie fukcji takze przy scenach
+void MainWindow::selected_sources(QList<unsigned char> &ingridiens, QList<int> &outmask, QList<int> &scheduledc, QList<int> &scheduledbtn, QString &tempnames)
+{
+    a=0;
+    int hexxpos;
+    int om;
+    QList<QListWidgetItem*> itemtextlist = ui->listWidget_2->selectedItems();
+    QModelIndexList rowsy = ui->listWidget_2->selectionModel()->selectedRows(0);
+    foreach(QModelIndex rows, rowsy){
+        if(rows.row()<=7){
+            hexxpos=0;
+            om=0;
+        }
+        if(rows.row()>7 && rows.row()<=15){
+            hexxpos=8;
+            om=1;
+        }
+        if(rows.row()>15 && rows.row()<=23){
+            hexxpos=16;
+            om=2;
+        }
+        if(rows.row()>23 && rows.row()<=31){
+            hexxpos=24;
+            om=3;
+        }
+        if(rows.row()>31){
+            hexxpos=32;
+            om=4;
+        }
+        if(rows.row()>39){
+            hexxpos=40;
+            om=5;
+        }
+        ingridiens.insert(a, hexx[(rows.row())-hexxpos+1]);
+        outmask.insert(a,om);
+        scheduledc.insert(a,(rows.row())+1);
+        tempnames.append(itemtextlist.at(a)->text() + ", ");
+        scheduledbtn.insert(a,bPos[rows.row()]);
+        a++;
+    }
 }
