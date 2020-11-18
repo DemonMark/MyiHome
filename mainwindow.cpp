@@ -143,7 +143,8 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach(QPushButton *btn, bList)
     {
         //qDebug() << btn->objectName();
-        connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
+        //connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
+        connect(btn, SIGNAL(toggled(bool)), this, SLOT(ClickedbtnFinder()));
     }
 
     foreach (QPushButton *sbtn, sbList) {
@@ -700,9 +701,7 @@ void MainWindow::receiving(){
            int m=0; //numeracja pozycji przycisku na liście
 
            for (int j=0; j<=5;j++){
-
                for (int i=1; i<=8;i++){
-
                    int y=bPos[m];
                    if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
                        //***wyjątki dla wejść z krańcówek bramy
@@ -794,7 +793,7 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
 {
     if(checked){
         arg_check=0;
-        QString mask, hex, buttons, c;
+        QString buttons;
         QString objname = QObject::sender()->objectName();
         QString scena = objname.split("_")[1];
 
@@ -813,7 +812,7 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
         qry->prepare("select * from scenes where description ='"+scena+"'");
         if(qry->exec()){
             while(qry->next()){
-                for (int i=1; i<qry->record().count()-5; i++){//nie pobieramy wartości wykonawczych opcji: źródła
+                for (int i=1; i<qry->record().count()-2; i++){//nie pobieramy wartości z opcji: źródła
                     if(qry->value(i).toString() == "0"){
                         arg[i] = 0;
                     }else{
@@ -821,14 +820,11 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
                         arg_check++;
                     }
                 }
-                //wartości wykonawcze opcji źródla
-                mask = qry->value(15).toString();
-                hex = qry->value(16).toString();
-                buttons = qry->value(17).toString();
-                c = qry->value(18).toString();
+                //buttony z opcji źródla
+                buttons = qry->value(15).toString();
             }
             qDebug() << arg_check;
-            scene_executor(arg, scena, mask, hex, buttons, c);
+            scene_executor(arg, scena, buttons);
         }
         baza.conclose();
 }else{
@@ -1446,7 +1442,7 @@ void MainWindow::on_config_clicked()
                  "'uchyl brame wjazdowa' ) VALUES (1,1,1,1,1,1,1,1,1,1,1,1)");*/
     qry->prepare("UPDATE scenes SET odliczanie=?, 'wylacz wszystkie swiatla'=?, 'wylacz rekuperacje'=?, "
                      "'obniz temperature o'=?, 'uzbroj alarm'=?, 'TV on'=?, 'Brama garazowa'=?, 'Brama wjazdowa'=?, 'uchyl brame garazowa'=?,"
-                     "'uchyl brame wjazdowa'=?, zrodla=?, dane=?, dane_2=?, maska=?, hex=?, names=?, buttons=?, c=? WHERE description='"+sc+"'");
+                     "'uchyl brame wjazdowa'=?, zrodla=?, dane=?, dane_2=?, names=?, buttons=? WHERE description='"+sc+"'");
     foreach(QCheckBox *chbox, chlist){
         qDebug() << &chbox;
         if(chbox->isChecked()==false){
@@ -1465,38 +1461,32 @@ void MainWindow::on_config_clicked()
         i++;
     }
     //aktaulizacja komórek 'dane', 'dane_2' oraz źródeł do załączenia w bazie danych
-
     QList<unsigned char> scene_ingridiens;
     QList<int> scene_outmask;
     QList<int> scene_scheduledc;
     QList<int> scene_scheduledbtn;
-    QString scene_tempnames, array_mask_holder, array_hex_holder, array_buttons_holder, array_c_holder;
-    selected_sources(scene_ingridiens,scene_outmask,scene_scheduledc,scene_scheduledbtn,scene_tempnames);
-    for(int i=0; i<scene_outmask.count(); i++){
-        array_mask_holder += QString::number(scene_outmask.value(i)) + ",";
-    }
-    for(int i=0; i<scene_ingridiens.count(); i++){
-        array_hex_holder += QString::number(scene_ingridiens.value(i)) + ",";
-    }
-    for(int i=0; i<scene_ingridiens.count(); i++){
-        array_c_holder += QString::number(scene_scheduledc.value(i)) + ",";
-    }
-    for(int i=0; i<scene_ingridiens.count(); i++){
-        array_buttons_holder += QString::number(scene_scheduledbtn.value(i)) + ",";
+    QString scene_tempnames = "0";
+    QString array_buttons_holder = "0";
+    if(arg_config[11] && ui->listWidget_2->currentRow()>=0){
+        selected_sources(scene_ingridiens,scene_outmask,scene_scheduledc,scene_scheduledbtn,scene_tempnames);
+
+        for(int i=0; i<scene_ingridiens.count(); i++){
+            array_buttons_holder += QString::number(scene_scheduledbtn.value(i)) + ",";
+        }
+    }else{
+        arg_config[11]=0;
     }
     qry->addBindValue(dt[0]);
     qry->addBindValue(dt[1]);
-    qry->addBindValue(array_mask_holder);
-    qry->addBindValue(array_hex_holder);
     qry->addBindValue(scene_tempnames);
     qry->addBindValue(array_buttons_holder);
-    qry->addBindValue(array_c_holder);
 
     qry->exec();
     baza.conclose();
     ui->comboBox->setCurrentIndex(-1);
     ui->comboBox->setCurrentIndex(sci);
     ui->config_cl->click();
+    ui->listWidget_2->clearSelection();
 }
 
 //wyswietlanie konfiguracji sceny
@@ -1508,7 +1498,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     qry->prepare("SELECT * FROM scenes WHERE description ='"+arg1+"'");
     if(qry->exec()){
         while(qry->next()){
-            for (int i=1; i<qry->record().count()-5; i++){
+            for (int i=1; i<qry->record().count()-2; i++){
                 if(qry->value(i).toString() == "0"){
                     //PUSTO
                 }else{
@@ -1615,7 +1605,7 @@ void MainWindow::WoL(QString macc, QString addr)
     WOL->writeDatagram(woldata, QHostAddress(addr),7);
 }
 
-void MainWindow::scene_executor(int *arg, QString &wracam, QString &maska, QString &hex, QString &buttons, QString &c)
+void MainWindow::scene_executor(int *arg, QString &wracam, QString &buttons)
 {
     if(arg[1]==1){//timer
         scene_active = true;
@@ -1671,37 +1661,15 @@ void MainWindow::scene_executor(int *arg, QString &wracam, QString &maska, QStri
         arg_check--;
     }
     if(arg[13]&&!dzien){//źródła
-        int i=0;
         bool ok;
-        QList<unsigned char> scene_ingridiens;
-        QList<int> scene_outmask;
-        QList<int> scene_scheduledc;
         QList<int> scene_scheduledbtn;
         QString scene_tempnames;
-        MyUDP scene_UDP;
 
-        for(int i=0;i<(maska.split(',').count()); i++){
-            scene_outmask.insert(i,maska.split(",")[i].toInt(&ok));
-        }
-        for(int i=0;i<hex.split(",").count(); i++){
-            scene_ingridiens.insert(i, (hex.split(",")[i].toInt(&ok)));
-        }
-        for(int i=0;i<hex.split(",").count(); i++){
+        for(int i=0;i<buttons.split(",").count()-1; i++){
             scene_scheduledbtn.insert(i, (buttons.split(",")[i].toInt(&ok)));
         }
-        for(int i=0;i<hex.split(",").count(); i++){
-            scene_scheduledc.insert(i, (c.split(",")[i].toInt(&ok)));
-        }
-        foreach(unsigned char hex, scene_ingridiens){
-            maskawysl[scene_outmask.value(i)]|=hex;
-            bList.at(scene_scheduledbtn.value(i))->setChecked(true);
-            c[scene_scheduledc.value(i)]=1;
-            if(scene_outmask.value(i)<5){
-                scene_UDP.WYSUDP("192.168.1.101");
-            }else{
-                scene_UDP.WYSUDP("192.168.1.104");
-            }
-            i++;
+        foreach(int btn, scene_scheduledbtn){
+            bList.at(btn)->setChecked(true);
         }
         arg_check--;
     }

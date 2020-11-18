@@ -15,13 +15,7 @@ QList<int> bgi; //wybór grup harmonogramowanych przycisków do aktywacji
 extern QList<QList<int> > outmasks;
 QList<QList<int> > rand_masks;
 QList<QList<unsigned char> > rand_hexxs;
-
-//QList<QList<int> > scene_masks;
-//QList<QList<unsigned char> > scene_hexs;
-//QList<int> scene_mask;
-//QList<unsigned char> scene_hex;
 unsigned char scene_pir=0x10;
-
 extern QList<QList<int> > scheduledcs;
 extern QList<int> scheduledtime;
 extern QList<int> tspinBox;
@@ -139,8 +133,6 @@ void MyUDP::readyRead(){
         QByteArray z=k.mid(6,8);
 
         //qDebug() <<" Mss from" << sender.toString() << " Ramka: " << k;
-        //qDebug() << "Mss port" << senderPort;
-        //qDebug() << "Ramka: " << k;
 
         ips=sender.toString();
 
@@ -152,12 +144,12 @@ void MyUDP::readyRead(){
             }
         }
         if(("192.168.1.100"==ips)||("192.168.1.104"==ips)){
-            QString IP_holder="192.168.1.101";
-            int n=0; //numeracja wejścia
+            //QString IP_holder="192.168.1.101";
+            //int n=0; //numeracja wejścia
             for (int i=3; i<=(Buffer.length());i++){
                 temp[i-3]=Buffer[i];
             }
-            for (int j=0; j<=5;j++){
+            /*for (int j=0; j<=5;j++){//wyłączenie wysyłania - wywołanie przez zaznaczanie buttonów (mainwindow.cpp, linia 698)
                 if(j==5){IP_holder="192.168.1.104";}
                 for (int i=1; i<=8;i++){
                     n++;
@@ -176,7 +168,7 @@ void MyUDP::readyRead(){
                         }
                     }
                 }
-            }
+            }*/
             emit changes(); //sygnal do odbierania
         }
 //**************************ODBIERANIE CZUJEK PIR***********************//

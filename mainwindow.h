@@ -29,7 +29,7 @@ public:
     void barometer();
     void sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME);
     void WoL(QString macc, QString addr);
-    void scene_executor(int *arg, QString &wracam, QString &maska, QString &hex, QString &buttons, QString &c);
+    void scene_executor(int *arg, QString &wracam, QString &buttons);
     void gates(int type, bool timer, int ms, int x);
     void selected_sources(QList<unsigned char> &ingridiens, QList<int> &outmask, QList<int> &scheduledc, QList<int> &scheduledbtn, QString &tempnames);
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
