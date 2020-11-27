@@ -5682,14 +5682,14 @@ border: none;
         <property name="styleSheet">
          <string notr="true">QPushButton#scene_wracam {
 background-color: transparent;
-//background-image: url(:/HDD1/admin/iHome/28-02-2018/media/back_off.png);
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/back_off.png);
 background-repeat: none;
 border: none;
 }
 
 QPushButton#scene_wracam:checked
 {
-//background-image: url(:/HDD1/admin/iHome/28-02-2018/media/back_on.png);
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/back_on.png);
 background-color: transparent;
 border: none;
 }</string>

@@ -10,13 +10,12 @@ unsigned char temp[20];
 unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
 QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych przez harmonogramy
-QList<QList<unsigned char> > scheduledhexxout; //tablica bitów wyjść definiowanych przez harmonogramy
 QList<int> bgi; //wybór grup harmonogramowanych przycisków do aktywacji
-extern QList<QList<int> > outmasks;
+extern QList<QPushButton*> bList;
+extern QList<QList<int> > scheduledbtns;
 QList<QList<int> > rand_masks;
 QList<QList<unsigned char> > rand_hexxs;
 unsigned char scene_pir=0x10;
-extern QList<QList<int> > scheduledcs;
 extern QList<int> scheduledtime;
 extern QList<int> tspinBox;
 QList<QTimer*> scheduledtimers;
@@ -36,9 +35,7 @@ extern int gn;
 extern int arg[12];
 extern int arg_check;
 extern QList<int> t;
-int c[49]; //wejścia (49 pozycji kontenera wliczając 0)
 int odliczG;
-int scheduledaction=0;
 bool simulating_on;
 extern bool scene_active;
 extern bool scene_driving;
@@ -192,37 +189,24 @@ void MyUDP::readyRead(){
                 timer_LOff->start(1000);
             }
             //***WYKONYWANIE HARMONOGRAMU***//
-                //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
+            //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
             if(!temp[0]==0){
                 tempholder[0] = temp[0];
                 //******//
-            for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-                if(tempholder[0] & scheduledhexxpir[j]){
-                    if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
-
-                        bgi.insert(j,j);//czy to zadziała?
-                        int i=0;
-                        foreach(unsigned char r, scheduledhexxout[j]){
-
-                            maskawysl[outmasks.value(j)[i]]|=r;
-                            c[scheduledcs.value(j)[i]]=1;
-                            if(outmasks.value(j)[i]<5){
-                                WYSUDP("192.168.1.101");
-                            }else{
-                                WYSUDP("192.168.1.104");
+                for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
+                    if(tempholder[0] & scheduledhexxpir[j]){
+                        if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
+                            foreach(int btns, scheduledbtns[j]){
+                                bList.at(btns)->setChecked(true);
                             }
-                            i++;
+                            if(scheduledtime[j]==0){
+                                scheduledtimers.at(j)->setSingleShot(true);
+                                scheduledtimers.at(j)->start(t.at(tspinBox[j]));
+                            }
+                            emit changes(); //sygnal do odbierania
                         }
-                        if(scheduledtime[j]==0){
-                            scheduledtimers.at(j)->setSingleShot(true);
-                            scheduledtimers.at(j)->start(t.at(tspinBox[j]));
-                            //qDebug() << j << tspinBox.at(j);
-                        }
-                    scheduledaction=1;
-                    emit changes(); //sygnal do odbierania
                     }
                 }
-            }
             }
         //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
             //***********SCENA WYJEZDZAM************//
@@ -284,7 +268,6 @@ void MyUDP::lightsOff(){
         maskawysl[5]&=~0x3b;//ominięto wyjscie oswietlania podjazdu
         WYSUDP("192.168.1.101");
         WYSUDP("192.168.1.104");
-        zerujWyj();
         emit all_off_();
         arg_check--;
         qDebug() << "ARG_CH: " << arg_check;
@@ -301,13 +284,6 @@ void MyUDP::obecnosc_none(){
     obecnosc=0;
 }
 
-void MyUDP::zerujWyj()
-{
-    for(int i=0;i<=48;i++)
-    {
-       c[i]=0;
-    }
-}
 //*****SYMULACJA OBECNOŚCI*****//
 void MyUDP::simulation(bool on)
 {

@@ -12,7 +12,6 @@ class MyUDP : public QObject
         explicit MyUDP(QObject *parent = 0);
         void WYSUDP(QString addr);
         QUdpSocket *socket;
-        void zerujWyj();
 
 private:
         QTimer *timer_LOff;

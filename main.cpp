@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     w.readscheduler();
-    client.zerujWyj();
     QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
     QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
     QObject::connect(&w,SIGNAL(simulating(bool)), &client, SLOT(simulation(bool)));

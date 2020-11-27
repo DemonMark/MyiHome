@@ -31,7 +31,7 @@ public:
     void WoL(QString macc, QString addr);
     void scene_executor(int *arg, QString &wracam, QString &buttons);
     void gates(int type, bool timer, int ms, int x);
-    void selected_sources(QList<unsigned char> &ingridiens, QList<int> &outmask, QList<int> &scheduledc, QList<int> &scheduledbtn, QString &tempnames);
+    void selected_sources(QList<int> &scheduledbtn, QString &tempnames);
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
 
 private slots:
@@ -72,8 +72,6 @@ private slots:
   void on_button_wentylator_2_toggled(bool checked);
 
   void on_go_ground_clicked();
-
-  void on_button_scene_4_clicked();
 
   void on_config_clicked();
 

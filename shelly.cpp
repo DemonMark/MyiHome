@@ -2,7 +2,6 @@
 
 QByteArray plugsocket;
 QByteArray psData;
-extern bool jestem;
 
 shelly::shelly(QWidget *parent) : QPushButton(parent)
 {
