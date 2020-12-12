@@ -46,6 +46,8 @@ QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.1
 QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png"};
 QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.png"};
 extern QList<shelly*> shList;
+extern QList<int> pir_activ;
+extern QList<QString> pirnames;
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -53,7 +55,7 @@ MyUDP::MyUDP(QObject *parent) :
   socket = new QUdpSocket(this);
   socket->bind(QHostAddress("192.168.1.2"),1200);         // moj ip
   connect(socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
-
+    qDebug() << "UTWORZONO UDP";
 //******************TIMER WYŁĄCZAJĄCY WYJŚCIA*******************//
 
   timer_LOff = new QTimer(this);
@@ -71,7 +73,7 @@ MyUDP::MyUDP(QObject *parent) :
   //timer do pukania do modułu (nowy router usypia połączenie z hostami)
   ping = new QTimer(this);
   connect(ping, SIGNAL(timeout()),this,SLOT(ping_slot()));
-  ping->start(60000);
+  ping->start(60000);  
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
 void MyUDP::WYSUDP(QString addr)
@@ -170,6 +172,7 @@ void MyUDP::readyRead(){
         }
 //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
+
             for (int i=3; i<=(Buffer.length());i++)
             {
                 temp[i-3]=Buffer[i];
@@ -190,11 +193,12 @@ void MyUDP::readyRead(){
             }
             //***WYKONYWANIE HARMONOGRAMU***//
             //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
-            if(!temp[0]==0){
+            if(!(temp[0]==0)){
                 tempholder[0] = temp[0];
                 //******//
                 for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-                    if(tempholder[0] & scheduledhexxpir[j]){
+                    if((tempholder[0] & scheduledhexxpir[j])&&(pir_chck.myqueries("PIR", pirnames[j],obecnosc,false))==1){//obecnosc podana gdyz wymagany int przy funkcji - nie uzywane
+                        qDebug() << pirnames;
                         if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
                             foreach(int btns, scheduledbtns[j]){
                                 bList.at(btns)->setChecked(true);
@@ -208,11 +212,12 @@ void MyUDP::readyRead(){
                     }
                 }
             }
-        //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
+            //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
             //***********SCENA WYJEZDZAM************//
             if(scene_driving && tempholder[0]&scene_pir){
                 emit gate();
             }
+            //pir_chck.deleteLater();
         }
 
         //****************SHELLY1**********************//

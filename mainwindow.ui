@@ -651,6 +651,9 @@ background-color: transparent;
         <property name="maximum">
          <number>3</number>
         </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
         <property name="value">
          <number>1</number>
         </property>
@@ -1255,15 +1258,24 @@ background-color: transparent;
          <property name="text">
           <string>Korytarz góra</string>
          </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</normaloff>
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/pir_on.png</selectedoff>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</iconset>
          </property>
+         <property name="flags">
+          <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Korytarz dół</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
          </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
@@ -1275,6 +1287,9 @@ background-color: transparent;
          <property name="text">
           <string>Łazienka dół</string>
          </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</normaloff>
@@ -1284,6 +1299,9 @@ background-color: transparent;
         <item>
          <property name="text">
           <string>Kuchnia</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
          </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
@@ -1295,6 +1313,9 @@ background-color: transparent;
          <property name="text">
           <string>Garaż</string>
          </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</normaloff>
@@ -1305,6 +1326,9 @@ background-color: transparent;
          <property name="text">
           <string>Salon</string>
          </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
            <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</normaloff>
@@ -1314,6 +1338,9 @@ background-color: transparent;
         <item>
          <property name="text">
           <string>Wiatrołap</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
          </property>
          <property name="icon">
           <iconset resource="ikony.qrc">
@@ -1856,7 +1883,7 @@ background-color: transparent;
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>czujka | czas -&gt; źródło</string>
+         <string>czujka ruchu | czas -&gt; źródło</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_20">
@@ -1864,7 +1891,7 @@ background-color: transparent;
          <rect>
           <x>21</x>
           <y>5</y>
-          <width>101</width>
+          <width>181</width>
           <height>21</height>
          </rect>
         </property>
@@ -1878,7 +1905,7 @@ background-color: transparent;
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>czujka ruchu</string>
+         <string>aktywna | czujka ruchu</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_24">
@@ -6189,7 +6216,7 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="button_scene_4">
+       <widget class="QPushButton" name="scene_ide_spac">
         <property name="geometry">
          <rect>
           <x>925</x>
@@ -6202,14 +6229,14 @@ border: none;
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#button_scene_4 {
+         <string notr="true">QPushButton#scene_ide_spac {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sleep_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#button_scene_4:pressed
+QPushButton#scene_ide_spac:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sleep_on.png);
 background-color: transparent;
@@ -6220,7 +6247,7 @@ border: none;
          <string/>
         </property>
         <property name="checkable">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -6934,7 +6961,7 @@ border: none;
        <zorder>pushButton_38</zorder>
        <zorder>pushButton_39</zorder>
        <zorder>pushButton_40</zorder>
-       <zorder>button_scene_4</zorder>
+       <zorder>scene_ide_spac</zorder>
        <zorder>th_7</zorder>
        <zorder>th_8</zorder>
        <zorder>th_9</zorder>

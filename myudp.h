@@ -4,14 +4,16 @@
 #include <QUdpSocket>
 #include <QObject>
 #include <QTimer>
+#include "mydbs.h"
 
 class MyUDP : public QObject
 {
   Q_OBJECT
   public:
         explicit MyUDP(QObject *parent = 0);
-        void WYSUDP(QString addr);
+        //void WYSUDP(QString addr);
         QUdpSocket *socket;
+        mydbs pir_chck;
 
 private:
         QTimer *timer_LOff;
@@ -32,5 +34,6 @@ private:
         void simulation_holder();
         void random_off();
         void ping_slot();
+        void WYSUDP(QString addr);
 };
 #endif // MYUDP_H

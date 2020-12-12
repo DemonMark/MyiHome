@@ -9,8 +9,12 @@ class mydbs : public QObject
     Q_OBJECT
 public:
     explicit mydbs(QObject *parent = 0);
-    QSqlDatabase mydb;
+    QSqlDatabase getDatabase();
     void conclose();
+    int myqueries(QString tb, const QString &rec, int &val, bool sch);
+
+private:
+    QString dbName;
 
 signals:
 

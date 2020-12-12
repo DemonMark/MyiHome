@@ -66,7 +66,6 @@ extern QList<int> bgi;
 extern QList<QTimer*> scheduledtimers;
 unsigned char maskawysl[10];
 extern int odliczG;
-int a=0;
 int gn=-1;
 int gn2=0;
 int qu;
@@ -94,6 +93,7 @@ int arg[13];
 int arg_check;//potwierdzenie wykonania składników sceny
 int arg_config[13];
 QString last_scene;
+QList<int> pir_activ;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -168,6 +168,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
 
     //PARAMETRY POCZĄTKOWE//
+    pir_status();
     plugsocket[2]=0x00;
     ui->label_32->setVisible(false);
     ui->label_36->setVisible(false);
@@ -252,7 +253,7 @@ void MainWindow::showTime(){
             movie_countdown->start();
             ui->label_19->setStyleSheet("background-image:none");
         }
-//***************zarządzanie temperaturą cwu*******************//
+//***************zarządzanie temperaturą CWU*******************//
         double temp_cwu = ui->label_21->text().split(DC)[0].toDouble();
         switch(obecnosc){
         case 1:
@@ -279,9 +280,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
     foreach(QString start, startat){
         int j=gnpos.at(i1);
         if(time_text==start){
-            foreach(int btns, scheduledbtns[j]){
-                bList.at(btns)->setChecked(true);
-            }
+            scheduled_buttons_run(j,true);
             qDebug() << "START";
         }
         i1++;
@@ -290,9 +289,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
     foreach(QString stop, stopat){
         int j=gnpos.at(i2);
         if(time_text==stop){
-            foreach(int btns, scheduledbtns[j]){
-                bList.at(btns)->setChecked(false);
-            }
+            scheduled_buttons_run(j,false);
             qDebug() << "STOP";
         }
         i2++;
@@ -517,130 +514,82 @@ void MainWindow::receiving(){
         if(ui->pushButton_34->isChecked()){
             if(flaga==0){
                 maskawysl[2]|=0x08;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga==1){
                 maskawysl[2]&=~0x08;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_7==0){
                 maskawysl[2]|=0x10;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_7==1){
                 maskawysl[2]&=~0x10;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga_8==0){
                 maskawysl[2]|=0x40;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga_8==1){
                 maskawysl[2]&=~0x40;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga_9==0){
                 maskawysl[2]|=0x80;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga_9==1){
                 maskawysl[2]&=~0x80;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga_10==0){
                 maskawysl[2]|=0x20;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if(flaga_10==1){
                 maskawysl[2]&=~0x20;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_1==0){
                 maskawysl[3]|=0x04;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_1==1){
                 maskawysl[3]&=~0x04;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_2==0){
                 maskawysl[3]|=0x02;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_2==1){
                 maskawysl[3]&=~0x02;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_4==0){
                 maskawysl[3]|=0x08;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_4==1){
                 maskawysl[3]&=~0x08;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_5==0){
                 maskawysl[3]|=0x10;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_5==1){
                 maskawysl[3]&=~0x10;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_6==0){
                 maskawysl[3]|=0x20;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             if (flaga_6==1){
                 maskawysl[3]&=~0x20;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
             }
             //*************flaga dla pomp podłogówki*******
             if (flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0){
                 maskawysl[3]|=0x40;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
                 ui->label_pompa_1->setMovie(movie_pompa_1);
                 movie_pompa_1->start();
             }
             if(flaga_1==1 && flaga_2==1 && flaga_4==1 && flaga_5==1 && flaga_6==1){
                 maskawysl[3]&=~0x40;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
                 movie_pompa_1->stop();
                 ui->label_pompa_1->setPixmap(pompa_off);
             }
             if (flaga==0 || flaga_7==0 || flaga_8==0 || flaga_9==0 || flaga_10==0){
                 maskawysl[3]|=0x80;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
                 ui->label_pompa_2->setMovie(movie_pompa_2);
                 movie_pompa_2->start();
             }
             if (flaga==1 && flaga_7==1 && flaga_8==1 && flaga_9==1 && flaga_10==1){
                 maskawysl[3]&=~0x80;
-                MyUDP client;
-                client.WYSUDP("192.168.1.101");
                 movie_pompa_2->stop();
                 ui->label_pompa_2->setPixmap(pompa_off);
             }
@@ -650,6 +599,7 @@ void MainWindow::receiving(){
             } else{
                 plugsocket[2]=0x00;
             }
+            emit UDP_ReadytoSend("192.168.1.101");
         }
         qu=0;
     }
@@ -765,8 +715,8 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
 
         mydbs baza;
         qDebug() << &baza;
-        QSqlQuery* qry = new QSqlQuery(baza.mydb);
-        qry->prepare("select * from scenes where description ='"+scena+"'");
+        QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+        qry->prepare("select * from scenes where description LIKE '%"+scena+"%'");
         if(qry->exec()){
             while(qry->next()){
                 for (int i=1; i<qry->record().count()-2; i++){//nie pobieramy wartości z opcji: źródła
@@ -795,7 +745,6 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
 //*******************************WYJAZD Z DOMU********************//
 void MainWindow::wyjezdzam(){
 
-    MyUDP bramy;
     switch(driving){
     case garage_gate:
         if(otwarta==0){
@@ -828,14 +777,12 @@ void MainWindow::wyjezdzam(){
         gates(1,false,0,47);
         break;
     }
-    //delete bramy;
 }
 
 void MainWindow::stykOff(){
 
-    MyUDP bramy;
     maskawysl[4]&=~0x80;
-    bramy.WYSUDP("192.168.1.101");
+    emit UDP_ReadytoSend("192.168.1.101");
     timer_bramaStykOff->stop();
     ui->pushButton_16->setChecked(false);
 }
@@ -847,19 +794,13 @@ void MainWindow::on_pushButton_23_clicked()
         QListWidgetItem *new_item = new QListWidgetItem;
         QList<int> scheduledbtn;
         QString tempnames;
-        QList<QListWidgetItem*> itemtextlist = ui->listWidget_2->selectedItems();
         QList<QListWidgetItem*> itempirlist = ui->listWidget->selectedItems();
-        QModelIndexList rowsy = ui->listWidget_2->selectionModel()->selectedRows(0);
+        selected_sources(scheduledbtn, tempnames);
 
-        foreach(QModelIndex rows, rowsy){
-            tempnames.append(itemtextlist.at(a)->text() + ", ");
-            scheduledbtn.insert(a,bPos[rows.row()]);
-            a++;
-        }
         scheduledbtns.insert(gn,scheduledbtn);
         outnames.insert(gn,tempnames);
         gn2pos.insert(gn,gn2);
-        a=0;
+
         if(ui->pushButton_29->isChecked()){
             scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
             scheduledtime.insert(gn,1);
@@ -949,9 +890,7 @@ void MainWindow::offfff(){
                 qDebug() << "Timer aktywny:" << j;
             }
             else{
-                foreach(int btns, scheduledbtns[j]){
-                    bList.at(btns)->setChecked(false);
-                }
+                scheduled_buttons_run(j, false);
                 scheduledtimers.at(j)->stop();
             }
         }
@@ -987,16 +926,14 @@ void MainWindow::ClickedbtnFinder(){
         for (int i=1; i<=8;i++){
             int y=bPos[m];
             if(bList.at(y)==QObject::sender()){
-                //QByteArray tab;
-                MyUDP client;
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
                 if(bList.at(y)->isChecked()){
                     maskawysl[j]|=(hexx[i]);
-                    client.WYSUDP(IP_holder);
+                    emit UDP_ReadytoSend(IP_holder);
                 }
                 if(bList.at(y)->isChecked()==false){
                     maskawysl[j]&=~(hexx[i]);
-                    client.WYSUDP(IP_holder);
+                    emit UDP_ReadytoSend(IP_holder);
                 }
             }
             //obsługa modułu 6-CH
@@ -1345,7 +1282,8 @@ void MainWindow::on_config_clicked()
     dt[0] = ui->spinBox_2->value();
     dt[1] = ui->spinBox_3->value();
     mydbs baza;
-    QSqlQuery* qry = new QSqlQuery(baza.mydb);
+    QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+    //QSqlQuery* qry = new QSqlQuery(baza.mydb);
     /*qry->prepare("INSERT INTO scenes (odliczanie, dane, 'wylacz wszystkie swiatla', 'wylacz rekuperacje', "
                  "'obniz temperature o', dane_2, 'uzbroj alarm', 'TV on', 'Brama garazowa', 'Brama wjazdowa', 'uchyl brame garazowa',"
                  "'uchyl brame wjazdowa' ) VALUES (1,1,1,1,1,1,1,1,1,1,1,1)");*/
@@ -1402,7 +1340,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 {
     ui->listWidget_4->clear();
     mydbs baza;
-    QSqlQuery* qry = new QSqlQuery(baza.mydb);
+    QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
     qry->prepare("SELECT * FROM scenes WHERE description ='"+arg1+"'");
     if(qry->exec()){
         while(qry->next()){
@@ -1421,18 +1359,18 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
         }
     }
     baza.conclose();
+    baza.deleteLater();
+    qDebug() << "Konfiguracja";
 }
 
 void MainWindow::on_resetButton_clicked()
 {
-    MyUDP reset;
-    reset.WYSUDP("192.168.1.102");
+    emit UDP_ReadytoSend("192.168.1.102");
 }
 
 void MainWindow::on_cwu_toggled(bool checked)
 {
     //QFile plik("/media/HDD1/admin/iHome/28-02-2018/cwu.txt");
-    MyUDP cwu;
     if (checked){  
         maskawysl[5]|=0x08;
         //if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
@@ -1450,26 +1388,23 @@ void MainWindow::on_cwu_toggled(bool checked)
         //}
         write_off=false;
     }
-    cwu.WYSUDP("192.168.1.104");
+    emit UDP_ReadytoSend("192.168.1.104");
 }
 
 void MainWindow::on_pushButton_24_toggled(bool checked)
 {
-    MyUDP sink;
     if(checked){
         maskawysl[5]|=0x10;
     }else{
         maskawysl[5]&=~0x10;
     }
-    sink.WYSUDP("192.168.1.104");
+    emit UDP_ReadytoSend("192.168.1.104");
 }
 //***śledzenie czasu wschodu/zachodu złońca i zmiana czasu świecenia źródła***
 void MainWindow::sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME)
 {
     int i=0;
-    qDebug() << "JESTEM PRZED FOREM";
     foreach(QString time, suntime){
-        qDebug() << "JESTEM PRZED 0";
         if(!(time=="0")){
             QTime old_sun_time = QTime::fromString(time, "HH:mm");
             QTime now_sun_time = QTime::fromString(source, "HH:mm");
@@ -1479,7 +1414,6 @@ void MainWindow::sunTimeWatcher(QList<QString> &suntime, QString source, QListWi
             suntime.replace(i,now_sun_time.toString("hh:mm"));
             //new_oo_time.setHMS(old_oo_time.hour() - dif_time.hour(), old_oo_time.minute() - dif_time.minute(), 0);
             ssTIME.replace(i, new_oo_time.toString());
-            qDebug () << "JESTEM PRZED ZMIANA TEKSTU LISTY";
             QList<QListWidgetItem*> item = widget->findItems(old_oo_time.toString(), Qt::MatchContains);
             int rowi = widget->row(item.at(i));
             QString row = widget->item(rowi)->text();
@@ -1513,7 +1447,7 @@ void MainWindow::WoL(QString macc, QString addr)
     WOL->writeDatagram(woldata, QHostAddress(addr),7);
 }
 
-void MainWindow::scene_executor(int *arg, QString &wracam, QString &buttons)
+void MainWindow::scene_executor(int *arg, QString &aktywna_scena, QString &buttons)
 {
     QString backi;
     QList<int> backv;
@@ -1527,26 +1461,47 @@ void MainWindow::scene_executor(int *arg, QString &wracam, QString &buttons)
     if(arg[3]==1){//swiatla
         emit all_off();
     }
-    if(arg[4]==1){ //rekuperator
-        ui->button_wentylator->setChecked(false);
+    if(arg[4]>=1){ //rekuperator
+        if(!(aktywna_scena=="wracam")){//***dodanie do sceny 'wracam' w celu odwołania po powrocie***
+            backv.append(ui->dial_12->value());
+        }else {
+            backv.append(0);
+        }
+        backi.append("'wylacz rekuperacje'=?");
+        ui->dial_12->setValue(arg[4]);
         arg_check--;
-        //***dodanie do sceny 'wracam' w celu odwołania po powrocie***
-        backi.append("rekuperator=?,");
     }
     if(arg[5]==1){ //temperatura
         foreach(QDial* dL, dList){
-            dL->setValue(dL->value()-arg[6]);
+            dL->setValue(dL->value()-(arg[6]*10));
         }
         arg_check-=2;
-        //***dodanie do sceny 'wracam' w celu odwołania po powrocie***
-        backi.append("temperatura=?,");
+        if(!(aktywna_scena=="wracam")){//***dodanie do sceny 'wracam' w celu odwołania po powrocie***
+            backv.append(1);
+            backv.append(-1*(arg[6]));
+        }else{
+            backv.append(0);
+            backv.append(0);
+        }
+        if(backi.isNull()){
+            backi.append("'obniz temperature o'=?,dane_2=?");
+        }else{
+            backi.append(",'obniz temperature o'=?,dane_2=?");
+        }
     }
     if(arg[7]==1){ //alarm
         //funkcja do wprowadzenia
         arg_check--;
-        //***dodanie do sceny 'wracam' w celu odwołania po powrocie***
-        backi.append("'uzbroj alarm'=?");
-        backv.append(1);
+        if(!(aktywna_scena=="wracam")){//***dodanie do sceny 'wracam' w celu odwołania po powrocie***
+            backv.append(1);
+        }else{
+            backv.append(0);
+        }
+        if(backi.isNull()){
+            backi.append("'uzbroj alarm'=?");
+        }else{
+            backi.append(",'uzbroj alarm'=?");
+        }
     }
     if(arg[8]==1){ //TV
         WoL("44-5C-E9-9F-48-3A", "192.168.1.17");
@@ -1555,18 +1510,18 @@ void MainWindow::scene_executor(int *arg, QString &wracam, QString &buttons)
     if(arg[9]==1){//brama garazowa
         scene_driving=true;
         driving=garage_gate;
-        if(wracam=="wracam"){
+        if(aktywna_scena=="wracam"){
             wyjezdzam();
         }
     }
     if(arg[10]==1){//brama wjazdowa
         scene_driving=true;
         driving=main_gate;
-        if(wracam=="wracam"){
+        if(aktywna_scena=="wracam"){
             wyjezdzam();
         }
     }
-    if(arg[9]==1 && arg[10]==1 && !(wracam=="wracam")){//obie
+    if(arg[9]==1 && arg[10]==1 && !(aktywna_scena=="wracam")){//obie
         driving=both;
     }
     if(arg[11]){//Matylka
@@ -1595,7 +1550,7 @@ void MainWindow::scene_executor(int *arg, QString &wracam, QString &buttons)
     }
     //***dodanie do sceny 'wracam' składników do odwołania po powrocie***
     mydbs baza;
-    QSqlQuery* qry = new QSqlQuery(baza.mydb);
+    QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
     qry->prepare("UPDATE scenes SET "+backi+" WHERE description='wracam'");
     foreach(int x, backv){
         qry->addBindValue(x);
@@ -1645,10 +1600,10 @@ void MainWindow::on_config_cl_clicked()
                   qDebug() << "EXCL";
    }
 }*/
-//zmiany w dodawaniu harmonogramu - uzycie fukcji takze przy scenach
+
 void MainWindow::selected_sources(QList<int> &scheduledbtn, QString &tempnames)
 {
-    a=0;
+    int a=0;
     QList<QListWidgetItem*> itemtextlist = ui->listWidget_2->selectedItems();
     QModelIndexList rowsy = ui->listWidget_2->selectionModel()->selectedRows(0);
     foreach(QModelIndex rows, rowsy){
@@ -1656,4 +1611,44 @@ void MainWindow::selected_sources(QList<int> &scheduledbtn, QString &tempnames)
         scheduledbtn.insert(a,bPos[rows.row()]);
         a++;
     }
+}
+
+void MainWindow::scheduled_buttons_run(int &j, bool tof)
+{
+    foreach(int btns, scheduledbtns[j]){
+        bList.at(btns)->setChecked(tof);
+    }
+}
+//aktywowanie/deaktywowanie czujek PIR
+void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+{
+    int value;
+    mydbs pir_set;
+    if(item->checkState()==Qt::CheckState::Checked){
+        value=1;
+    }else{
+        value=0;
+    }
+    pir_set.myqueries("PIR", item->text(),value, true);
+    pir_set.conclose();
+}
+
+void MainWindow::pir_status()
+{
+    QString name;
+    int value;
+    mydbs pir_check;
+    int pirs = ui->listWidget->count();
+    for(int x=0; x<pirs; x++){
+        name = ui->listWidget->item(x)->text();
+        if((pir_check.myqueries("PIR", name, value, false))==1){
+            ui->listWidget->item(x)->setCheckState(Qt::CheckState::Checked);
+            //pir_activ.insert(x,1);
+        }else{
+            ui->listWidget->item(x)->setCheckState(Qt::CheckState::Unchecked);
+           //pir_activ.insert(x,0);
+        }
+    }
+    pir_check.conclose();
+    pir_check.deleteLater();
 }

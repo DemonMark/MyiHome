@@ -3,18 +3,41 @@
 mydbs::mydbs(QObject *parent) :
     QObject(parent)
 {
-    mydb=QSqlDatabase::addDatabase("QSQLITE");
-    mydb.setDatabaseName("/media/HDD2/Moje projekty/MyiHome/scene.db");
-    if(mydb.open())
-    {
-        qDebug() << "OPENED";
+    if(QSqlDatabase::contains("qt_sql_default_connection")){
+        qDebug() << "BAZA ISTNIEJE";
+    }else{
+        dbName = "/media/HDD2/Moje projekty/MyiHome/scene.db";
+        auto mydb=QSqlDatabase::addDatabase("QSQLITE");
+        mydb.setDatabaseName(dbName);
+        mydb.open();
     }
+}
+
+int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch)
+{
+    int ton;
+    QSqlQuery* qry = new QSqlQuery(getDatabase());
+    if(!sch){
+        qry->prepare("SELECT * FROM "+tb+" WHERE nazwa = '"+rec+"' ");
+        if(qry->exec()){
+            while(qry->next()){
+                ton = qry->value(2).toInt();
+            }
+        }
+    }else{
+    qry->prepare("UPDATE "+tb+" SET aktywna=? WHERE nazwa = '"+rec+"'");
+    qry->addBindValue(val);
+    qry->exec();
+    }
+    return ton;
 }
 
 void mydbs::conclose()
 {
-    mydb.close();
-    QSqlDatabase::removeDatabase("QSQLITE");
-    mydb.removeDatabase(QSqlDatabase::defaultConnection);
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+}
 
+QSqlDatabase mydbs::getDatabase()
+{
+    return QSqlDatabase::database(dbName);
 }
