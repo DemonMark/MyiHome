@@ -46,7 +46,6 @@ QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.1
 QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png"};
 QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.png"};
 extern QList<shelly*> shList;
-extern QList<int> pir_activ;
 extern QList<QString> pirnames;
 
 MyUDP::MyUDP(QObject *parent) :
@@ -170,54 +169,58 @@ void MyUDP::readyRead(){
             }*/
             emit changes(); //sygnal do odbierania
         }
-//**************************ODBIERANIE CZUJEK PIR***********************//
+        //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
-
+            mydbs pir_chck;
+            bool activ=false;
             for (int i=3; i<=(Buffer.length());i++)
             {
                 temp[i-3]=Buffer[i];
-            }
-            obecnosc=1;
-            timer_obecnosc->start(300000);
-            emit changes();
-            //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
-            if(spimy==1 || scene_active){
-                switch(scene_active){
-                case true:
-                    odliczG=arg[2]*60;
-                    break;
-                default:
-                    odliczG=600;
+                if((pir_chck.myqueries("PIR", QString::number(temp[i-3]),obecnosc,false,"id"))==1){
+                    activ=true;
                 }
-                timer_LOff->start(1000);
             }
-            //***WYKONYWANIE HARMONOGRAMU***//
-            //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
-            if(!(temp[0]==0)){
-                tempholder[0] = temp[0];
-                //******//
-                for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-                    if((tempholder[0] & scheduledhexxpir[j])&&(pir_chck.myqueries("PIR", pirnames[j],obecnosc,false))==1){//obecnosc podana gdyz wymagany int przy funkcji - nie uzywane
-                        qDebug() << pirnames;
-                        if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
-                            foreach(int btns, scheduledbtns[j]){
-                                bList.at(btns)->setChecked(true);
+            if(activ){
+                obecnosc=1;
+                timer_obecnosc->start(300000);
+                emit changes();
+                //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
+                if(spimy==1 || scene_active){
+                    switch(scene_active){
+                    case true:
+                        odliczG=arg[2]*60;
+                        break;
+                    default:
+                        odliczG=600;
+                    }
+                    timer_LOff->start(1000);
+                }
+                //***WYKONYWANIE HARMONOGRAMU***//
+                //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
+                if(!(temp[0]==0)){
+                    tempholder[0] = temp[0];
+                    //******//
+                    for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
+                        if((tempholder[0] & scheduledhexxpir[j])){
+                            if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
+                                foreach(int btns, scheduledbtns[j]){
+                                    bList.at(btns)->setChecked(true);
+                                }
+                                if(scheduledtime[j]==0){
+                                    scheduledtimers.at(j)->setSingleShot(true);
+                                    scheduledtimers.at(j)->start(t.at(tspinBox[j]));
+                                }
+                                emit changes(); //sygnal do odbierania
                             }
-                            if(scheduledtime[j]==0){
-                                scheduledtimers.at(j)->setSingleShot(true);
-                                scheduledtimers.at(j)->start(t.at(tspinBox[j]));
-                            }
-                            emit changes(); //sygnal do odbierania
                         }
                     }
                 }
+                //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
+                //***********SCENA WYJEZDZAM************//
+                if(scene_driving && tempholder[0]&scene_pir){
+                    emit gate();
+                }
             }
-            //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
-            //***********SCENA WYJEZDZAM************//
-            if(scene_driving && tempholder[0]&scene_pir){
-                emit gate();
-            }
-            //pir_chck.deleteLater();
         }
 
         //****************SHELLY1**********************//

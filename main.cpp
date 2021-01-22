@@ -12,12 +12,14 @@
 #include "zdarzenie.h"
 #include "mytimer.h"
 #include "mydbs.h"
+#include "mqtt_client.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MyUDP client;
     pir_button pirek;
+    mqtt_client mosquitto_client;
     MainWindow w;
     w.show();
     w.readscheduler();
@@ -28,5 +30,7 @@ int main(int argc, char *argv[])
     QObject::connect(&client, SIGNAL(all_off_()), &w, SLOT(LOff()));
     QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjezdzam()));
     QObject::connect(&w,SIGNAL(UDP_ReadytoSend(QString)), &client, SLOT(WYSUDP(QString)));
+    QObject::connect(&mosquitto_client, SIGNAL(msg(QString)), &w, SLOT(mqtt_processor(QString)));
+
   return a.exec();
 }

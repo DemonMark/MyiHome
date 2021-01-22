@@ -10,15 +10,16 @@ mydbs::mydbs(QObject *parent) :
         auto mydb=QSqlDatabase::addDatabase("QSQLITE");
         mydb.setDatabaseName(dbName);
         mydb.open();
+        qDebug() << "BAZA UTWORZONA";
     }
 }
 
-int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch)
+int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch, QString col_name)
 {
     int ton;
     QSqlQuery* qry = new QSqlQuery(getDatabase());
     if(!sch){
-        qry->prepare("SELECT * FROM "+tb+" WHERE nazwa = '"+rec+"' ");
+        qry->prepare("SELECT * FROM "+tb+" WHERE "+col_name+" = '"+rec+"' ");
         if(qry->exec()){
             while(qry->next()){
                 ton = qry->value(2).toInt();

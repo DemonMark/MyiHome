@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#define nullptr NULL
+#include <cstddef>
 #include <QMainWindow>
 #include <QListWidgetItem>
-#include <QtWebKit/QWebView>
+#include <QtWebKitWidgets>
 #include <QLabel>
 
 namespace Ui {
@@ -89,6 +89,8 @@ private slots:
 
   void on_listWidget_itemClicked(QListWidgetItem *item);
 
+  void mqtt_processor(QString msg);
+
 private:
 
     Ui::MainWindow *ui;
@@ -96,7 +98,7 @@ private:
     int timerId;
     QTimer *timer_wyjscie;
     QTimer *timer_bramaStykOff;
-    QWebView *webView;
+    QWebPage *webView;
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
     QMovie *movie_cyrkulacja;

@@ -11,7 +11,7 @@ public:
     explicit mydbs(QObject *parent = 0);
     QSqlDatabase getDatabase();
     void conclose();
-    int myqueries(QString tb, const QString &rec, int &val, bool sch);
+    int myqueries(QString tb, const QString &rec, int &val, bool sch, QString col_name);
 
 private:
     QString dbName;

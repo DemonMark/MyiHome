@@ -11,9 +11,8 @@ class MyUDP : public QObject
   Q_OBJECT
   public:
         explicit MyUDP(QObject *parent = 0);
-        //void WYSUDP(QString addr);
+
         QUdpSocket *socket;
-        mydbs pir_chck;
 
 private:
         QTimer *timer_LOff;

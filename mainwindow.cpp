@@ -22,7 +22,6 @@
 #include <QPixmap>
 #include <QList>
 #include <QIcon>
-#include <QtWebKit/QtWebKit>
 #include "bcm2835.h"
 
 #define GEAR1 RPI_V2_GPIO_P1_16
@@ -85,15 +84,14 @@ int count_down=0;
 extern bool simulating_on;
 bool scene_active;
 bool scene_driving;
-bool jestem = true;
+bool jestem = false;
 bool shelly_on;
 bool write_off=false;
 extern QByteArray plugsocket;
 int arg[13];
-int arg_check;//potwierdzenie wykonania składników sceny
+int arg_check=-3;//potwierdzenie wykonania składników sceny
 int arg_config[13];
 QString last_scene;
-QList<int> pir_activ;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -176,9 +174,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_48->setVisible(false);
     ui->dial_12->setValue(1);
 
-    webView = new QWebView(this);
-    webView->setVisible(false);
-    webView->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+    webView = new QWebPage(this);
+    webView->setVisibilityState(QWebPage::VisibilityStateHidden);
+    webView->mainFrame()->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
     QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
 
     dateTime = QDate::currentDate();
@@ -242,7 +240,7 @@ void MainWindow::showTime(){
 
 //***********ZMIANA DNIA**************//
     if(datetimetext!=dateStamptext){
-        webView->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+        webView->mainFrame()->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
         QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
         dateStamptext = dateTime.toString("dd/MM/yyyy");
     }
@@ -323,6 +321,18 @@ void MainWindow::timerEvent(QTimerEvent *event){
            sbtn->setChecked(false);
        }
        qDebug() <<"Wylaczenie SCEN: " << arg_check;
+   }
+   //****************KOMENDY GŁOSOWE W OPARCIU O MQTT**********
+   QDir vcd("/home/pi/vc");
+   vcd.setFilter(QDir::Files);
+   QFileInfoList flist = vcd.entryInfoList();
+   if(flist.count()>0){
+       QString fn = flist.takeFirst().fileName();
+       vcd.remove(fn);
+       qDebug() << "PLIK: " << fn;
+       if(fn.contains("wiat")){
+           emit all_off();
+       }
    }
 }
 
@@ -740,6 +750,7 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
         movie_countdown->stop();
         odliczG=-1;
     }
+
 }
 
 //*******************************WYJAZD Z DOMU********************//
@@ -908,7 +919,7 @@ void MainWindow::on_pushButton_31_toggled(bool checked)
 
 void MainWindow::readTimeFromWWW(){
     qDebug() << "ZMIANA DATY";
-    QWebElement wTime = webView->page()->mainFrame()->findFirstElement("h1");
+    QWebElement wTime = webView->mainFrame()->findFirstElement("h1");
     QString swTime = wTime.toPlainText();
     ui->label_25->setText(swTime.mid(51,5));
     ui->label_26->setText(swTime.mid(73,5));
@@ -1291,7 +1302,6 @@ void MainWindow::on_config_clicked()
                      "'obniz temperature o'=?, 'uzbroj alarm'=?, 'TV on'=?, 'Brama garazowa'=?, 'Brama wjazdowa'=?, 'uchyl brame garazowa'=?,"
                      "'uchyl brame wjazdowa'=?, zrodla=?, dane=?, dane_2=?, names=?, buttons=? WHERE description='"+sc+"'");
     foreach(QCheckBox *chbox, chlist){
-        qDebug() << &chbox;
         if(chbox->isChecked()==false){
             if(chbox->text().contains("[")){
                 dt[j]=0;
@@ -1329,6 +1339,7 @@ void MainWindow::on_config_clicked()
 
     qry->exec();
     baza.conclose();
+    baza.deleteLater();
     ui->comboBox->setCurrentIndex(-1);
     ui->comboBox->setCurrentIndex(sci);
     ui->config_cl->click();
@@ -1420,6 +1431,8 @@ void MainWindow::sunTimeWatcher(QList<QString> &suntime, QString source, QListWi
             row.replace(pos,8, new_oo_time.toString());
             widget->item(rowi)->setText(row);
             writescheduler();
+            qDebug() << old_sun_time;
+            qDebug() << old_oo_time;
         }
         i++;
     }
@@ -1444,6 +1457,8 @@ void MainWindow::WoL(QString macc, QString addr)
         }     
         mac_size+=6;
     }
+    qDebug() << noused;
+    qDebug() << woldata;
     WOL->writeDatagram(woldata, QHostAddress(addr),7);
 }
 
@@ -1629,7 +1644,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     }else{
         value=0;
     }
-    pir_set.myqueries("PIR", item->text(),value, true);
+    pir_set.myqueries("PIR", item->text(),value, true, "nazwa");
     pir_set.conclose();
 }
 
@@ -1641,14 +1656,17 @@ void MainWindow::pir_status()
     int pirs = ui->listWidget->count();
     for(int x=0; x<pirs; x++){
         name = ui->listWidget->item(x)->text();
-        if((pir_check.myqueries("PIR", name, value, false))==1){
+        if((pir_check.myqueries("PIR", name, value, false,"nazwa"))==1){
             ui->listWidget->item(x)->setCheckState(Qt::CheckState::Checked);
-            //pir_activ.insert(x,1);
         }else{
             ui->listWidget->item(x)->setCheckState(Qt::CheckState::Unchecked);
-           //pir_activ.insert(x,0);
         }
     }
     pir_check.conclose();
     pir_check.deleteLater();
+}
+
+void MainWindow::mqtt_processor(QString msg)
+{
+    qDebug() << "MESSAGE FROM MW: " << msg;
 }
