@@ -53,8 +53,6 @@ private slots:
 
   void settimers(int dial_value);
 
-  void cyrkulacja_rotation();
-
   void LOff();
 
   void on_pushButton_16_pressed();

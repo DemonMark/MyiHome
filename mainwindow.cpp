@@ -54,6 +54,7 @@ QList<QString> pirnames;
 QString time_text;
 extern QString ips;
 extern QString rssi[5];
+extern QString csname;
 QList<int> t({0,0,0,0,0,0,0});
 int num=0;
 extern unsigned char shell[1];
@@ -196,8 +197,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->button_wentylator_3, SIGNAL(toggled(bool)), ui->button_wentylator, SLOT(setChecked(bool)));
     connect(ui->copyButton_8, SIGNAL(toggled(bool)), ui->pushButton_8,SLOT(setChecked(bool)));
     connect(ui->pushButton_8, SIGNAL(toggled(bool)), ui->copyButton_8,SLOT(setChecked(bool)));
-    //
-    connect(movie_cyrkulacja, SIGNAL(frameChanged(int)), this, SLOT(cyrkulacja_rotation()));
+    //cyrkulacja
+    connect(movie_cyrkulacja, &QMovie::frameChanged, [=]() {
+        ui->pushButton_33->setIcon(movie_cyrkulacja->currentPixmap());
+        ui->pushButton_33->setIconSize(QSize(45,45));
+    });
+    //podtrzymanie naciśniętego shelly - wykorzystywane głównie przy bramie wjazdowej
+    connect(ui->holdButton, &QPushButton::toggled, [=](bool checked){
+        if(csname!=nullptr){
+            QPushButton *wshelly = MainWindow::findChild<QPushButton*>(csname);
+            wshelly->setChecked(checked);
+        }
+    });
 }
 
 MainWindow::~MainWindow()
@@ -1116,12 +1127,6 @@ void MainWindow::showui()
     }
 }
 
-void MainWindow::cyrkulacja_rotation()
-{
-    ui->pushButton_33->setIcon(movie_cyrkulacja->currentPixmap());
-    ui->pushButton_33->setIconSize(QSize(45,45));
-}
-
 void MainWindow::getHumidity()
 {
     int pulseCounts[DHT_BITS*2] = {0};
@@ -1668,5 +1673,13 @@ void MainWindow::pir_status()
 
 void MainWindow::mqtt_processor(QString msg)
 {
-    qDebug() << "MESSAGE FROM MW: " << msg;
+    QList<QString> split_msg = msg.split(" ");
+    foreach(QString s_msg, split_msg){
+        QList<QListWidgetItem*> fi = ui->listWidget_2->findItems(s_msg, Qt::MatchFlag::MatchContains);
+        if(fi.count()>0){
+            QListWidgetItem* source = fi.takeFirst();
+            bList.at(bPos[ui->listWidget_2->row(source)])->click();
+            //ui->listWidget_2->clearSelection();
+        }
+    }
 }

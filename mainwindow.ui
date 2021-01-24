@@ -5419,6 +5419,9 @@ border: none;
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
         <property name="flat">
          <bool>true</bool>
         </property>
@@ -5448,6 +5451,9 @@ border: none;
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
         <property name="autoExclusive">
          <bool>true</bool>
@@ -5743,6 +5749,37 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QPushButton" name="holdButton">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>486</y>
+          <width>36</width>
+          <height>36</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#holdButton {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/hhand_off.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#holdButton:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/hhand_on.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -5857,6 +5894,7 @@ border: none;
        <zorder>signal_5</zorder>
        <zorder>scene_Matylda</zorder>
        <zorder>scene_wracam</zorder>
+       <zorder>holdButton</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">

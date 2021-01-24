@@ -141,5 +141,7 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/boiler_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/back_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/back_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/hhand_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/hhand_off.png</file>
     </qresource>
 </RCC>
