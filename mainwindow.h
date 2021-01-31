@@ -34,17 +34,23 @@ public:
     void selected_sources(QList<int> &scheduledbtn, QString &tempnames);
     void scheduled_buttons_run(int &j, bool tof);
     void pir_status();
+    void translator(QString &text_to_translate);
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
 
 private slots:
 
   void showui();
+
   void writescheduler();
+
   void receiving();
+
   void showTime();
+
   void wyjezdzam();
-  void stykOff();
+
   void offfff();
+
   void ClickedbtnFinder();
 
   void ClickedscenebtnFinder(bool checked);

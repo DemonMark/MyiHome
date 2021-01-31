@@ -1721,7 +1721,7 @@ background-color: transparent;
         </item>
         <item>
          <property name="text">
-          <string>Salon 2</string>
+          <string>Salon dwa</string>
          </property>
          <property name="icon">
           <iconset>
@@ -1731,7 +1731,7 @@ background-color: transparent;
         </item>
         <item>
          <property name="text">
-          <string>Salon 1</string>
+          <string>Salon jeden</string>
          </property>
          <property name="icon">
           <iconset>
@@ -2692,6 +2692,9 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>dining room</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_6 {
 background-color: transparent;
@@ -2907,6 +2910,9 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>kitchen</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_9 {
 background-color: transparent;
@@ -2943,6 +2949,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>table top</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_10 {
@@ -2981,6 +2990,9 @@ border: none;
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>sink</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_11 {
 background-color: transparent;
@@ -3017,6 +3029,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>bar</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_12 {
@@ -3306,6 +3321,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>vestibule</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_20 {
@@ -4338,6 +4356,9 @@ font: 75 10pt &quot;Roboto&quot;;</string>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>front</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pushButton_26 {
 background-color: transparent;
@@ -4611,6 +4632,9 @@ selection-background-color: transparent;</string>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>wyjeżdżam</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#scene_wyjezdzam {
 background-color: transparent;
@@ -4652,6 +4676,9 @@ border: none;
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="toolTip">
+         <string>wychodzę</string>
+        </property>
+        <property name="accessibleName">
          <string>wychodzę</string>
         </property>
         <property name="styleSheet">
@@ -4702,6 +4729,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>TV</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#scene_TV {
@@ -5669,6 +5699,9 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>Matylda</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#scene_Matylda {
 background-color: transparent;
@@ -5711,6 +5744,9 @@ border: none;
         </property>
         <property name="toolTip">
          <string>wychodzę</string>
+        </property>
+        <property name="accessibleName">
+         <string>wracam</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#scene_wracam {
@@ -6265,6 +6301,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>idę spać</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#scene_ide_spac {

@@ -93,6 +93,7 @@ int arg[13];
 int arg_check=-3;//potwierdzenie wykonania składników sceny
 int arg_config[13];
 QString last_scene;
+QStringList EN_WORD({"library","Mouse room","bedroom","wardrobe","bathroom"});
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -137,7 +138,6 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach(QPushButton *btn, bList)
     {
         //qDebug() << btn->objectName();
-        //connect(btn, SIGNAL(clicked()), this, SLOT(ClickedbtnFinder()));
         connect(btn, SIGNAL(toggled(bool)), this, SLOT(ClickedbtnFinder()));
     }
 
@@ -164,7 +164,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
-    connect(timer_bramaStykOff, SIGNAL(timeout()), this, SLOT(stykOff()));
+    connect(timer_bramaStykOff, &QTimer::timeout, [=]() {
+        maskawysl[4]&=~0x80;
+        emit UDP_ReadytoSend("192.168.1.101");
+        timer_bramaStykOff->stop();
+        ui->pushButton_16->setChecked(false);
+    });
 
     //PARAMETRY POCZĄTKOWE//
     pir_status();
@@ -192,6 +197,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_wentylator->setMovie(movie_wentylacja);
     ui->label_wentylator_2->setMovie(movie_wentylacja);
     movie_wentylacja->start();
+
     //wsparcie dla zdublowanych przycisków
     connect(ui->button_wentylator, SIGNAL(toggled(bool)), ui->button_wentylator_3, SLOT(setChecked(bool)));
     connect(ui->button_wentylator_3, SIGNAL(toggled(bool)), ui->button_wentylator, SLOT(setChecked(bool)));
@@ -207,6 +213,8 @@ MainWindow::MainWindow(QWidget *parent) :
         if(csname!=nullptr){
             QPushButton *wshelly = MainWindow::findChild<QPushButton*>(csname);
             wshelly->setChecked(checked);
+        }else{
+            ui->holdButton->setChecked(false);
         }
     });
 }
@@ -252,7 +260,7 @@ void MainWindow::showTime(){
 //***********ZMIANA DNIA**************//
     if(datetimetext!=dateStamptext){
         webView->mainFrame()->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
-        QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+        //QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
         dateStamptext = dateTime.toString("dd/MM/yyyy");
     }
 
@@ -332,18 +340,6 @@ void MainWindow::timerEvent(QTimerEvent *event){
            sbtn->setChecked(false);
        }
        qDebug() <<"Wylaczenie SCEN: " << arg_check;
-   }
-   //****************KOMENDY GŁOSOWE W OPARCIU O MQTT**********
-   QDir vcd("/home/pi/vc");
-   vcd.setFilter(QDir::Files);
-   QFileInfoList flist = vcd.entryInfoList();
-   if(flist.count()>0){
-       QString fn = flist.takeFirst().fileName();
-       vcd.remove(fn);
-       qDebug() << "PLIK: " << fn;
-       if(fn.contains("wiat")){
-           emit all_off();
-       }
    }
 }
 
@@ -801,13 +797,6 @@ void MainWindow::wyjezdzam(){
     }
 }
 
-void MainWindow::stykOff(){
-
-    maskawysl[4]&=~0x80;
-    emit UDP_ReadytoSend("192.168.1.101");
-    timer_bramaStykOff->stop();
-    ui->pushButton_16->setChecked(false);
-}
 //konfiguracja harmonogramów
 void MainWindow::on_pushButton_23_clicked()
 {
@@ -934,7 +923,7 @@ void MainWindow::readTimeFromWWW(){
     QString swTime = wTime.toPlainText();
     ui->label_25->setText(swTime.mid(51,5));
     ui->label_26->setText(swTime.mid(73,5));
-    QObject::disconnect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
+
     sunTimeWatcher(sunsetTime, ui->label_26->text(), ui->listWidget_3, 0, startat);
     sunTimeWatcher(sunriseTime, ui->label_25->text(), ui->listWidget_3, 11, stopat);
 }
@@ -1673,13 +1662,44 @@ void MainWindow::pir_status()
 
 void MainWindow::mqtt_processor(QString msg)
 {
+    translator(msg);
+    //obsługa głosowa scen
+    foreach(QPushButton *sbtn, sbList){
+        QRegularExpression re_msg(sbtn->accessibleName(), QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch m_msg = re_msg.match(msg);
+        if(m_msg.hasMatch()){
+            sbtn->setChecked(true);
+        }
+    }
+    //obsługa głosowa świateł
     QList<QString> split_msg = msg.split(" ");
-    foreach(QString s_msg, split_msg){
-        QList<QListWidgetItem*> fi = ui->listWidget_2->findItems(s_msg, Qt::MatchFlag::MatchContains);
-        if(fi.count()>0){
-            QListWidgetItem* source = fi.takeFirst();
+    int w_count = 0;
+    QListWidgetItem* source;
+    for(int i=0; i<split_msg.count();i++){
+        w_count++;
+        QList<QListWidgetItem*> init_fi = ui->listWidget_2->findItems(split_msg[i], Qt::MatchFlag::MatchContains);
+        if((init_fi.count()>1) && (split_msg.count()>w_count)){
+            QList<QListWidgetItem*> main_fi = ui->listWidget_2->findItems(split_msg[i] + " " + split_msg[w_count], Qt::MatchFlag::MatchFixedString);
+            if(main_fi.count()>0){
+                source = main_fi.takeFirst();
+                i++;
+                bList.at(bPos[ui->listWidget_2->row(source)])->click();
+            }
+        }else if(init_fi.count()==1){
+            source = init_fi.takeFirst();
             bList.at(bPos[ui->listWidget_2->row(source)])->click();
-            //ui->listWidget_2->clearSelection();
+        }
+    }
+}
+
+void MainWindow::translator(QString &text_to_translate)
+{
+    for(int i=0; i<EN_WORD.count(); i++){
+        QRegularExpression re(EN_WORD[i],QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch rem = re.match(text_to_translate);
+        if(rem.hasMatch()){
+            text_to_translate.clear();
+            text_to_translate.append(ui->listWidget_2->item(i)->text());
         }
     }
 }
