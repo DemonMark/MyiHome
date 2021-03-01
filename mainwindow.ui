@@ -1761,7 +1761,7 @@ background-color: transparent;
         </item>
         <item>
          <property name="text">
-          <string>LED kominek</string>
+          <string>Kinkiet obrazy</string>
          </property>
          <property name="icon">
           <iconset>
@@ -1771,7 +1771,7 @@ background-color: transparent;
         </item>
         <item>
          <property name="text">
-          <string>Kinkiet obrazy</string>
+          <string>LED kominek</string>
          </property>
          <property name="icon">
           <iconset>
@@ -1794,7 +1794,7 @@ background-color: transparent;
         <property name="geometry">
          <rect>
           <x>350</x>
-          <y>410</y>
+          <y>440</y>
           <width>91</width>
           <height>81</height>
          </rect>
@@ -1825,7 +1825,7 @@ background-color: transparent;
           <x>20</x>
           <y>260</y>
           <width>541</width>
-          <height>131</height>
+          <height>163</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1839,7 +1839,7 @@ background-color: transparent;
         <property name="geometry">
          <rect>
           <x>480</x>
-          <y>410</y>
+          <y>440</y>
           <width>81</width>
           <height>81</height>
          </rect>
@@ -1973,7 +1973,7 @@ border:none;
        <widget class="QPushButton" name="pushButton_30">
         <property name="geometry">
          <rect>
-          <x>808</x>
+          <x>960</x>
           <y>26</y>
           <width>91</width>
           <height>81</height>
@@ -2013,7 +2013,7 @@ border:none;
        <widget class="QPushButton" name="pushButton_31">
         <property name="geometry">
          <rect>
-          <x>940</x>
+          <x>1100</x>
           <y>26</y>
           <width>73</width>
           <height>70</height>
@@ -2053,7 +2053,7 @@ border:none;
        <widget class="QLabel" name="label_25">
         <property name="geometry">
          <rect>
-          <x>668</x>
+          <x>820</x>
           <y>140</y>
           <width>70</width>
           <height>61</height>
@@ -2084,8 +2084,8 @@ color: rgb(255, 255, 255);
        <widget class="QLabel" name="label_26">
         <property name="geometry">
          <rect>
-          <x>668</x>
-          <y>230</y>
+          <x>670</x>
+          <y>140</y>
           <width>70</width>
           <height>61</height>
          </rect>
@@ -2111,7 +2111,7 @@ color: rgb(255, 255, 255);</string>
        <widget class="QTimeEdit" name="timeEdit_2">
         <property name="geometry">
          <rect>
-          <x>920</x>
+          <x>1080</x>
           <y>230</y>
           <width>143</width>
           <height>75</height>
@@ -2150,7 +2150,7 @@ background-repeat: none;</string>
         </property>
         <property name="geometry">
          <rect>
-          <x>920</x>
+          <x>1080</x>
           <y>140</y>
           <width>143</width>
           <height>75</height>
@@ -2198,7 +2198,7 @@ background-repeat: none;</string>
        <widget class="QPushButton" name="trackButton">
         <property name="geometry">
          <rect>
-          <x>994</x>
+          <x>1154</x>
           <y>76</y>
           <width>41</width>
           <height>41</height>
@@ -2239,6 +2239,46 @@ border:none;
         </property>
         <property name="autoExclusive">
          <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_43">
+        <property name="geometry">
+         <rect>
+          <x>810</x>
+          <y>26</y>
+          <width>91</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#pushButton_43 {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/timer_2_off.png);
+background-repeat: none;
+border:none
+}
+
+QPushButton#pushButton_43:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png);
+background-color: transparent;
+border:none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -3400,7 +3440,7 @@ border: none;
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="statusTip">
-         <string>&quot;/media/HDD1/admin/iHome/28-02-2018/media/bell_offline.png&quot;</string>
+         <string>/media/HDD1/admin/iHome/28-02-2018/media/bell_offline.png</string>
         </property>
         <property name="accessibleName">
          <string>192.168.1.106</string>
@@ -3977,6 +4017,9 @@ border: none;
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>korytarz góra</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_1 {
 background-color: transparent;
@@ -4013,6 +4056,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>korytarz dół</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_2 {
@@ -4051,6 +4097,9 @@ border: none;
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>łazienka</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_3 {
 background-color: transparent;
@@ -4087,6 +4136,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>kuchnia</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_4 {
@@ -4482,6 +4534,9 @@ font: 75 6pt &quot;Roboto Condensed&quot;;</string>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>garaż</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_5 {
 background-color: transparent;
@@ -4518,6 +4573,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>salon</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_6 {
@@ -4772,6 +4830,9 @@ border: none;
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>wiatrołap</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#pir_btn_7 {
@@ -5312,7 +5373,7 @@ font: 87 10pt &quot;Lato Black&quot;;</string>
          </rect>
         </property>
         <property name="statusTip">
-         <string>&quot;/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png&quot;</string>
+         <string>/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</string>
         </property>
         <property name="whatsThis">
          <string/>
@@ -5624,7 +5685,7 @@ border: none;
          </rect>
         </property>
         <property name="statusTip">
-         <string>&quot;/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png&quot;</string>
+         <string>/media/HDD1/admin/iHome/28-02-2018/media/pompa_offline_w.png</string>
         </property>
         <property name="whatsThis">
          <string/>
@@ -5816,6 +5877,22 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QPushButton" name="alarm_btn">
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>250</y>
+          <width>99</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>ALARM</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -5931,6 +6008,7 @@ border: none;
        <zorder>scene_Matylda</zorder>
        <zorder>scene_wracam</zorder>
        <zorder>holdButton</zorder>
+       <zorder>alarm_btn</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">

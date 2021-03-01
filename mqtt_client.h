@@ -17,6 +17,10 @@ signals:
 
     void msg(QString msg);
 
+public slots:
+
+    void publish(QString vname);
+
 };
 
 #endif // MQTT_CLIENT_H

@@ -105,6 +105,7 @@ private:
     QWebPage *webView;
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
+    QMovie *movie_pompa_3;
     QMovie *movie_cyrkulacja;
     QMovie *movie_wentylacja;
     QMovie *movie_countdown;

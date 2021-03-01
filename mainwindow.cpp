@@ -94,6 +94,7 @@ int arg_check=-3;//potwierdzenie wykonania składników sceny
 int arg_config[13];
 QString last_scene;
 QStringList EN_WORD({"library","Mouse room","bedroom","wardrobe","bathroom"});
+bool locked;
 
 //MainWindow * MainWindow::pMainWindow = nullptr; //dostep do MainWindow
 
@@ -190,6 +191,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     movie_pompa_1 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_pompa_2 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
+    movie_pompa_3 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_cyrkulacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/circulation_on.gif");
     movie_wentylacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/wentylator.gif");
     movie_countdown = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/countdown.gif");
@@ -216,6 +218,23 @@ MainWindow::MainWindow(QWidget *parent) :
         }else{
             ui->holdButton->setChecked(false);
         }
+    });
+
+    connect(ui->pushButton_34, &QPushButton::toggled, [=](bool checked){
+        if(!checked){
+            plugsocket[2]=0x00;
+            maskawysl[2]&=~0xf8;
+            maskawysl[3]&=~0xfe;
+            emit UDP_ReadytoSend("192.168.1.101");
+        }
+    });
+
+    connect(movie_pompa_3, &QMovie::frameChanged, [=]() {
+        ui->shelly1_2->setIcon(movie_pompa_3->currentPixmap());
+    });
+
+    connect(ui->alarm_btn, &QPushButton::toggled, [=](bool checked){
+        locked = checked;
     });
 }
 
@@ -613,8 +632,10 @@ void MainWindow::receiving(){
             //********flaga dla pompy C.O.*************************
             if(movie_pompa_1->state()==QMovie::Running || movie_pompa_2->state()==QMovie::Running){
                 plugsocket[2]=0x01;
+                movie_pompa_3->start();
             } else{
                 plugsocket[2]=0x00;
+                movie_pompa_3->stop();
             }
             emit UDP_ReadytoSend("192.168.1.101");
         }
@@ -812,7 +833,7 @@ void MainWindow::on_pushButton_23_clicked()
         outnames.insert(gn,tempnames);
         gn2pos.insert(gn,gn2);
 
-        if(ui->pushButton_29->isChecked()){
+        if(ui->pushButton_29->isChecked()){ //akcje wieczorne - znacznik 1
             scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
             scheduledtime.insert(gn,1);
             scheduledtimers.insert(gn,0);
@@ -821,7 +842,17 @@ void MainWindow::on_pushButton_23_clicked()
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
             pirnames.insert(gn,ui->listWidget->currentItem()->text());
         }
-        if(ui->pushButton_30->isChecked()){
+        if(ui->pushButton_43->isChecked()){ //akcje dzienne - znacznik 3
+            scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
+            scheduledtime.insert(gn,3);
+            scheduledtimers.insert(gn,0);
+            tspinBox.insert(gn, 0);
+            new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
+            new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
+            pirnames.insert(gn,ui->listWidget->currentItem()->text());
+        }
+
+        if(ui->pushButton_30->isChecked()){ //akcje stałe - znacznik 0
             scheduledhexxpir.insert(gn,hexx[(ui->listWidget->currentRow())+1]);
             MyTimer(this, SLOT(offfff()));
             tspinBox.insert(gn,ui->listWidget->currentRow());
@@ -830,7 +861,7 @@ void MainWindow::on_pushButton_23_clicked()
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
             pirnames.insert(gn,ui->listWidget->currentItem()->text());
         }
-        if(ui->pushButton_31->isChecked()){
+        if(ui->pushButton_31->isChecked()){ //akcje czasowe - znacznik 2
             startat.insert(gn2,ui->timeEdit->text());
             stopat.insert(gn2,ui->timeEdit_2->text());
             scheduledhexxpir.insert(gn,0);
@@ -857,6 +888,7 @@ void MainWindow::on_pushButton_23_clicked()
         ui->listWidget_2->clearSelection();
     }
     writescheduler();
+    //alternatywny zapis w bazie SQL
 }
 //usuwanie pozycji z harmonogramu//
 void MainWindow::on_pushButton_27_clicked()
@@ -1045,7 +1077,7 @@ void MainWindow::readscheduler(){
             u++;
         }
     }
-    qDebug() << startat << stopat;
+    qDebug() << startat << stopat << gnpos;
 }
 
 void MainWindow::on_dial_12_valueChanged(int value)
@@ -1691,7 +1723,7 @@ void MainWindow::mqtt_processor(QString msg)
         }
     }
 }
-
+//do skończenia
 void MainWindow::translator(QString &text_to_translate)
 {
     for(int i=0; i<EN_WORD.count(); i++){

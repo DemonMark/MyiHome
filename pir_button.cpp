@@ -7,6 +7,7 @@ extern unsigned char temp[20];
 extern unsigned char hexx[9];
 extern QString ips;
 QList<QTimer*> ptimers;
+extern bool locked;
 
 pir_button::pir_button(QWidget *parent) :
     QPushButton(parent)
@@ -26,11 +27,15 @@ void pir_button::mousePressEvent(QMouseEvent *ev){
 
 void pir_button::naruszeniestrefy(){
     if(ips=="192.168.1.103"){
+        //this->setChecked(true);
         for(int i=1; i<=pirList.length(); i++){
             if(hexx[i] & temp[0]){
                 pirList.at(i-1)->setChecked(true);
                 ptimers.at(i)->setSingleShot(true);
                 ptimers.at(i)->start(300000);
+                if(locked){
+                    emit violation_name(QString("Naruszenie strefy: %1").arg(pirList.at(i-1)->accessibleName()));
+                }
             }
         }
     }

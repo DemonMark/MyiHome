@@ -17,5 +17,11 @@ mqtt_client::mqtt_client(QObject *parent) :
 
 }
 
+void mqtt_client::publish(QString vname)
+{
+    const QMQTT::Message msg(1,"alarm", vname.toUtf8());
+    subscriber->publish(msg);
+}
+
 mqtt_client::~mqtt_client()
 {}

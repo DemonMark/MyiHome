@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjezdzam()));
     QObject::connect(&w,SIGNAL(UDP_ReadytoSend(QString)), &client, SLOT(WYSUDP(QString)));
     QObject::connect(&mosquitto_client, SIGNAL(msg(QString)), &w, SLOT(mqtt_processor(QString)));
+    QObject::connect(&pirek, SIGNAL(violation_name(QString)), &mosquitto_client, SLOT(publish(QString)));
 
   return a.exec();
 }

@@ -16,6 +16,7 @@ public:
 signals:
 
     void klik();
+    void violation_name(QString vname);
 
 public slots:
 

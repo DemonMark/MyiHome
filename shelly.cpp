@@ -44,7 +44,7 @@ void shelly::mousePressEvent(QMouseEvent *ev){
 }
 
 void shelly::offline(){
-    this->setIcon(QIcon(this->statusTip())) ;
+    this->setIcon(QIcon(this->statusTip()));
 }
 
 void shelly::open(){

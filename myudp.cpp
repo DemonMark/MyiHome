@@ -44,7 +44,7 @@ extern bool shelly_on;
 
 QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.168.1.108"}; //IP w kolejnosci QListy
 QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png"};
-QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.png"};
+QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif"};
 extern QList<shelly*> shList;
 extern QList<QString> pirnames;
 
@@ -202,7 +202,7 @@ void MyUDP::readyRead(){
                     //******//
                     for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
                         if((tempholder[0] & scheduledhexxpir[j])){
-                            if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0)){
+                            if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0) || (scheduledtime[j]==3 && dzien==1)){
                                 foreach(int btns, scheduledbtns[j]){
                                     bList.at(btns)->setChecked(true);
                                 }
