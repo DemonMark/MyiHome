@@ -1,6 +1,5 @@
 #include "myudp.h"
 #include <QUdpSocket>
-#include "mainwindow.h"
 #include "mytimer.h"
 #include "ui_mainwindow.h"
 
@@ -9,16 +8,11 @@ unsigned char shell[1];
 unsigned char temp[20];
 unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
-QList<unsigned char> scheduledhexxpir; //tablica bitów czujek definiowanych przez harmonogramy
 QList<int> bgi; //wybór grup harmonogramowanych przycisków do aktywacji
 extern QList<QPushButton*> bList;
-extern QList<QList<int> > scheduledbtns;
 QList<QList<int> > rand_masks;
 QList<QList<unsigned char> > rand_hexxs;
 unsigned char scene_pir=0x10;
-extern QList<int> scheduledtime;
-extern QList<int> tspinBox;
-QList<QTimer*> scheduledtimers;
 QList<QTimer*> rand_timers;
 unsigned char temperatura[63];
 int wej241,wej212;
@@ -31,7 +25,6 @@ extern int dzien;
 extern int spimy;
 extern int flaga;
 extern int obecnosc;
-extern int gn;
 extern int arg[12];
 extern int arg_check;
 extern QList<int> t;
@@ -46,7 +39,8 @@ QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.1
 QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png"};
 QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif"};
 extern QList<shelly*> shList;
-extern QList<QString> pirnames;
+
+#define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -142,41 +136,22 @@ void MyUDP::readyRead(){
             }
         }
         if(("192.168.1.100"==ips)||("192.168.1.104"==ips)){
-            //QString IP_holder="192.168.1.101";
-            //int n=0; //numeracja wejścia
+
             for (int i=3; i<=(Buffer.length());i++){
                 temp[i-3]=Buffer[i];
             }
-            /*for (int j=0; j<=5;j++){//wyłączenie wysyłania - wywołanie przez zaznaczanie buttonów (mainwindow.cpp, linia 698)
-                if(j==5){IP_holder="192.168.1.104";}
-                for (int i=1; i<=8;i++){
-                    n++;
-                    if(j!=3){ //ominięcie grupy 3 zajętej przez wyjścia systemu ogrzewania
-                        if(temp[j] & hexx[i]){  //szukanie aktywnego wejścia
-                            c[n]++;
-                            if (c[n]==1){
-                                maskawysl[j]|=(hexx[i]);
-                                WYSUDP(IP_holder);
-                            }
-                            if (c[n]==2){
-                                maskawysl[j]&=~(hexx[i]);
-                                WYSUDP(IP_holder);
-                                c[n]=0;
-                            }
-                        }
-                    }
-                }
-            }*/
+
             emit changes(); //sygnal do odbierania
         }
         //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
-            mydbs pir_chck;
+
+            mydbs pir_chck(baza);
             bool activ=false;
             for (int i=3; i<=(Buffer.length());i++)
             {
                 temp[i-3]=Buffer[i];
-                if((pir_chck.myqueries("PIR", QString::number(temp[i-3]),obecnosc,false,"id"))==1){
+                if((pir_chck.myqueries("PIR", QString::number(temp[i-3]),obecnosc,false,"pir_hex","aktywna"))==1){
                     activ=true;
                 }
             }
@@ -199,18 +174,26 @@ void MyUDP::readyRead(){
                 //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
                 if(!(temp[0]==0)){
                     tempholder[0] = temp[0];
-                    //******//
-                    for(int j=0; j<=(scheduledhexxpir.length())-1;j++){
-                        if((tempholder[0] & scheduledhexxpir[j])){
-                            if(scheduledtime[j]==0 || (scheduledtime[j]==1 && dzien==0) || (scheduledtime[j]==3 && dzien==1)){
-                                foreach(int btns, scheduledbtns[j]){
-                                    bList.at(btns)->setChecked(true);
+                    //******//***HARMONOGRAM W OPARCIU O SQL
+                    QSqlQuery* qry = new QSqlQuery(pir_chck.getDatabase());
+                    qry->prepare("SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id INNER JOIN PIR ON main.pir_desc = PIR.nazwa WHERE main.pir_hex = '"+QString::number(tempholder[0])+"' ");
+                    if(qry->exec()){
+                        qDebug() << "ZAPYTANIE POSZŁO";
+                        while(qry->next()){
+                            int type_result = qry->value("type_id").toInt();
+                            //int id_result = qry->value("id").toInt();
+                            if((type_result==3 && dzien==1) || (type_result==1 && dzien==0) || type_result==0){
+                                bList.at(qry->value("btn_no").toInt())->setChecked(true);
+
+                                if(type_result==0){
+                                    QString tName = qry->value("timer_name").toString();
+                                    MainWindow *mw = qobject_cast<MainWindow*>(QApplication::activeWindow());
+                                    if(mw!=nullptr){
+                                        QTimer *sql_tHolder = mw->findChild<QTimer*>(tName);
+                                        sql_tHolder->setSingleShot(true);
+                                        sql_tHolder->start(qry->value("timer_time").toInt());
+                                    }
                                 }
-                                if(scheduledtime[j]==0){
-                                    scheduledtimers.at(j)->setSingleShot(true);
-                                    scheduledtimers.at(j)->start(t.at(tspinBox[j]));
-                                }
-                                emit changes(); //sygnal do odbierania
                             }
                         }
                     }

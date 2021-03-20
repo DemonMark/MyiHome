@@ -9,8 +9,8 @@ class MyTimer : public QObject
     Q_OBJECT
 
 public:
-    //explicit MyTimer(QObject *parent = 0);
-    explicit MyTimer(QObject *target, const char *slot);
+
+    explicit MyTimer(QObject *target, const char *slot, QString t_name);
     void TimerStart();
 
 public slots:

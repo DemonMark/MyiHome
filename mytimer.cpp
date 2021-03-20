@@ -1,14 +1,12 @@
 #include "mytimer.h"
 #include "myudp.h"
-extern QList<QTimer*> scheduledtimers;
-extern int gn;
 
-MyTimer::MyTimer(QObject *target, const char *slot)
+MyTimer::MyTimer(QObject *target, const char *slot, QString t_name)
 {
     QTimer *timer_name = new QTimer;
+    timer_name->setObjectName(t_name);
+    timer_name->setParent(target);
     QObject::connect(timer_name, SIGNAL(timeout()), target, slot);
-    scheduledtimers.insert(gn, timer_name);
-    qDebug() << scheduledtimers << "GN:" << gn;
 }
 void MyTimer::TimerStart()
 {

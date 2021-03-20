@@ -1,6 +1,6 @@
 #ifndef MYUDP_H
 #define MYUDP_H
-
+#include "mainwindow.h"
 #include <QUdpSocket>
 #include <QObject>
 #include <QTimer>

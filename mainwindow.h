@@ -20,14 +20,14 @@ public:
     ~MainWindow();
 
     //static MainWindow * getMainWinPtr(); //dodano w celu dostepnu do MainWindow z innych klas
-    //static MainWindow * pMainWindow; //jak powyzej chodzi o klasy
+
     //Ui::MainWindow *ui;
     ///MainWindow();
     //void mousePressEvent(QMouseEvent *);
     void readscheduler();
     void getHumidity();
     void barometer();
-    void sunTimeWatcher(QList<QString> &suntime, QString source, QListWidget *widget, int pos, QList<QString> &ssTIME);
+    void sunTimeWatcher(QString sunTime, QString source, int pos, QString editingTime);
     void WoL(QString macc, QString addr);
     void scene_executor(int *arg, QString &aktywna_scena, QString &buttons);
     void gates(int type, bool timer, int ms, int x);
@@ -98,7 +98,7 @@ private slots:
 private:
 
     Ui::MainWindow *ui;
-
+    //static MainWindow * pMainWindow; //jak powyzej chodzi o dostęp do MainWindow z innych klass
     int timerId;
     QTimer *timer_wyjscie;
     QTimer *timer_bramaStykOff;

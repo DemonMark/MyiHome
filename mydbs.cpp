@@ -1,30 +1,31 @@
 #include "mydbs.h"
 
-mydbs::mydbs(QObject *parent) :
-    QObject(parent)
+mydbs::mydbs(QString dname)
 {
     if(QSqlDatabase::contains("qt_sql_default_connection")){
-        qDebug() << "BAZA ISTNIEJE";
+        //qDebug() << "BAZA ISTNIEJE " << &dbName;
     }else{
-        dbName = "/media/HDD2/Moje projekty/MyiHome/scene.db";
+        dbName = dname;
         auto mydb=QSqlDatabase::addDatabase("QSQLITE");
         mydb.setDatabaseName(dbName);
         mydb.open();
-        qDebug() << "BAZA UTWORZONA";
+        qDebug() << "BAZA UTWORZONA " << &mydb;
     }
 }
 
-int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch, QString col_name)
+int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch, QString col_name, QString update_col_name)
 {
-    int ton;
+    int ton = 0;
     QSqlQuery* qry = new QSqlQuery(getDatabase());
+    //READ DATA
     if(!sch){
         qry->prepare("SELECT * FROM "+tb+" WHERE "+col_name+" = '"+rec+"' ");
         if(qry->exec()){
             while(qry->next()){
-                ton = qry->value(2).toInt();
+                ton = qry->value(update_col_name).toInt();
             }
         }
+    //WRITE DATA
     }else{
     qry->prepare("UPDATE "+tb+" SET aktywna=? WHERE nazwa = '"+rec+"'");
     qry->addBindValue(val);
