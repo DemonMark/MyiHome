@@ -11,6 +11,7 @@ public:
     explicit mydbs(QString dname);
     QSqlDatabase getDatabase();
     void conclose();
+    QSqlQuery *query();
     int myqueries(QString tb, const QString &rec, int &val, bool sch, QString col_name, QString update_col_name);
 
 private:

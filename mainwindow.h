@@ -16,10 +16,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    //static MainWindow * getMainWinPtr(); //dodano w celu dostepnu do MainWindow z innych klas
+    static MainWindow *getMainWinPtr(); //dodano w celu dostepnu do MainWindow z innych klas
 
     //Ui::MainWindow *ui;
     ///MainWindow();
@@ -32,16 +32,18 @@ public:
     void scene_executor(int *arg, QString &aktywna_scena, QString &buttons);
     void gates(int type, bool timer, int ms, int x);
     void selected_sources(QList<int> &scheduledbtn, QString &tempnames);
-    void scheduled_buttons_run(int &j, bool tof);
+    void buttons_run(const int &j, bool tof);
     void pir_status();
     void translator(QString &text_to_translate);
+    void data_logger(const QString &input_data);
+    void itmSwap(QTreeWidget * tree_w, QString direction);
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
 
 private slots:
 
   void showui();
 
-  void writescheduler();
+  void settemperature(int temp_value);
 
   void receiving();
 
@@ -95,10 +97,12 @@ private slots:
 
   void mqtt_processor(QString msg);
 
+  void on_up_btn_clicked();
+
 private:
 
     Ui::MainWindow *ui;
-    //static MainWindow * pMainWindow; //jak powyzej chodzi o dostęp do MainWindow z innych klass
+    static MainWindow *pMainWindow; //jak powyzej chodzi o dostęp do MainWindow z innych klass
     int timerId;
     QTimer *timer_wyjscie;
     QTimer *timer_bramaStykOff;

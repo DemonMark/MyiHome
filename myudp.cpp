@@ -8,7 +8,6 @@ unsigned char shell[1];
 unsigned char temp[20];
 unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
-QList<int> bgi; //wybór grup harmonogramowanych przycisków do aktywacji
 extern QList<QPushButton*> bList;
 QList<QList<int> > rand_masks;
 QList<QList<unsigned char> > rand_hexxs;
@@ -27,7 +26,6 @@ extern int flaga;
 extern int obecnosc;
 extern int arg[12];
 extern int arg_check;
-extern QList<int> t;
 int odliczG;
 bool simulating_on;
 extern bool scene_active;
@@ -121,8 +119,6 @@ void MyUDP::readyRead(){
         QHostAddress sender;
         quint16 senderPort;
         socket->readDatagram(Buffer.data(),Buffer.size(),&sender,&senderPort);
-        QByteArray k = Buffer.toHex();
-        QByteArray z=k.mid(6,8);
 
         //qDebug() <<" Mss from" << sender.toString() << " Ramka: " << k;
 
@@ -147,63 +143,57 @@ void MyUDP::readyRead(){
         if("192.168.1.103"==ips){
 
             mydbs pir_chck(baza);
-            bool activ=false;
-            for (int i=3; i<=(Buffer.length());i++)
-            {
-                temp[i-3]=Buffer[i];
-                if((pir_chck.myqueries("PIR", QString::number(temp[i-3]),obecnosc,false,"pir_hex","aktywna"))==1){
-                    activ=true;
-                }
-            }
-            if(activ){
-                obecnosc=1;
-                timer_obecnosc->start(300000);
-                emit changes();
-                //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
-                if(spimy==1 || scene_active){
-                    switch(scene_active){
-                    case true:
-                        odliczG=arg[2]*60;
-                        break;
-                    default:
-                        odliczG=600;
-                    }
-                    timer_LOff->start(1000);
-                }
-                //***WYKONYWANIE HARMONOGRAMU***//
-                //***PODTRZYMANIE BUFORU DLA BARDZIEJ ZŁOŻONEGO HARMONOGRAMU***//
-                if(!(temp[0]==0)){
-                    tempholder[0] = temp[0];
-                    //******//***HARMONOGRAM W OPARCIU O SQL
-                    QSqlQuery* qry = new QSqlQuery(pir_chck.getDatabase());
-                    qry->prepare("SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id INNER JOIN PIR ON main.pir_desc = PIR.nazwa WHERE main.pir_hex = '"+QString::number(tempholder[0])+"' ");
-                    if(qry->exec()){
-                        qDebug() << "ZAPYTANIE POSZŁO";
-                        while(qry->next()){
-                            int type_result = qry->value("type_id").toInt();
-                            //int id_result = qry->value("id").toInt();
-                            if((type_result==3 && dzien==1) || (type_result==1 && dzien==0) || type_result==0){
-                                bList.at(qry->value("btn_no").toInt())->setChecked(true);
+            QSqlQuery* qry = new QSqlQuery(pir_chck.getDatabase());
 
-                                if(type_result==0){
-                                    QString tName = qry->value("timer_name").toString();
-                                    MainWindow *mw = qobject_cast<MainWindow*>(QApplication::activeWindow());
-                                    if(mw!=nullptr){
-                                        QTimer *sql_tHolder = mw->findChild<QTimer*>(tName);
-                                        sql_tHolder->setSingleShot(true);
-                                        sql_tHolder->start(qry->value("timer_time").toInt());
+            for (int i=3; i<=(Buffer.length());i++){
+                if((temp[i-3]=Buffer[i])!=0){
+                    //"SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id INNER JOIN PIR ON main.pir_desc = PIR.nazwa WHERE main.pir_hex = '"+QString::number(temp[0])+"' AND PIR.aktywna=1"
+                    qry->prepare("SELECT * FROM PIR LEFT JOIN (SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.pir_hex = '"+QString::number(temp[0])+"') WHERE PIR.pir_hex = '"+QString::number(temp[0])+"' AND aktywna=1");
+                    if(qry->exec()){
+                        while(qry->next()){
+                            obecnosc=1;
+                            timer_obecnosc->start(300000);
+                            emit changes();
+                            //***TIMER PO URUCHOMIENIU IDE SPAC LUB AKTYWACJI SCENY***//
+                            if(spimy==1 || scene_active){
+                                switch(scene_active){
+                                case true:
+                                    odliczG=arg[2]*60;
+                                    break;
+                                default:
+                                    odliczG=600;
+                                }
+                                timer_LOff->start(1000);
+                            }
+                            //***WYKONYWANIE HARMONOGRAMU***//
+                            int type_result = qry->value("type_id").toInt();
+                            QString tName = qry->value("timer_name").toString();
+                            if(qry->value("main.id").toString()!=""){
+                                if((type_result==3 && dzien==1) || (type_result==1 && dzien==0) || type_result==0){
+                                    bList.at(qry->value("btn_no").toInt())->setChecked(true);
+                                    if(tName!=""){
+                                        //QString tName = qry->value("timer_name").toString();
+                                        //MainWindow *mw = qobject_cast<MainWindow*>(QApplication::activeWindow());
+                                        MainWindow *mw = MainWindow::getMainWinPtr();
+                                        if(mw!=nullptr){
+                                            QTimer *sql_tHolder = mw->findChild<QTimer*>(tName);
+                                            sql_tHolder->setSingleShot(true);
+                                            sql_tHolder->start(qry->value("timer_time").toInt());
+                                            mw->data_logger(sql_tHolder->objectName());
+                                        }
                                     }
                                 }
+                            }
+                            //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
+                            //***********SCENA WYJEZDZAM************//
+                            if(scene_driving && (qry->value("PIR.pir_hex").toUInt()&scene_pir)){
+                                emit gate();
                             }
                         }
                     }
                 }
-                //************WYKONYWANIE SCEN WYMAGAJACYCH RUCHU W DANEJ SEKCJI**********//
-                //***********SCENA WYJEZDZAM************//
-                if(scene_driving && tempholder[0]&scene_pir){
-                    emit gate();
-                }
             }
+            delete qry;
         }
 
         //****************SHELLY1**********************//
@@ -242,7 +232,6 @@ void MyUDP::readyRead(){
                     signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
                     rssi[4]= QString::number(signal);
                 }
-                //emit changes();
             }
         }
      }

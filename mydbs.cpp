@@ -34,6 +34,13 @@ int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch, QString
     return ton;
 }
 
+QSqlQuery *mydbs::query(){
+
+    QSqlQuery* qry = new QSqlQuery(getDatabase());
+    return qry;
+
+}
+
 void mydbs::conclose()
 {
     QSqlDatabase::removeDatabase("qt_sql_default_connection");

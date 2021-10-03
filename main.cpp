@@ -17,6 +17,15 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    //Set the app style sheet
+    QFile style_sheet_file("./style_sheet.qss");
+    if(style_sheet_file.open(QFile::ReadOnly)){
+        QString style_sheet = QLatin1String(style_sheet_file.readAll());
+        qDebug() << "styl wczytany";
+        a.setStyleSheet(style_sheet);
+    }
+
     MyUDP client;
     pir_button pirek;
     mqtt_client mosquitto_client;
