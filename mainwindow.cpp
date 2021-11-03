@@ -35,11 +35,11 @@
 QList<QLabel*> c_e;
 QList<QPushButton*> bList; //lista przycisków oświetlenia
 QList<QPushButton*> sbList; //lista przycisków scen
-QList<pir_button*> pirList; //lista czujek
 QList<QDial*> dList; //lista regulatorów temperatury
 QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
+QList<QLabel*> pir_label; //lista etykiet timerów PIR
 QList<shelly*> shList; //Lista modułów wifi Shelly
 QList<QCheckBox*> chlist;
 int bPos[48]={31,28,33,32,29,12,1,0,34,30,15,17,8,11,5,10,4,14,7,26,26,26,26,26,19,26,26,26,26,26,26,26,9,16,6,18,2,3,24,13,25,23,27,26,26,35,26,26}; //pozycja przycisku na liście
@@ -111,10 +111,10 @@ MainWindow::MainWindow(QWidget *parent) :
     sbList = MainWindow::findChildren<QPushButton*>(QRegExp ("scene_*"));
     chlist = MainWindow::findChildren<QCheckBox*>(QRegExp ("conf_ch_*"));
     dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*")) + ui->tab_2->findChildren<QDial*>(QRegExp ("dial_temp_*"));
-    dpList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_pir_*"));
+    dpList = MainWindow::findChildren<QDial*>(QRegExp ("dial_pir_*"));
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
-    pirList = ui->tab_5->findChildren<pir_button*>();
+    pir_label=MainWindow::findChildren<QLabel*>(QRegExp ("label_pir_btn_*"));
     shList = ui->tab_5->findChildren<shelly*>(QRegExp ("shelly*"));
 
     int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
@@ -125,7 +125,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     foreach(QPushButton *btn, bList)
     {
-        qDebug() << btn->objectName();
+        //qDebug() << btn->objectName();
         connect(btn, SIGNAL(toggled(bool)), this, SLOT(ClickedbtnFinder()));
     }
 
@@ -145,10 +145,13 @@ MainWindow::MainWindow(QWidget *parent) :
         dpL->setVisible(false);
         connect(dpL, SIGNAL(valueChanged(int)), this, SLOT(settimers(int)));
     }
-    //sprawa do opanowania - dostep do UI z subklasy
-    foreach (pir_button* ere, pirList) {
-        connect(ere, SIGNAL(klik()), this, SLOT(showui()));
-    }
+
+    connect(ui->timery_pir, &QCheckBox::toggled, [=](bool checked){
+        qDebug() << checked;
+        foreach(QLabel* lb, pir_label){
+            lb->setHidden(checked);
+        }
+    });
 
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
@@ -253,7 +256,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mydbs baza(sceny);
     QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
     connect(scheduledTimer, &QTimer::timeout, [=](){
-        qry->prepare("SELECT btn_no, CASE WHEN strftime('%H:%M',main.start_at)='"+time_h_m+"' THEN 'true' WHEN strftime('%H:%M',main.stop_at)='"+time_h_m+"' THEN 'false' ELSE 'no_match' END AS on_off FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.type_id=2");
+        qry->prepare("SELECT btn_no, id, tmp, CASE WHEN strftime('%H:%M',main.start_at)='"+time_h_m+"' THEN 'true' WHEN strftime('%H:%M',main.stop_at)='"+time_h_m+"' THEN 'false' ELSE 'no_match' END AS on_off FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.type_id=2");
         if(qry->exec()){
             qDebug() << "TIMER SPRAWDZA";
             while(qry->next()){
@@ -261,6 +264,8 @@ MainWindow::MainWindow(QWidget *parent) :
                     //bList.at(qry->value("btn_no").toInt())->setChecked(qry->value("on_off").toBool());
                     buttons_run(qry->value("btn_no").toInt(), qry->value("on_off").toBool());
                     qDebug() << "AUTO_ON/OFF";
+                    //usuwanie pozycji jednorazowej harmonogramu//
+                    if(qry->value("tmp").toInt() == 1){delete_schedule(qry->value("id").toInt());}
                 }
             }
         }
@@ -817,35 +822,43 @@ void MainWindow::wyjezdzam(){
 //konfiguracja harmonogramów
 void MainWindow::on_pushButton_23_clicked()
 {
+    int id_rand = QRandomGenerator::global()->bounded(1,100000);
     QString db_time,
+            db_pirhex = nullptr,
+            db_pirtext = nullptr,
             db_start = nullptr,
             db_stop = nullptr,
             db_sunset = nullptr,
             db_sunrise = nullptr,
-            db_timername = nullptr,
-            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]),
-            db_pirtext = ui->listWidget->currentItem()->text();
+            db_timername = nullptr;
     int db_suntimewatch = NULL;
-    int it = 0;
-
-    if((ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0) || (ui->pushButton_31->isChecked() && ui->listWidget_2->currentRow()>=0)){
+    int it = 0,
+        db_tmp = NULL;
+    qDebug()<< id_rand;
+    if((ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0) || (ui->pushButton_31->isChecked() && ui->listWidget_2->currentRow()>=0 && (ui->checkBox_t1->isChecked() || ui->checkBox_t2->isChecked()))){
 
         QListWidgetItem *new_item = new QListWidgetItem;
+        new_item->setData(Qt::UserRole, QVariant(id_rand));
         QList<int> scheduledbtn;
         QString tempnames;
         QList<QListWidgetItem*> itempirlist = ui->listWidget->selectedItems();
         selected_sources(scheduledbtn, tempnames);
 
         if(ui->pushButton_29->isChecked()){ //akcje wieczorne - znacznik 1
+            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
+            db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "1";
             new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
+
             if(ui->sensorButton->isChecked()){
                 db_timername = QString("timer_%1").arg(time_text.split(":")[2]);
                 MyTimer(this, SLOT(offfff()),db_timername);
             }
         }
         if(ui->pushButton_43->isChecked()){ //akcje dzienne - znacznik 3
+            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
+            db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "3";
             new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
@@ -855,6 +868,8 @@ void MainWindow::on_pushButton_23_clicked()
             }
         }
         if(ui->pushButton_30->isChecked()){ //akcje stałe - znacznik 0
+            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
+            db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "0";
             new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_on.png"));
             new_item->setText(itempirlist.takeFirst()->text()+" -> "+tempnames);
@@ -867,8 +882,8 @@ void MainWindow::on_pushButton_23_clicked()
             db_time = "2";
             db_pirhex = nullptr;
             db_pirtext = nullptr;
-            db_start = ui->timeEdit->text();
-            db_stop = ui->timeEdit_2->text();
+            if(ui->checkBox_t1->isChecked()){db_start = ui->timeEdit->text();}
+            if(ui->checkBox_t2->isChecked()){db_stop = ui->timeEdit_2->text();}
             db_timername = nullptr;
             if(ui->trackButton->isChecked()){
                 db_suntimewatch = 1;
@@ -878,8 +893,9 @@ void MainWindow::on_pushButton_23_clicked()
             }else{
                 new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
             }
-            new_item->setText(ui->timeEdit->text()+" - "+ui->timeEdit_2->text()+" -> "+tempnames);
+            new_item->setText(db_start + " - " + db_stop + " -> " + tempnames);
         }
+        if(ui->pushButton_tmp->isChecked()){db_tmp = 1;}
         ui->listWidget_3->addItem(new_item);
         ui->listWidget->clearSelection();
         ui->listWidget_2->clearSelection();
@@ -887,11 +903,11 @@ void MainWindow::on_pushButton_23_clicked()
         mydbs baza(sceny);
         QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
 
-        qry->prepare("INSERT INTO main VALUES ((SELECT MAX(id)+1 FROM main),'"+db_time+"','"+db_pirhex+"','"+db_pirtext+"','"+db_start+"','"+db_stop+"','"+QString::number(db_suntimewatch)+"','"+db_sunset+"','"+db_sunrise+"','"+db_timername+"')");
+        qry->prepare("INSERT INTO main VALUES ('"+QString::number(id_rand)+"','"+db_time+"','"+db_pirhex+"','"+db_pirtext+"','"+db_start+"','"+db_stop+"','"+QString::number(db_suntimewatch)+"','"+db_sunset+"','"+db_sunrise+"','"+db_timername+"','"+QString::number(db_tmp)+"')");
         if(qry->exec()){
             foreach(int db_btn, scheduledbtn){
                 QString f = tempnames.split(",")[it];
-                qry->prepare("INSERT INTO sources VALUES ((SELECT MAX(id) FROM main), '"+QString::number(db_btn)+"', '"+f+"')");
+                qry->prepare("INSERT INTO sources VALUES ('"+QString::number(id_rand)+"', '"+QString::number(db_btn)+"', '"+f+"')");
                 qry->exec();
                 it++;
             }
@@ -903,25 +919,8 @@ void MainWindow::on_pushButton_23_clicked()
 //usuwanie pozycji z harmonogramu//
 void MainWindow::on_pushButton_27_clicked()
 {
-    int cr = ui->listWidget_3->currentRow();
-    int cr_updated;
-    if(cr>=0){
-        mydbs baza(sceny);
-        QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
-        qry->exec("PRAGMA foreign_keys = ON");
-        //qry->exec("DELETE FROM main WHERE (SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY id) idD, * FROM main) WHERE idD=5");
-        qry->prepare("SELECT ROW_NUMBER() OVER (ORDER BY id )idD, id FROM main");
-        if(qry->exec()){
-            while (qry->next()){
-                if(qry->value("idD") == QString::number(cr+1)){
-                    cr_updated = qry->value("id").toInt();
-                }
-            }
-        }
-        qry->exec("DELETE FROM main WHERE id='"+QString::number(cr_updated)+"'");
-        delete ui->listWidget_3->currentItem();
-        delete qry;
-    }
+    delete_schedule(QVariant(ui->listWidget_3->currentItem()->data(Qt::UserRole)).toInt());
+
 }
 
 void MainWindow::on_pushButton_28_clicked()
@@ -1018,68 +1017,70 @@ void MainWindow::settemperature(int temp_value){
 
 void MainWindow::readscheduler(){
 
-        mydbs baza(sceny);
-        QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+    ui->listWidget_3->clear();
 
-        int typeID;
-        int sunTime;
-        QString pirName;
-        QString btnName;
-        QString start;
-        QString stop;
-        QString timerName;
+    mydbs baza(sceny);
+    QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
 
-        qry->prepare("SELECT value FROM temperature");
-        if(qry->exec()){
-            foreach(QDial* dL, dList){
-                qry->next();
-                dL->setValue(qry->value(0).toInt());
+    int typeID;
+    int sunTime;
+    QString pirName;
+    QString btnName;
+    QString start;
+    QString stop;
+    QString timerName;
+
+    qry->prepare("SELECT value FROM temperature");
+    if(qry->exec()){
+        foreach(QDial* dL, dList){
+            qry->next();
+            dL->setValue(qry->value(0).toInt());
+        }
+    }
+
+    qry->prepare("SELECT timer_time FROM PIR");
+    if(qry->exec()){
+        foreach (QDial* dpL, dpList){
+            qry->next();
+            dpL->setValue((qry->value(0).toInt())/1000);
+        }
+    }
+
+    qry->prepare("SELECT *, group_concat(sources.btn_desc) AS btns FROM main INNER JOIN sources ON main.id=sources.main_id GROUP BY id");
+    qry->exec();
+    if(qry->exec()){
+        while(qry->next()){
+            pirName = qry->value("pir_desc").toString();
+            btnName = qry->value("btns").toString();
+            typeID = qry->value("type_id").toInt();
+            sunTime = qry->value("sun_time_watch").toInt();
+            start = qry->value("start_at").toString();
+            stop = qry->value("stop_at").toString();
+            timerName = qry->value("timer_name").toString();
+            QListWidgetItem *new_item = new QListWidgetItem;
+            if(typeID==0){
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_on.png"));
+                new_item->setText(pirName + " -> " + btnName);
+                ui->listWidget_3->addItem(new_item);
+                MyTimer(this, SLOT(offfff()),timerName);
+            }
+            if(typeID==1){
+                new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
+                new_item->setText(pirName + " -> " + btnName);
+                ui->listWidget_3->addItem(new_item);
+            }
+            if(typeID==2){
+                if(sunTime==1){
+                    new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_tracking.png"));
+                }else{
+                    new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
+                }
+                new_item->setText(start + " - " + stop + " -> " + btnName);
+                ui->listWidget_3->addItem(new_item);
             }
         }
-
-        qry->prepare("SELECT timer_time FROM PIR");
-        if(qry->exec()){
-            foreach (QDial* dpL, dpList){
-                qry->next();
-                dpL->setValue((qry->value(0).toInt())/1000);
-            }
-        }
-
-        qry->prepare("SELECT *, group_concat(sources.btn_desc) AS btns FROM main INNER JOIN sources ON main.id=sources.main_id GROUP BY id");
-        qry->exec();
-        if(qry->exec()){
-            while(qry->next()){
-                pirName = qry->value("pir_desc").toString();
-                btnName = qry->value("btns").toString();
-                typeID = qry->value("type_id").toInt();
-                sunTime = qry->value("sun_time_watch").toInt();
-                start = qry->value("start_at").toString();
-                stop = qry->value("stop_at").toString();
-                timerName = qry->value("timer_name").toString();
-                QListWidgetItem *new_item = new QListWidgetItem;
-                if(typeID==0){
-                    new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_on.png"));
-                    new_item->setText(pirName + " -> " + btnName);
-                    ui->listWidget_3->addItem(new_item);
-                    MyTimer(this, SLOT(offfff()),timerName);
-                }
-                if(typeID==1){
-                    new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_2_on.png"));
-                    new_item->setText(pirName + " -> " + btnName);
-                    ui->listWidget_3->addItem(new_item);
-                }
-                if(typeID==2){
-                    if(sunTime==1){
-                        new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_tracking.png"));
-                    }else{
-                        new_item->setIcon(QIcon("/media/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png"));
-                    }
-                    new_item->setText(start + " - " + stop + " -> " + btnName);
-                    ui->listWidget_3->addItem(new_item);
-                }
-            }
-        }
-        delete qry;
+    }
+    delete qry;
 }
 
 void MainWindow::on_dial_12_valueChanged(int value)
@@ -1132,7 +1133,6 @@ void MainWindow::ClickedlabelFinder(){
 void MainWindow::settimers(int dial_value)
 {
     mydbs baza(sceny);
-    //QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
     QSqlQuery *qry = baza.query();
     for(int i=0; i<dpList.length(); i++){
         if(dpList.at(i)==QObject::sender()){
@@ -1140,17 +1140,6 @@ void MainWindow::settimers(int dial_value)
             qry->addBindValue(dial_value*1000);
             qry->exec();
         }
-    }
-}
-
-void MainWindow::showui()
-{
-    if(!ui->label_47->isVisible()){
-        ui->label_47->setVisible(true);
-        ui->label_48->setVisible(true);
-    }else{
-        ui->label_47->setVisible(false);
-        ui->label_48->setVisible(false);
     }
 }
 
@@ -1751,5 +1740,30 @@ void MainWindow::itmSwap(QTreeWidget * tree_w, QString direction)
             tree_w->insertTopLevelItem(cir-1, tree_itm);
             tree_w->setCurrentItem(tree_itm, 1);
         }
+    }
+}
+
+void MainWindow::show_item(bool state)
+{
+    ui->label_47->setVisible(state);
+    ui->label_48->setVisible(state);
+}
+
+void MainWindow::delete_schedule(int itm)
+{
+    if(itm>0){
+        int count = 0;
+        mydbs baza(sceny);
+        QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+        qry->exec("PRAGMA foreign_keys = ON");
+        qry->exec("DELETE FROM main WHERE id='"+QString::number(itm)+"'");
+        while(count < ui->listWidget_3->count()){
+            if(QVariant(ui->listWidget_3->item(count)->data(Qt::UserRole)).toInt()==itm){
+                delete ui->listWidget_3->item(count);
+                break;
+            }
+            count++;
+        }
+        delete qry;
     }
 }

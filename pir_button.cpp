@@ -1,67 +1,61 @@
 #include "pir_button.h"
 #include "ui_mainwindow.h"
 
-extern QList<QPushButton*> pirList;
 extern QList<QDial*> dpList;
-extern unsigned char temp[20];
-extern unsigned char hexx[9];
-extern QString ips;
-QList<QTimer*> ptimers;
 extern bool locked;
 
 pir_button::pir_button(QWidget *parent) :
     QPushButton(parent)
 {
-    QTimer *present = new QTimer;
-    connect(present, SIGNAL(timeout()), this, SLOT(absent()));
-    ptimers.append(present);
+    present = new QTimer;
+    connect(present, &QTimer::timeout, [=](){
+        c_time--;
+        label_countdown->setText(QDateTime::fromTime_t(c_time).toUTC().toString("mm:ss"));
+        if(c_time==0){
+            label_countdown->setStyleSheet("QLabel { background-color: transparent;"
+                                           "font: 75 7pt 'Piboto Condensed';"
+                                           "color: rgb(76, 76, 76);}");
+            this->setChecked(false);
+            present->stop();
+        }
+    });
+
     connect(this, SIGNAL(klik()), this, SLOT(setdial()));
 }
 
 void pir_button::mousePressEvent(QMouseEvent *ev){
 
     emit klik();
-    //MainWindow *mw = MainWindow::getMainWinPtr();
 
 }
 
-void pir_button::naruszeniestrefy(){
-    if(ips=="192.168.1.103"){
-        //this->setChecked(true);
-        for(int i=1; i<=pirList.length(); i++){
-            if(hexx[i] & temp[0]){
-                pirList.at(i-1)->setChecked(true);
-                ptimers.at(i)->setSingleShot(true);
-                ptimers.at(i)->start(300000);
-                if(locked){
-                    emit violation_name(QString("Naruszenie strefy: %1").arg(pirList.at(i-1)->accessibleName()));
-                }
-            }
-        }
-    }
+void pir_button::naruszeniestrefy(int &time){
+
+    p_mw = MainWindow::getMainWinPtr();
+    label_countdown = p_mw->findChild<QLabel*>("label_" + this->objectName());
+    label_countdown->setStyleSheet("QLabel { background-color: transparent;"
+                                   "font: 75 7pt 'Piboto Condensed';"
+                                   "color: rgb(0, 0, 255);}");
+    c_time=time/1000;
+    present->start(1000);
 }
 
 void pir_button::setdial(){
 
-    for(int i=0; i<=(pirList.length()-1); i++){
-        if(pirList.at(i)==QObject::sender()){
-            if(dpList.at(i)->isVisible()){
-                dpList.at(i)->setVisible(false);
+    p_mw = MainWindow::getMainWinPtr();
+    if(p_mw!=nullptr){
+        QDial *pir_dial = p_mw->findChild<QDial*>("dial_" + this->objectName());
+        foreach(QDial *dial, dpList){
+            if(dial->objectName()!=pir_dial->objectName()){
+                dial->setVisible(false);
             }else{
-                dpList.at(i)->setVisible(true);
-
+                if(pir_dial->isVisible()){
+                    pir_dial->setVisible(false);
+                }else{
+                    pir_dial->setVisible(true);
+                }
+                p_mw->show_item(pir_dial->isVisible());
             }
-        }else{
-            dpList.at(i)->setVisible(false);
-        }
-    }
-}
-
-void pir_button::absent()
-{
-    for(int i=1; i<=pirList.length();i++){
-        if(ptimers.at(i)==QObject::sender()){
-            pirList.at(i-1)->setChecked(false);
         }
     }
 }

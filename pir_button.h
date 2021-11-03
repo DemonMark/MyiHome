@@ -5,6 +5,8 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QTimer>
+#include <QDateTime>
+#include "mainwindow.h"
 
 class pir_button : public QPushButton
 {
@@ -12,6 +14,10 @@ class pir_button : public QPushButton
 public:
     explicit pir_button(QWidget *parent = 0);
     void mousePressEvent(QMouseEvent *ev);
+    QTimer *present;
+    QLabel *label_countdown;
+    MainWindow *p_mw;
+    int c_time;
 
 signals:
 
@@ -20,11 +26,8 @@ signals:
 
 public slots:
 
-    void naruszeniestrefy();
+    void naruszeniestrefy(int &time);
     void setdial();
-    void absent();
-
-
 };
 
 #endif // PIR_BUTTON_H

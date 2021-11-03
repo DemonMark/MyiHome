@@ -151,6 +151,14 @@ void MyUDP::readyRead(){
                     qry->prepare("SELECT * FROM PIR LEFT JOIN (SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.pir_hex = '"+QString::number(temp[0])+"') WHERE PIR.pir_hex = '"+QString::number(temp[0])+"' AND aktywna=1");
                     if(qry->exec()){
                         while(qry->next()){
+                            MainWindow *mw = MainWindow::getMainWinPtr();
+                            if(mw!=nullptr){
+                                QString code_PIRname = qry->value("code_name").toString();
+                                int PIRtime = qry->value("timer_time").toInt();
+                                pir_button *pirbtn_holder = mw->findChild<pir_button*>(code_PIRname);
+                                pirbtn_holder->setChecked(true);
+                                pirbtn_holder->naruszeniestrefy(PIRtime);
+                            }
                             obecnosc=1;
                             timer_obecnosc->start(300000);
                             emit changes();
@@ -172,13 +180,12 @@ void MyUDP::readyRead(){
                                 if((type_result==3 && dzien==1) || (type_result==1 && dzien==0) || type_result==0){
                                     bList.at(qry->value("btn_no").toInt())->setChecked(true);
                                     if(tName!=""){
-                                        //QString tName = qry->value("timer_name").toString();
                                         //MainWindow *mw = qobject_cast<MainWindow*>(QApplication::activeWindow());
-                                        MainWindow *mw = MainWindow::getMainWinPtr();
                                         if(mw!=nullptr){
                                             QTimer *sql_tHolder = mw->findChild<QTimer*>(tName);
                                             sql_tHolder->setSingleShot(true);
                                             sql_tHolder->start(qry->value("timer_time").toInt());
+
                                             mw->data_logger(sql_tHolder->objectName());
                                         }
                                     }
@@ -189,6 +196,8 @@ void MyUDP::readyRead(){
                             if(scene_driving && (qry->value("PIR.pir_hex").toUInt()&scene_pir)){
                                 emit gate();
                             }
+                            //usuwanie pozycji jednorazowej harmonogramu//
+                            if(qry->value("tmp").toInt() == 1){mw->delete_schedule(qry->value("id").toInt());}
                         }
                     }
                 }

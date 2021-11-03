@@ -27,20 +27,20 @@ int main(int argc, char *argv[])
     }
 
     MyUDP client;
-    pir_button pirek;
+    //pir_button pirek;
     mqtt_client mosquitto_client;
     MainWindow w;
     w.show();
     w.readscheduler();
     QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
-    QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
+    //QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
     QObject::connect(&w,SIGNAL(simulating(bool)), &client, SLOT(simulation(bool)));
     QObject::connect(&w,SIGNAL(all_off()), &client, SLOT(lightsOff()));
     QObject::connect(&client, SIGNAL(all_off_()), &w, SLOT(LOff()));
     QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjezdzam()));
     QObject::connect(&w,SIGNAL(UDP_ReadytoSend(QString)), &client, SLOT(WYSUDP(QString)));
     QObject::connect(&mosquitto_client, SIGNAL(msg(QString)), &w, SLOT(mqtt_processor(QString)));
-    QObject::connect(&pirek, SIGNAL(violation_name(QString)), &mosquitto_client, SLOT(publish(QString)));
+    //QObject::connect(&pirek, SIGNAL(violation_name(QString)), &mosquitto_client, SLOT(publish(QString)));
 
   return a.exec();
 }

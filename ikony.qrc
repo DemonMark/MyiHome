@@ -151,5 +151,7 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/allday_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/sdown_v2_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/sup_v2_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/tmp_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/tmp_on.png</file>
     </qresource>
 </RCC>

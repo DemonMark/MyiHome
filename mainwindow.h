@@ -38,10 +38,10 @@ public:
     void data_logger(const QString &input_data);
     void itmSwap(QTreeWidget * tree_w, QString direction);
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
+    void show_item(bool state);
+    void delete_schedule(int itm);
 
 private slots:
-
-  void showui();
 
   void settemperature(int temp_value);
 
