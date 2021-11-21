@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
     }
 
     MyUDP client;
-    //pir_button pirek;
     mqtt_client mosquitto_client;
     MainWindow w;
     w.show();

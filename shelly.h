@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QMouseEvent>
+#include "mainwindow.h"
 
 class shelly : public QPushButton
 {
@@ -13,8 +14,17 @@ class shelly : public QPushButton
 public:
     explicit shelly(QWidget *parent = nullptr);
 
+    MainWindow *sp_mw;
     QUdpSocket *shellsock;
+    QTimer *mute_counter;
+    QLabel *label_cd = nullptr,
+           *mute_ind = nullptr;
+    QSpinBox *mute_counter_val = nullptr;
+
+    int counter;
+
     void mousePressEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *ev);
 
 private:
 

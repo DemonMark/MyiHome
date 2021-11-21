@@ -63,7 +63,6 @@ private slots:
 
   void LOff();
 
-  void on_pushButton_16_pressed();
   void on_pushButton_23_clicked();
   void on_pushButton_27_clicked();
   void on_pushButton_28_clicked();

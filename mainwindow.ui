@@ -615,7 +615,7 @@ selection-color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>830</x>
-          <y>420</y>
+          <y>440</y>
           <width>56</width>
           <height>74</height>
          </rect>
@@ -809,7 +809,7 @@ background-color: transparent;
         <property name="geometry">
          <rect>
           <x>240</x>
-          <y>180</y>
+          <y>150</y>
           <width>111</width>
           <height>21</height>
          </rect>
@@ -825,7 +825,7 @@ background-color: transparent;
         <property name="geometry">
          <rect>
           <x>240</x>
-          <y>220</y>
+          <y>190</y>
           <width>121</width>
           <height>51</height>
          </rect>
@@ -847,8 +847,8 @@ background-color: transparent;
        <widget class="QLabel" name="label_37">
         <property name="geometry">
          <rect>
-          <x>110</x>
-          <y>350</y>
+          <x>10</x>
+          <y>320</y>
           <width>71</width>
           <height>41</height>
          </rect>
@@ -875,8 +875,8 @@ font: 75 20pt &quot;Roboto Condensed&quot;;</string>
        <widget class="QLabel" name="label_otime">
         <property name="geometry">
          <rect>
-          <x>250</x>
-          <y>430</y>
+          <x>230</x>
+          <y>480</y>
           <width>90</width>
           <height>21</height>
          </rect>
@@ -902,8 +902,8 @@ font: 75 16pt &quot;PibotoLt&quot;;</string>
        <widget class="QLabel" name="label_9">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>430</y>
+          <x>0</x>
+          <y>480</y>
           <width>211</width>
           <height>22</height>
          </rect>
@@ -918,8 +918,8 @@ font: 75 16pt &quot;PibotoLt&quot;;</string>
        <widget class="QLabel" name="label_10">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>470</y>
+          <x>0</x>
+          <y>520</y>
           <width>231</width>
           <height>22</height>
          </rect>
@@ -934,8 +934,8 @@ font: 75 16pt &quot;PibotoLt&quot;;</string>
        <widget class="QLabel" name="label_ctime">
         <property name="geometry">
          <rect>
-          <x>250</x>
-          <y>470</y>
+          <x>230</x>
+          <y>520</y>
           <width>90</width>
           <height>21</height>
          </rect>
@@ -961,8 +961,8 @@ font: 75 16pt &quot;PibotoLt&quot;;</string>
        <widget class="QPushButton" name="resetButton">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>570</y>
+          <x>0</x>
+          <y>610</y>
           <width>106</width>
           <height>95</height>
          </rect>
@@ -987,8 +987,8 @@ background-color: transparent;
        <widget class="QLabel" name="label_18">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>520</y>
+          <x>0</x>
+          <y>570</y>
           <width>131</width>
           <height>22</height>
          </rect>
@@ -1090,8 +1090,8 @@ border: none;
        <widget class="QLabel" name="label_22">
         <property name="geometry">
          <rect>
-          <x>410</x>
-          <y>430</y>
+          <x>460</x>
+          <y>550</y>
           <width>221</width>
           <height>22</height>
          </rect>
@@ -1106,8 +1106,8 @@ border: none;
        <widget class="QSpinBox" name="cwu_ob">
         <property name="geometry">
          <rect>
-          <x>530</x>
-          <y>460</y>
+          <x>580</x>
+          <y>580</y>
           <width>91</width>
           <height>51</height>
          </rect>
@@ -1141,8 +1141,8 @@ border: none;
        <widget class="QSpinBox" name="cwu_nob">
         <property name="geometry">
          <rect>
-          <x>530</x>
-          <y>520</y>
+          <x>580</x>
+          <y>640</y>
           <width>91</width>
           <height>51</height>
          </rect>
@@ -1176,8 +1176,8 @@ border: none;
        <widget class="QLabel" name="label_23">
         <property name="geometry">
          <rect>
-          <x>410</x>
-          <y>480</y>
+          <x>460</x>
+          <y>600</y>
           <width>61</width>
           <height>22</height>
          </rect>
@@ -1192,8 +1192,8 @@ border: none;
        <widget class="QLabel" name="label_27">
         <property name="geometry">
          <rect>
-          <x>410</x>
-          <y>540</y>
+          <x>460</x>
+          <y>660</y>
           <width>71</width>
           <height>22</height>
          </rect>
@@ -1289,7 +1289,7 @@ border: none;
         <property name="geometry">
          <rect>
           <x>920</x>
-          <y>420</y>
+          <y>440</y>
           <width>56</width>
           <height>74</height>
          </rect>
@@ -1333,8 +1333,8 @@ background-color: transparent;
        <widget class="QCheckBox" name="timery_pir">
         <property name="geometry">
          <rect>
-          <x>240</x>
-          <y>320</y>
+          <x>450</x>
+          <y>390</y>
           <width>207</width>
           <height>27</height>
          </rect>
@@ -1346,8 +1346,8 @@ background-color: transparent;
        <widget class="QPushButton" name="alarm_btn">
         <property name="geometry">
          <rect>
-          <x>240</x>
-          <y>370</y>
+          <x>10</x>
+          <y>380</y>
           <width>99</width>
           <height>30</height>
          </rect>
@@ -1357,6 +1357,63 @@ background-color: transparent;
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+        <property name="autoRepeat">
+         <bool>true</bool>
+        </property>
+        <property name="autoRepeatDelay">
+         <number>1000</number>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="dzwonek_t">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>424</y>
+          <width>66</width>
+          <height>47</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="minimum">
+         <number>30</number>
+        </property>
+        <property name="maximum">
+         <number>60</number>
+        </property>
+        <property name="value">
+         <number>30</number>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="conf_ch_12">
+        <property name="geometry">
+         <rect>
+          <x>830</x>
+          <y>400</y>
+          <width>211</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>wycisz dzwonek</string>
         </property>
        </widget>
        <zorder>label_34</zorder>
@@ -1402,6 +1459,8 @@ background-color: transparent;
        <zorder>conf_ch_11</zorder>
        <zorder>timery_pir</zorder>
        <zorder>alarm_btn</zorder>
+       <zorder>dzwonek_t</zorder>
+       <zorder>conf_ch_12</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -2718,6 +2777,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>128</UInt>
+        </property>
        </widget>
        <widget class="QLabel" name="label_parter">
         <property name="geometry">
@@ -2815,6 +2883,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>64</UInt>
         </property>
        </widget>
        <widget class="label_temp" name="label_temp_1">
@@ -2936,6 +3013,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>16</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_4">
         <property name="geometry">
@@ -2973,6 +3059,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>32</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_5">
         <property name="geometry">
@@ -3009,6 +3104,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>2</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>1</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="th_3">
@@ -3152,6 +3256,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>1</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>64</UInt>
+        </property>
        </widget>
        <widget class="label_temp" name="label_temp_4">
         <property name="geometry">
@@ -3241,6 +3354,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>4</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_8">
         <property name="geometry">
@@ -3277,6 +3399,18 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hex" stdset="0">
+         <string>0x04</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>2</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>4</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="th_6">
@@ -3370,6 +3504,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>1</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>16</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_10">
         <property name="geometry">
@@ -3409,6 +3552,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>1</UInt>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_11">
@@ -3450,6 +3602,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>1</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>128</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_12">
         <property name="geometry">
@@ -3489,6 +3650,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>1</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>32</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="label_31">
@@ -3555,6 +3725,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>32</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_16">
         <property name="geometry">
@@ -3588,6 +3767,15 @@ background-color: transparent;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>128</UInt>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_17">
@@ -3632,6 +3820,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>2</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>2</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_18">
         <property name="geometry">
@@ -3668,6 +3865,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>1</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>4</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="label_11">
@@ -3742,6 +3948,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>2</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_20">
         <property name="geometry">
@@ -3782,6 +3997,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>1</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>8</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_21">
         <property name="geometry">
@@ -3819,14 +4043,23 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>8</UInt>
+        </property>
        </widget>
        <widget class="shelly" name="shelly_door_bell">
         <property name="geometry">
          <rect>
           <x>590</x>
           <y>145</y>
-          <width>28</width>
-          <height>29</height>
+          <width>39</width>
+          <height>30</height>
          </rect>
         </property>
         <property name="focusPolicy">
@@ -3859,17 +4092,40 @@ border: none;
         <property name="text">
          <string/>
         </property>
+        <property name="icon">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</iconset>
+        </property>
         <property name="iconSize">
          <size>
-          <width>31</width>
-          <height>31</height>
+          <width>39</width>
+          <height>30</height>
          </size>
         </property>
-        <property name="checkable">
-         <bool>false</bool>
+        <property name="autoRepeatDelay">
+         <number>1500</number>
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="mute" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="mute_icon" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</iconset>
+        </property>
+        <property name="on" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_on.png</iconset>
+        </property>
+        <property name="off" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</iconset>
+        </property>
+        <property name="offline" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_offline.png</iconset>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
@@ -3916,6 +4172,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>3</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>1</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="label_pompa_1">
@@ -4025,6 +4290,18 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string/>
+        </property>
+        <property name="hex" stdset="0">
+         <string/>
+        </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>16</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_34">
         <property name="geometry">
@@ -4065,6 +4342,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string/>
+        </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>0</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="label_32">
@@ -4360,6 +4646,18 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string/>
+        </property>
+        <property name="hex" stdset="0">
+         <string/>
+        </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>0</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_25">
         <property name="geometry">
@@ -4396,6 +4694,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.104</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>5</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>2</UInt>
         </property>
        </widget>
        <widget class="pir_button" name="pir_btn_2">
@@ -4752,6 +5059,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>4</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>64</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="label_14">
@@ -5370,6 +5686,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.104</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>5</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>1</UInt>
+        </property>
        </widget>
        <widget class="QLabel" name="th_12">
         <property name="geometry">
@@ -5732,8 +6057,20 @@ border: none;
         <property name="checkable">
          <bool>false</bool>
         </property>
+        <property name="autoRepeat">
+         <bool>false</bool>
+        </property>
+        <property name="autoRepeatDelay">
+         <number>500</number>
+        </property>
+        <property name="autoRepeatInterval">
+         <number>50</number>
+        </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="mute" stdset="0">
+         <number>0</number>
         </property>
        </widget>
        <widget class="QLabel" name="signal">
@@ -5783,11 +6120,23 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string/>
+        </property>
+        <property name="hex" stdset="0">
+         <string/>
+        </property>
+        <property name="mask" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>0</UInt>
+        </property>
        </widget>
        <widget class="QLabel" name="signal_2">
         <property name="geometry">
          <rect>
-          <x>621</x>
+          <x>633</x>
           <y>140</y>
           <width>35</width>
           <height>22</height>
@@ -5834,6 +6183,9 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="mute" stdset="0">
+         <number>0</number>
+        </property>
        </widget>
        <widget class="shelly" name="_helly25_2">
         <property name="geometry">
@@ -5869,6 +6221,9 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="mute" stdset="0">
+         <number>0</number>
         </property>
        </widget>
        <widget class="QLabel" name="signal_3">
@@ -5942,6 +6297,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.104</string>
+        </property>
+        <property name="mask" stdset="0">
+         <number>5</number>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>4</UInt>
         </property>
        </widget>
        <widget class="QPushButton" name="cwu">
@@ -6046,6 +6410,9 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="mute" stdset="0">
+         <number>0</number>
         </property>
        </widget>
        <widget class="QLabel" name="signal_5">
@@ -6207,7 +6574,7 @@ border: none;
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 font: 75 7pt &quot;Piboto Condensed&quot;;
-color: rgb(171, 170, 170);
+color: rgb(76, 76, 76);
 </string>
         </property>
         <property name="text">
@@ -6226,7 +6593,7 @@ color: rgb(171, 170, 170);
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 font: 75 7pt &quot;Piboto Condensed&quot;;
-color: rgb(171, 170, 170);</string>
+color: rgb(76, 76, 76);</string>
         </property>
         <property name="text">
          <string>00:00</string>
@@ -6244,7 +6611,7 @@ color: rgb(171, 170, 170);</string>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 font: 75 7pt &quot;Piboto Condensed&quot;;
-color: rgb(171, 170, 170);</string>
+color: rgb(76, 76, 76);</string>
         </property>
         <property name="text">
          <string>00:00</string>
@@ -6262,7 +6629,7 @@ color: rgb(171, 170, 170);</string>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 font: 75 7pt &quot;Piboto Condensed&quot;;
-color: rgb(171, 170, 170);</string>
+color: rgb(76, 76, 76);</string>
         </property>
         <property name="text">
          <string>00:00</string>
@@ -6280,7 +6647,7 @@ color: rgb(171, 170, 170);</string>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 font: 75 7pt &quot;Piboto Condensed&quot;;
-color: rgb(171, 170, 170);</string>
+color: rgb(76, 76, 76);</string>
         </property>
         <property name="text">
          <string>00:00</string>
@@ -6298,11 +6665,58 @@ color: rgb(171, 170, 170);</string>
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 font: 75 7pt &quot;Piboto Condensed&quot;;
-color: rgb(171, 170, 170);
+color: rgb(76, 76, 76);
 </string>
         </property>
         <property name="text">
          <string>00:00</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_shelly_door_bell">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>630</x>
+          <y>162</y>
+          <width>24</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+font: 75 7pt &quot;Piboto Condensed&quot;;
+color: rgb(76, 76, 76);</string>
+        </property>
+        <property name="text">
+         <string>00:00</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_mute">
+        <property name="geometry">
+         <rect>
+          <x>593</x>
+          <y>100</y>
+          <width>28</width>
+          <height>33</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+background-repeat: none;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="mute_on" stdset="0">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/mute_on.png</pixmap>
+        </property>
+        <property name="mute_off" stdset="0">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/mute_off.png</pixmap>
         </property>
        </widget>
        <zorder>label_parter</zorder>
@@ -6424,6 +6838,8 @@ color: rgb(171, 170, 170);
        <zorder>label_pir_btn_7</zorder>
        <zorder>label_pir_btn_2</zorder>
        <zorder>label_pir_btn_3</zorder>
+       <zorder>label_shelly_door_bell</zorder>
+       <zorder>label_mute</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -6560,6 +6976,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>2</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>0</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_35">
         <property name="geometry">
@@ -6596,6 +7021,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>16</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>0</UInt>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_36">
@@ -6634,6 +7068,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>2</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>1</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_37">
         <property name="geometry">
@@ -6670,6 +7113,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>1</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>0</UInt>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_38">
@@ -6708,6 +7160,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>8</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>0</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_39">
         <property name="geometry">
@@ -6745,6 +7206,15 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>4</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>0</UInt>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_40">
         <property name="geometry">
@@ -6781,6 +7251,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.101</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>1</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>1</UInt>
         </property>
        </widget>
        <widget class="QPushButton" name="scene_ide_spac">
@@ -7555,6 +8034,15 @@ border: none;
         </property>
         <property name="flat">
          <bool>true</bool>
+        </property>
+        <property name="IP_holder" stdset="0">
+         <string>192.168.1.104</string>
+        </property>
+        <property name="hexx" stdset="0">
+         <UInt>32</UInt>
+        </property>
+        <property name="mask" stdset="0">
+         <UInt>5</UInt>
         </property>
        </widget>
        <widget class="QLabel" name="label_pir_btn_1">

@@ -75,9 +75,9 @@ bool jestem = false;
 bool shelly_on;
 bool write_off=false;
 extern QByteArray plugsocket;
-int arg[13];
+int arg[17];
 int arg_check=-3;//potwierdzenie wykonania składników sceny
-int arg_config[13];
+int arg_config[17];
 QString last_scene;
 QStringList EN_WORD({"library","Mouse room","bedroom","wardrobe","bathroom"});
 bool locked;
@@ -114,7 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dpList = MainWindow::findChildren<QDial*>(QRegExp ("dial_pir_*"));
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
-    pir_label=MainWindow::findChildren<QLabel*>(QRegExp ("label_pir_btn_*"));
+    pir_label = MainWindow::findChildren<QLabel*>(QRegExp ("label_pir_btn_*"));
     shList = ui->tab_5->findChildren<shelly*>(QRegExp ("shelly*"));
 
     int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
@@ -156,8 +156,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, &QTimer::timeout, [=]() {
-        maskawysl[4]&=~0x80;
-        emit UDP_ReadytoSend("192.168.1.101");
         timer_bramaStykOff->stop();
         ui->pushButton_16->setChecked(false);
     });
@@ -169,6 +167,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_36->setVisible(false);
     ui->label_47->setVisible(false);
     ui->label_48->setVisible(false);
+    ui->label_shelly_door_bell->setVisible(false);
     ui->dial_12->setValue(1);
 
     webView = new QWebPage(this);
@@ -739,11 +738,6 @@ void MainWindow::receiving(){
     }
 }
 
-void MainWindow::on_pushButton_16_pressed(){
-
-    timer_bramaStykOff->start(500);
-}
-
 void MainWindow::ClickedscenebtnFinder(bool checked)
 {
     if(checked){
@@ -758,7 +752,7 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
         qry->prepare("select * from scenes where description LIKE '%"+scena+"%'");
         if(qry->exec()){
             while(qry->next()){
-                for (int i=1; i<qry->record().count()-2; i++){//nie pobieramy wartości z opcji: źródła
+                for (int i=1; i<qry->record().count(); i++){//nie pobieramy wartości z opcji: źródła
                     if(qry->value(i).toString() == "0"){
                         arg[i] = 0;
                     }else{
@@ -769,7 +763,6 @@ void MainWindow::ClickedscenebtnFinder(bool checked)
                 //buttony z opcji źródla
                 buttons = qry->value(15).toString();
             }
-            qDebug() << arg_check;
             scene_executor(arg, scena, buttons);
         }
         delete qry;
@@ -899,7 +892,7 @@ void MainWindow::on_pushButton_23_clicked()
         ui->listWidget_3->addItem(new_item);
         ui->listWidget->clearSelection();
         ui->listWidget_2->clearSelection();
-
+        qDebug() << ui->pushButton_20->property("hex");
         mydbs baza(sceny);
         QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
 
@@ -967,6 +960,20 @@ void MainWindow::readTimeFromWWW(){
 //****************************WYSYŁANIE Z IKON PULPITU**********************//
 
 void MainWindow::ClickedbtnFinder(){
+
+    QAbstractButton* button = static_cast<QAbstractButton*>(sender());
+
+    if(button->isChecked()){
+        maskawysl[button->property("mask").toInt()]|=button->property("hexx").toInt();
+    }else{
+        maskawysl[button->property("mask").toInt()]&=~button->property("hexx").toInt();
+    }
+    emit UDP_ReadytoSend(button->property("IP_holder").toString());
+
+    if(button->objectName()=="pushButton_16" && button->isChecked()){
+        timer_bramaStykOff->start(700);
+    }
+    /*
     QString IP_holder="192.168.1.101";
     int m=0; //numeracja pozycji przycisku na liście
     for (int j=0; j<=5;j++){
@@ -976,6 +983,7 @@ void MainWindow::ClickedbtnFinder(){
                 //przesunięcie wartości m o "+1" ze względu na numerację wyjść c od "1" a buttonów od "0"
                 if(bList.at(y)->isChecked()){
                     maskawysl[j]|=(hexx[i]);
+                    qDebug() << "OLD " << maskawysl[j];
                     emit UDP_ReadytoSend(IP_holder);
                 }
                 if(bList.at(y)->isChecked()==false){
@@ -988,7 +996,7 @@ void MainWindow::ClickedbtnFinder(){
                 IP_holder="192.168.1.104";
             }
         }
-    }
+    }*/
 }
 
 void MainWindow::on_pushButton_33_toggled(bool checked)
@@ -1321,7 +1329,7 @@ void MainWindow::on_config_clicked()
                  "'uchyl brame wjazdowa' ) VALUES (1,1,1,1,1,1,1,1,1,1,1,1)");*/
     qry->prepare("UPDATE scenes SET odliczanie=?, 'wylacz wszystkie swiatla'=?, 'wylacz rekuperacje'=?, "
                      "'obniz temperature o'=?, 'uzbroj alarm'=?, 'TV on'=?, 'Brama garazowa'=?, 'Brama wjazdowa'=?, 'uchyl brame garazowa'=?,"
-                     "'uchyl brame wjazdowa'=?, zrodla=?, dane=?, dane_2=?, names=?, buttons=? WHERE description='"+sc+"'");
+                     "'uchyl brame wjazdowa'=?, zrodla=?, 'wycisz dzwonek'=?, dane=?, dane_2=?, names=?, buttons=? WHERE description='"+sc+"'");
     foreach(QCheckBox *chbox, chlist){
         if(chbox->isChecked()==false){
             if(chbox->text().contains("[")){
@@ -1374,8 +1382,8 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     qry->prepare("SELECT * FROM scenes WHERE description ='"+arg1+"'");
     if(qry->exec()){
         while(qry->next()){
-            for (int i=1; i<qry->record().count()-2; i++){
-                if(qry->value(i).toString() == "0"){
+            for (int i=1; i<qry->record().count(); i++){
+                if(qry->value(i).toString() == "0" || qry->record().fieldName(i).contains("buttons")){
                     //PUSTO
                 }else{
                     if(qry->record().fieldName(i+1).contains("dane") || qry->record().fieldName(i+1).contains("names")) {
@@ -1575,6 +1583,9 @@ void MainWindow::scene_executor(int *arg, QString &aktywna_scena, QString &butto
         }
         arg_check--;
     }
+    if(arg[16]){//dzwonek
+        ui->shelly_door_bell->setProperty("mute", 1);
+    }
     //***dodanie do sceny 'wracam' składników do odwołania po powrocie***
     mydbs baza(sceny);
     QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
@@ -1594,7 +1605,7 @@ void MainWindow::gates(int type, bool timer, int ms, int x)
         break;
     case 1:
         QPoint point(x, 413.0);
-        QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
+        QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonRelease, point, Qt::LeftButton, Qt::LeftButton,  Qt::NoModifier);
         QCoreApplication::sendEvent(ui->_helly25_2,me);
         break;
     }
@@ -1614,18 +1625,6 @@ void MainWindow::on_config_cl_clicked()
     ui->conf_ch_2->setAutoExclusive(true);
 
 }
-//*********slot do wylaczania autoExclusive*************(OPCJA ZAMIAST QObject::sender) - slot nie używany
-/*void MainWindow::autoEx()
-{
-   QAbstractButton* button = static_cast<QAbstractButton*>(sender());
-   if (button->isChecked()) {
-      button->setAutoExclusive(false);
-      qDebug() << "CHECKED";
-   } else {
-      button->setAutoExclusive(true);
-                  qDebug() << "EXCL";
-   }
-}*/
 
 void MainWindow::selected_sources(QList<int> &scheduledbtn, QString &tempnames)
 {

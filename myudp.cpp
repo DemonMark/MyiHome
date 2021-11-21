@@ -57,13 +57,18 @@ MyUDP::MyUDP(QObject *parent) :
   timer_obecnosc = new QTimer(this);
   connect(timer_obecnosc,SIGNAL(timeout()),this,SLOT(obecnosc_none()));
 
-  //timer do losowego włączania symulacji, użycie funkcji posrednij (qt4.8) w przyszlosci zmiana na lambda expression(qt 5.2)//
+  //timer do losowego włączania symulacji//
   action = new QTimer(this);
-  connect(action, SIGNAL(timeout()), this, SLOT(simulation_holder()));
+  connect(action, &QTimer::timeout, [=] (){
+      simulation(true);
+  });
 
   //timer do pukania do modułu (nowy router usypia połączenie z hostami)
   ping = new QTimer(this);
-  connect(ping, SIGNAL(timeout()),this,SLOT(ping_slot()));
+  connect(ping, &QTimer::timeout, [=]() {
+      WYSUDP("192.168.1.101");
+      WYSUDP("192.168.1.104");
+  });
   ping->start(60000);  
 }
 /*********************************************************************************WYSYLANIE RAMEK UDP*******************************************************************************************************************/
@@ -209,14 +214,18 @@ void MyUDP::readyRead(){
         for(int i=0; i<=shList.count()-1; i++){
             if(ips==ips_list[i]){
 
-                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)){
+                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&(shList[i]->property("mute").toInt()!=1)){
 
                     shList.at(i)->setIcon(QIcon(ico_off_list[i]));
                 }
-                if(Buffer[2]&0x01){
+                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&(shList[i]->property("mute").toInt()==1)){
+                    shList.at(i)->setIcon(QIcon(shList.at(i)->property("mute_icon").value<QIcon>()));
+                }
+                if((Buffer[2]&0x01)&&(shList[i]->property("mute").toInt()!=1)){
                     shList.at(i)->setIcon(QIcon(ico_on_list[i]));
                 }
-                if((Buffer[3]&0x01)&&(ips=="192.168.1.105")){
+                //dzwonek
+                if((Buffer[3]&0x01)&&(ips=="192.168.1.105")&&(shList[i]->property("mute").toInt()!=1)){
 
                     QByteArray plugsockett;
                     QByteArray psDataa;
@@ -340,14 +349,4 @@ void MyUDP::random_off()
         }
     j++;
     }
-}
-void MyUDP::simulation_holder() //do usunięcia w QT 5.2 (lambda exspression)
-{
-    simulation(true);
-}
-
-void MyUDP::ping_slot()
-{
-    WYSUDP("192.168.1.101");
-    WYSUDP("192.168.1.104");
 }

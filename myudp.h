@@ -30,9 +30,7 @@ private:
         void lightsOff();
         void obecnosc_none();
         void simulation(bool on);
-        void simulation_holder();
         void random_off();
-        void ping_slot();
         void WYSUDP(QString addr);
 };
 #endif // MYUDP_H

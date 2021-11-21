@@ -153,5 +153,9 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/sup_v2_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/tmp_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/tmp_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/mute_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/mute_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_offline.png</file>
     </qresource>
 </RCC>
