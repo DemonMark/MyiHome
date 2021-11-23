@@ -157,5 +157,10 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/mute_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/mute_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_offline.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_offline_w.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png</file>
     </qresource>
 </RCC>

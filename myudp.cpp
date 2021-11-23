@@ -18,7 +18,6 @@ int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;
 QString ips;
-QString rssi[5];
 extern QString time_text;
 extern int dzien;
 extern int spimy;
@@ -32,12 +31,7 @@ extern bool scene_active;
 extern bool scene_driving;
 extern bool jestem;
 extern bool shelly_on;
-
-QString ips_list[4] = {"192.168.1.106", "192.168.1.105", "192.168.1.107", "192.168.1.108"}; //IP w kolejnosci QListy
-QString ico_off_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_off.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png"};
-QString ico_on_list[4] = {"/media/HDD1/admin/iHome/28-02-2018/media/bell_on.png","/media/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png","","/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif"};
-extern QList<shelly*> shList;
-
+#define DC '\xb0' //znak stopnia
 #define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
 
 MyUDP::MyUDP(QObject *parent) :
@@ -117,7 +111,7 @@ void MyUDP::WYSUDP(QString addr)
 /*********************************************************************************ODBIERANIE RAMEK UDP****************************************************************************************************************/
 void MyUDP::readyRead(){
 
-     while (socket->hasPendingDatagrams()){
+    while (socket->hasPendingDatagrams()){
         QByteArray Buffer;
         int i;
         Buffer.resize(socket->pendingDatagramSize());
@@ -133,7 +127,7 @@ void MyUDP::readyRead(){
             //qDebug() << "Ramka: " << k;
             emit changes(); //sygnal do odbierania
             for (i=3;i<(Buffer.length());i++){
-                    temperatura[i]=Buffer[i];       
+                temperatura[i]=Buffer[i];
             }
         }
         if(("192.168.1.100"==ips)||("192.168.1.104"==ips)){
@@ -209,50 +203,56 @@ void MyUDP::readyRead(){
             }
             delete qry;
         }
-
         //****************SHELLY1**********************//
-        for(int i=0; i<=shList.count()-1; i++){
-            if(ips==ips_list[i]){
+        if(ips!="192.168.1.100" && ips!="192.168.1.102" && ips!="192.168.1.103" && ips!="192.168.1.104"){
+            MainWindow *udp_mw = MainWindow::getMainWinPtr();
+            shelly *shelly_ptr = udp_mw->findChild<shelly*>("shelly_"+ips.split(".")[3]);
+            QLabel *rsi_label = udp_mw->findChild<QLabel*>("rsi_shelly_"+ips.split(".")[3]);
+            if(shelly_ptr!=nullptr){
 
-                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&(shList[i]->property("mute").toInt()!=1)){
-
-                    shList.at(i)->setIcon(QIcon(ico_off_list[i]));
+                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&shelly_ptr->property("mute").toInt()!=1){
+                    shelly_ptr->setIcon(shelly_ptr->property("off").value<QIcon>());
                 }
-                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&(shList[i]->property("mute").toInt()==1)){
-                    shList.at(i)->setIcon(QIcon(shList.at(i)->property("mute_icon").value<QIcon>()));
+                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&shelly_ptr->property("mute").toInt()==1){
+                    shelly_ptr->setIcon(shelly_ptr->property("mute_icon").value<QIcon>());
                 }
-                if((Buffer[2]&0x01)&&(shList[i]->property("mute").toInt()!=1)){
-                    shList.at(i)->setIcon(QIcon(ico_on_list[i]));
+                if((Buffer[2]&0x01)&&(shelly_ptr->property("mute").toInt()!=1)){
+                    shelly_ptr->setIcon(shelly_ptr->property("on").value<QIcon>());
                 }
                 //dzwonek
-                if((Buffer[3]&0x01)&&(ips=="192.168.1.105")&&(shList[i]->property("mute").toInt()!=1)){
+                if((Buffer[3]&0x01)&&(ips=="192.168.1.105")){
 
-                    QByteArray plugsockett;
-                    QByteArray psDataa;
+                    shelly_ptr = udp_mw->findChild<shelly*>("shelly_106");
+                    if(shelly_ptr->property("mute").toInt()!=1){
+                        QByteArray plugsockett;
+                        QByteArray psDataa;
 
-                    QUdpSocket *shellsockk = new QUdpSocket(this);
+                        QUdpSocket *shellsockk = new QUdpSocket(this);
 
-                    plugsockett[0]=0x53;
-                    plugsockett[1]=0x01;
+                        plugsockett[0]=0x53;
+                        plugsockett[1]=0x01;
 
-                    psDataa.clear();
-                    psDataa.append(plugsockett);
-                    shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
-                    delete shellsockk;
-                }else{
-                    //
+                        psDataa.clear();
+                        psDataa.append(plugsockett);
+                        shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
+                        delete shellsockk;
+                    }
                 }
-                bool ok;
-                uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
-                rssi[i] = QString::number(signal) + "%";
-                //wyjątek dla Shelly2.5 - termistor
-                if(ips=="192.168.1.107"){
-                    signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
-                    rssi[4]= QString::number(signal);
+                if(rsi_label!=nullptr){
+                    bool ok;
+                    uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
+                    rsi_label->setText(QString::number(signal) + "%");
+                    //wyjątek dla Shelly2.5 - termistor
+                    if(ips=="192.168.1.107"){
+                        signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
+                        rsi_label = udp_mw->findChild<QLabel*>("temp_shelly_"+ips.split(".")[3]);
+                        rsi_label->setText(QString::number(signal)+DC);
+                    }
                 }
             }
         }
-     }
+
+    }
 }
 
 //**********FUNKCJA DO WYŁĄCZENIA WSZYSTKICH WYJŚĆ***************//

@@ -4053,7 +4053,7 @@ border: none;
          <UInt>8</UInt>
         </property>
        </widget>
-       <widget class="shelly" name="shelly_door_bell">
+       <widget class="shelly" name="shelly_106">
         <property name="geometry">
          <rect>
           <x>590</x>
@@ -4075,14 +4075,14 @@ border: none;
          <string>1</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#shelly_door_bell {
+         <string notr="true">QPushButton#shelly_106{
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/bell_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#shelly_door_bell:pressed
+QPushButton#shelly_106:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/bell_on.png);
 background-color: transparent;
@@ -6006,7 +6006,7 @@ font: 87 10pt &quot;Lato Black&quot;;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="shelly" name="shelly1_1">
+       <widget class="shelly" name="shelly_105">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -6028,14 +6028,14 @@ font: 87 10pt &quot;Lato Black&quot;;</string>
          <string>1</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#shelly1_1{
+         <string notr="true">QPushButton#shelly_105{
 background-color: transparent;
 background-repeat: none;
 border: none;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png);
 }
 
-QPushButton#shelly1_1:checked
+QPushButton#shelly_105:checked
 {
 background-color: transparent;
 border: none;
@@ -6072,8 +6072,20 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
+        <property name="on" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</iconset>
+        </property>
+        <property name="off" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</iconset>
+        </property>
+        <property name="offline" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</iconset>
+        </property>
        </widget>
-       <widget class="QLabel" name="signal">
+       <widget class="QLabel" name="rsi_shelly_105">
         <property name="geometry">
          <rect>
           <x>40</x>
@@ -6133,7 +6145,7 @@ border: none;
          <UInt>0</UInt>
         </property>
        </widget>
-       <widget class="QLabel" name="signal_2">
+       <widget class="QLabel" name="rsi_shelly_106">
         <property name="geometry">
          <rect>
           <x>633</x>
@@ -6151,7 +6163,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
          <string>00%</string>
         </property>
        </widget>
-       <widget class="shelly" name="shelly25">
+       <widget class="shelly" name="shelly_107">
         <property name="geometry">
          <rect>
           <x>47</x>
@@ -6167,7 +6179,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
          <string>2</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#shelly25 {
+         <string notr="true">QPushButton#shelly_107 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/gate_1_side.png);
 background-repeat: none;
@@ -6226,7 +6238,7 @@ border: none;
          <number>0</number>
         </property>
        </widget>
-       <widget class="QLabel" name="signal_3">
+       <widget class="QLabel" name="rsi_shelly_107">
         <property name="geometry">
          <rect>
           <x>105</x>
@@ -6244,7 +6256,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
          <string>00%</string>
         </property>
        </widget>
-       <widget class="QLabel" name="signal_4">
+       <widget class="QLabel" name="temp_shelly_107">
         <property name="geometry">
          <rect>
           <x>97</x>
@@ -6357,7 +6369,7 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="shelly" name="shelly1_2">
+       <widget class="shelly" name="shelly_108">
         <property name="geometry">
          <rect>
           <x>872</x>
@@ -6379,14 +6391,14 @@ border: none;
          <string>1</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#shelly1_2{
+         <string notr="true">QPushButton#shelly_108{
 background-color: transparent;
 background-repeat: none;
 border: none;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off_w.png);
 }
 
-QPushButton#shelly1_2:checked
+QPushButton#shelly_108:checked
 {
 background-color: transparent;
 border: none;
@@ -6414,8 +6426,20 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
+        <property name="on" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif</normaloff>:/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif</iconset>
+        </property>
+        <property name="off" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png</iconset>
+        </property>
+        <property name="offline" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/pompa_offline_w.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/pompa_offline_w.png</iconset>
+        </property>
        </widget>
-       <widget class="QLabel" name="signal_5">
+       <widget class="QLabel" name="rsi_shelly_108">
         <property name="geometry">
          <rect>
           <x>903</x>
@@ -6672,7 +6696,7 @@ color: rgb(76, 76, 76);
          <string>00:00</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_shelly_door_bell">
+       <widget class="QLabel" name="label_shelly_106">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -6754,7 +6778,7 @@ background-repeat: none;</string>
        <zorder>pushButton_19</zorder>
        <zorder>pushButton_20</zorder>
        <zorder>pushButton_21</zorder>
-       <zorder>shelly_door_bell</zorder>
+       <zorder>shelly_106</zorder>
        <zorder>pushButton_33</zorder>
        <zorder>label_pompa_1</zorder>
        <zorder>label_pompa_2</zorder>
@@ -6816,19 +6840,19 @@ background-repeat: none;</string>
        <zorder>con_err_14</zorder>
        <zorder>con_err_15</zorder>
        <zorder>con_err_12</zorder>
-       <zorder>shelly1_1</zorder>
-       <zorder>signal</zorder>
+       <zorder>shelly_105</zorder>
+       <zorder>rsi_shelly_105</zorder>
        <zorder>pushButton_22</zorder>
-       <zorder>signal_2</zorder>
-       <zorder>shelly25</zorder>
+       <zorder>rsi_shelly_106</zorder>
+       <zorder>shelly_107</zorder>
        <zorder>_helly25_2</zorder>
-       <zorder>signal_3</zorder>
-       <zorder>signal_4</zorder>
+       <zorder>rsi_shelly_107</zorder>
+       <zorder>temp_shelly_107</zorder>
        <zorder>pushButton_42</zorder>
        <zorder>cwu</zorder>
        <zorder>label_21</zorder>
-       <zorder>shelly1_2</zorder>
-       <zorder>signal_5</zorder>
+       <zorder>shelly_108</zorder>
+       <zorder>rsi_shelly_108</zorder>
        <zorder>scene_Matylda</zorder>
        <zorder>scene_wracam</zorder>
        <zorder>holdButton</zorder>
@@ -6838,7 +6862,7 @@ background-repeat: none;</string>
        <zorder>label_pir_btn_7</zorder>
        <zorder>label_pir_btn_2</zorder>
        <zorder>label_pir_btn_3</zorder>
-       <zorder>label_shelly_door_bell</zorder>
+       <zorder>label_shelly_106</zorder>
        <zorder>label_mute</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
@@ -8219,8 +8243,8 @@ selection-background-color: transparent;</string>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="ikony.qrc"/>
   <include location="grafika.qrc"/>
+  <include location="ikony.qrc"/>
  </resources>
  <connections/>
 </ui>

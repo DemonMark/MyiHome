@@ -103,7 +103,7 @@ void shelly::mouseReleaseEvent(QMouseEvent *ev){
 }
 
 void shelly::offline(){
-    this->setIcon(QIcon(this->statusTip()));
+    this->setIcon(this->property("offline").value<QIcon>());
 }
 
 void shelly::open(){

@@ -45,7 +45,6 @@ QList<QCheckBox*> chlist;
 int bPos[48]={31,28,33,32,29,12,1,0,34,30,15,17,8,11,5,10,4,14,7,26,26,26,26,26,19,26,26,26,26,26,26,26,9,16,6,18,2,3,24,13,25,23,27,26,26,35,26,26}; //pozycja przycisku na liście
 QString time_text, time_h_m;
 extern QString ips;
-extern QString rssi[5];
 extern QString csname;
 int num=0;
 extern unsigned char shell[1];
@@ -167,7 +166,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_36->setVisible(false);
     ui->label_47->setVisible(false);
     ui->label_48->setVisible(false);
-    ui->label_shelly_door_bell->setVisible(false);
+    ui->label_shelly_106->setVisible(false);
     ui->dial_12->setValue(1);
 
     webView = new QWebPage(this);
@@ -244,7 +243,7 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     connect(movie_pompa_3, &QMovie::frameChanged, [=]() {
-        ui->shelly1_2->setIcon(movie_pompa_3->currentPixmap());
+        ui->shelly_108->setIcon(movie_pompa_3->currentPixmap());
     });
 
     connect(ui->alarm_btn, &QPushButton::toggled, [=](bool checked){
@@ -290,21 +289,26 @@ void MainWindow::showTime(){
     ui->digitalclock->setText(time_text);
 
 //*****************WYŁĄCZANIE WSZYSTKICH WYJŚĆ*****************//
-     if (time_text==ui->timeEdit_3->text() && obecnosc==0){
+     if(time_text==ui->timeEdit_3->text() && obecnosc==0){
          spimy=1;
+         ui->scene_ide_spac->setChecked(true);
          emit all_off();
      }
      else if (time_text==ui->timeEdit_3->text() && obecnosc==1){
          spimy=1;
+         ui->scene_ide_spac->setChecked(true);
      }
 //****************DZIEŃ LUB NOC*********************************//
 
-     if (time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
+     if(time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
          dzien=1;
          spimy=0;
      }
-     else {
+     else{
          dzien=0;
+     }
+     if(time_h_m==ui->label_25->text()){
+         ui->shelly_106->setProperty("mute", 0);
      }
 
     dateTime=QDate::currentDate();
@@ -651,13 +655,6 @@ void MainWindow::receiving(){
             c_e.at(i)->setPixmap(con_err_on);
         }
     }
-//*****************Shelly signal*************************************//
-
-    ui->signal->setText(rssi[1]);
-    ui->signal_2->setText(rssi[0]);
-    ui->signal_3->setText(rssi[2]);
-    ui->signal_4->setText(rssi[4]+DC); //temperatura układu Shelly2.5
-    ui->signal_5->setText(rssi[3]);
 
     //****************zaznaczanie buttonów po wykryciu pakietu************************//
     if("192.168.1.100"==ips || simulating_on || "192.168.1.104"==ips){
@@ -1581,10 +1578,10 @@ void MainWindow::scene_executor(int *arg, QString &aktywna_scena, QString &butto
                 bList.at(btn)->setChecked(true);
             }
         }
-        arg_check--;
+        arg_check-=3;
     }
     if(arg[16]){//dzwonek
-        ui->shelly_door_bell->setProperty("mute", 1);
+        ui->shelly_106->setProperty("mute", 1);
     }
     //***dodanie do sceny 'wracam' składników do odwołania po powrocie***
     mydbs baza(sceny);
