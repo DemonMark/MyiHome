@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     w.show();
     w.readscheduler();
     QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
+    QObject::connect(&client, SIGNAL(hex_comming()), &w, SLOT(btnFinderfromHEX()));
     //QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
     QObject::connect(&w,SIGNAL(simulating(bool)), &client, SLOT(simulation(bool)));
     QObject::connect(&w,SIGNAL(all_off()), &client, SLOT(lightsOff()));

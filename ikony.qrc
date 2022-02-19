@@ -59,7 +59,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/power_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/power_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/dial_3.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/leak_off.png</file>
@@ -162,5 +161,12 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_offline_w.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_22.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_22.png</file>
     </qresource>
 </RCC>

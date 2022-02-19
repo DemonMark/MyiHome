@@ -27,19 +27,22 @@ public:
     void readscheduler();
     void getHumidity();
     void barometer();
+    void system_fan(double temp);
     void sunTimeWatcher(QString sunTime, QString source, int pos, QString editingTime);
     void WoL(QString macc, QString addr);
     void scene_executor(int *arg, QString &aktywna_scena, QString &buttons);
-    void gates(int type, bool timer, int ms, int x);
-    void selected_sources(QList<int> &scheduledbtn, QString &tempnames);
-    void buttons_run(const int &j, bool tof);
+    void gates(int type, bool timer, int ms);
+    void selected_sources(QList<QString> &scheduledbtn, QString &tempnames);
+    void buttons_run(QString j, bool tof, QString c);
     void pir_status();
     void translator(QString &text_to_translate);
     void data_logger(const QString &input_data);
     void itmSwap(QTreeWidget * tree_w, QString direction);
-    enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt} driving;
+    enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt, close_1, close_2} driving;
     void show_item(bool state);
     void delete_schedule(int itm);
+    void rekuperator(int speed);
+    bool exceptions(QPushButton *exc_btn);
 
 private slots:
 
@@ -55,6 +58,8 @@ private slots:
 
   void ClickedbtnFinder();
 
+  void btnFinderfromHEX();
+
   void ClickedscenebtnFinder(bool checked);
 
   void ClickedlabelFinder();
@@ -65,16 +70,15 @@ private slots:
 
   void on_pushButton_23_clicked();
   void on_pushButton_27_clicked();
-  void on_pushButton_28_clicked();
+  void on_button_OFF_clicked();
   void on_pushButton_31_toggled(bool checked);
   void readTimeFromWWW();
+
   void on_pushButton_33_toggled(bool checked);
-  void on_dial_12_valueChanged(int value);
+
   void on_pushButton_32_clicked(bool checked);
 
   void on_go_floor_clicked();
-
-  void on_button_wentylator_toggled(bool checked);
 
   void on_button_wentylator_2_toggled(bool checked);
 
@@ -87,8 +91,6 @@ private slots:
   void on_resetButton_clicked();
 
   void on_cwu_toggled(bool checked);
-
-  void on_pushButton_24_toggled(bool checked);
 
   void on_config_cl_clicked();
 
@@ -103,8 +105,11 @@ private:
     Ui::MainWindow *ui;
     static MainWindow *pMainWindow; //jak powyzej chodzi o dostęp do MainWindow z innych klass
     int timerId;
-    QTimer *timer_wyjscie;
+
     QTimer *timer_bramaStykOff;
+    QTimer *reku_timer;
+    QTimer *humidity_timer;
+    QTimer *ventilation_timer;
     QWebPage *webView;
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
@@ -112,6 +117,12 @@ private:
     QMovie *movie_cyrkulacja;
     QMovie *movie_wentylacja;
     QMovie *movie_countdown;
+    QMovie *movie_reku;
+    QPixmap pompa_off;
+	QPixmap temp_on;
+	QPixmap temp_off;
+	QPixmap con_err_off;
+	QPixmap con_err_on;
 
   protected:
     void timerEvent(QTimerEvent *event);

@@ -34,7 +34,7 @@ public slots:
 
      void answer();
      void offline();
-     void open();
+     void open(int state);
 };
 
 #endif // SHELLY_H

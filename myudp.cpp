@@ -8,7 +8,6 @@ unsigned char shell[1];
 unsigned char temp[20];
 unsigned char tempholder[20];
 unsigned char hexx[9]={0,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //tablica bitów, 0 niewykorzystywane
-extern QList<QPushButton*> bList;
 QList<QList<int> > rand_masks;
 QList<QList<unsigned char> > rand_hexxs;
 unsigned char scene_pir=0x10;
@@ -30,7 +29,6 @@ bool simulating_on;
 extern bool scene_active;
 extern bool scene_driving;
 extern bool jestem;
-extern bool shelly_on;
 #define DC '\xb0' //znak stopnia
 #define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
 
@@ -135,8 +133,8 @@ void MyUDP::readyRead(){
             for (int i=3; i<=(Buffer.length());i++){
                 temp[i-3]=Buffer[i];
             }
-
-            emit changes(); //sygnal do odbierania
+            qDebug() << Buffer.toHex();
+            emit hex_comming(); //sygnal do odbierania
         }
         //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
@@ -175,9 +173,14 @@ void MyUDP::readyRead(){
                             //***WYKONYWANIE HARMONOGRAMU***//
                             int type_result = qry->value("type_id").toInt();
                             QString tName = qry->value("timer_name").toString();
+                            QString btn_no = qry->value("btn_no").toString();
                             if(qry->value("main.id").toString()!=""){
                                 if((type_result==3 && dzien==1) || (type_result==1 && dzien==0) || type_result==0){
-                                    bList.at(qry->value("btn_no").toInt())->setChecked(true);
+                                    if(btn_no.contains("reku_")){
+                                        mw->rekuperator(btn_no.split("_")[1].toInt());
+                                    }else{
+                                        mw->buttons_run(btn_no, true, "no");
+                                    }
                                     if(tName!=""){
                                         //MainWindow *mw = qobject_cast<MainWindow*>(QApplication::activeWindow());
                                         if(mw!=nullptr){
@@ -196,7 +199,9 @@ void MyUDP::readyRead(){
                                 emit gate();
                             }
                             //usuwanie pozycji jednorazowej harmonogramu//
-                            if(qry->value("tmp").toInt() == 1){mw->delete_schedule(qry->value("id").toInt());}
+                            if(qry->value("tmp").toInt() == 1 && tName == ""){
+                                mw->delete_schedule(qry->value("id").toInt());
+                            }
                         }
                     }
                 }
@@ -242,11 +247,16 @@ void MyUDP::readyRead(){
                     bool ok;
                     uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
                     rsi_label->setText(QString::number(signal) + "%");
-                    //wyjątek dla Shelly2.5 - termistor
+                    //wyjątek dla Shelly2.5 - termistor + drugie skrzydło
                     if(ips=="192.168.1.107"){
                         signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
                         rsi_label = udp_mw->findChild<QLabel*>("temp_shelly_"+ips.split(".")[3]);
                         rsi_label->setText(QString::number(signal)+DC);
+                        //drugie skrzydło
+                        if(Buffer[2]&0x02){
+                            shelly_ptr = udp_mw->findChild<shelly*>("_helly_107_2");
+                            shelly_ptr->setIcon(shelly_ptr->property("on").value<QIcon>());
+                        }
                     }
                 }
             }

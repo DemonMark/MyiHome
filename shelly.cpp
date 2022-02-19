@@ -2,7 +2,6 @@
 
 QByteArray plugsocket;
 QByteArray psData;
-QString csname;
 int val = 3;
 
 shelly::shelly(QWidget *parent) : QPushButton(parent)
@@ -15,14 +14,17 @@ shelly::shelly(QWidget *parent) : QPushButton(parent)
     connect(schonline, SIGNAL(timeout()), this, SLOT(answer()));
     schonline->start(10000);
 
+    connect(auto_open, &QTimer::timeout, [=](){
+        open(this->accessibleDescription().toInt());
+    });
+
     connect(this, &shelly::toggled, [=](bool checked){
         if(checked){
-            connect(auto_open, SIGNAL(timeout()), this, SLOT(open()));
+            open(this->accessibleDescription().toInt());
             auto_open->start(20000);
         }else{
+            open(0);
             auto_open->stop();
-            disconnect(auto_open, SIGNAL(timeout()), this, SLOT(open()));
-            csname.clear();
         }
     });
 
@@ -87,15 +89,19 @@ void shelly::mousePressEvent(QMouseEvent *ev){
     }else{
         mute_counter->start(1000);
     }
+    if(this->isCheckable()){
+        if(this->isChecked()){
+            this->setChecked(false);
+        }else{
+            this->setChecked(true);
+        }
+    }
 }
 void shelly::mouseReleaseEvent(QMouseEvent *ev){
 
-    if(this->property("mute").toInt()!=1){
+    if(this->property("mute").toInt()!=1 && !this->isCheckable()){
         mute_counter->stop();
-        open();
-        if(this->isCheckable()){
-            csname = this->objectName();
-        }
+        open(this->accessibleDescription().toInt());
     }else if(this->property("mute").toInt()==1 && label_cd!=nullptr){
         qDebug() << "jestem tu";
         mute_ind->setVisible(false);
@@ -103,12 +109,14 @@ void shelly::mouseReleaseEvent(QMouseEvent *ev){
 }
 
 void shelly::offline(){
-    this->setIcon(this->property("offline").value<QIcon>());
+    if(!this->isChecked()){
+        this->setIcon(this->property("offline").value<QIcon>());
+    }
 }
 
-void shelly::open(){
-    bool ok;
-    plugsocket[1]=this->accessibleDescription().toInt(&ok);
+void shelly::open(int state){
+    //bool ok;
+    plugsocket[1]=state;
     psData.clear();
     psData.append(plugsocket);
     shellsock->writeDatagram(psData,QHostAddress(this->accessibleName()),4210);

@@ -24,6 +24,7 @@ private:
         void changes();
         void all_off_();
         void gate();
+        void hex_comming();
 
   public slots:
         void readyRead();
