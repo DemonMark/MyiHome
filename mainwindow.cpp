@@ -123,7 +123,23 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         //qDebug() << btn->objectName();
         connect(btn, SIGNAL(toggled(bool)), this, SLOT(ClickedbtnFinder()));
+        if(btn->dynamicPropertyNames().contains("proper_name")){
+            ui->button_list->addItem(btn->property("proper_name").toString(), btn->objectName());
+            ui->button_list_hold->addItem(btn->property("proper_name").toString(),btn->objectName());
+            ui->button_list_click->addItem(btn->property("proper_name").toString(),btn->objectName());
+        }
     }
+
+    ui->button_list_hold->addItem("Łazienka góra LED wanna","shelly_109");
+    ui->button_list_click->addItem("Łazienka góra LED wanna","shelly_109");
+    ui->button_list_hold->addItem("Łazienka góra LED umywalka","shelly_110");
+    ui->button_list_click->addItem("Łazienka góra LED umywalka","shelly_110");
+    ui->button_list->model()->sort(0);
+    ui->button_list_hold->model()->sort(0);
+    ui->button_list_click->model()->sort(0);
+    ui->button_list_click->setCurrentIndex(-1);
+    ui->button_list_hold->setCurrentIndex(-1);
+    ui->button_list->setStyleSheet("combobox-popup: 0;");
 
     foreach (QPushButton *sbtn, sbList) {
         connect(sbtn, SIGNAL(toggled(bool)) , this, SLOT(ClickedscenebtnFinder(bool)));
@@ -157,7 +173,6 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     //PARAMETRY POCZĄTKOWE//
-    pir_status();
     plugsocket[2]=0x00;
     ui->label_32->setVisible(false);
     ui->label_36->setVisible(false);
@@ -189,6 +204,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_wentylator->setMovie(movie_wentylacja);
     ui->label_wentylator_2->setMovie(movie_wentylacja);
     movie_wentylacja->start();
+    pir_status();
     rekuperator(1);
 
     pompa_off.load("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
@@ -196,6 +212,8 @@ MainWindow::MainWindow(QWidget *parent) :
     temp_off.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
     con_err_off.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_off.png");
     con_err_on.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_on.png");
+    ex_button.load("/media/HDD1/admin/iHome/28-02-2018/media/ex.png");
+    map_button.load("/media/HDD1/admin/iHome/28-02-2018/media/map.png");
 
     //wsparcie dla zdublowanych przycisków
     connect(ui->button_wentylator, SIGNAL(toggled(bool)), ui->button_wentylator_3, SLOT(setChecked(bool)));
@@ -297,6 +315,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->alarm_btn, &QPushButton::toggled, [=](bool checked){
         locked = checked;
     });
+    //default-owe ustawienia buttonów
+    QTimer::singleShot(3000, [=] (){
+        read_btn_property(0);
+    });
+
     //sprawdzenie źródeł do włączenia/wyłączenia w czasie
     QTimer *scheduledTimer = new QTimer(this);
     mydbs baza(sceny);
@@ -336,11 +359,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
     killTimer(timerId);
-}
-//dostep do MainWindow z innych klas
-MainWindow *MainWindow::getMainWinPtr()
-{
-    return pMainWindow;
 }
 
 void MainWindow::showTime(){
@@ -713,16 +731,20 @@ void MainWindow::btnFinderfromHEX()
     foreach(QPushButton *wanted_btn, bList)
     {
         if(temp[wanted_btn->property("mask").toInt()] & wanted_btn->property("hexx").toInt()){
-            if(exceptions(wanted_btn)==true){
+            if(expanded(wanted_btn, "expanded")==true){
                 QTimer::singleShot(200, [=]() {
                     if(temp[wanted_btn->property("mask").toInt()] & wanted_btn->property("hexx").toInt()){
-                        ui->shelly_109->setChecked(!ui->shelly_109->isChecked());
+                        btn_exp(wanted_btn->property("expanded_btn_name").toString());
+                    }else if(expanded(wanted_btn, "mapped")==true){
+                        btn_exp(wanted_btn->property("mapped_btn_name").toString());
                     }else{
                         wanted_btn->setChecked(!wanted_btn->isChecked());
                     }
                 });
+            }else if(expanded(wanted_btn, "mapped")==true){
+                btn_exp(wanted_btn->property("mapped_btn_name").toString());
             }else{
-            wanted_btn->setChecked(!wanted_btn->isChecked());
+                wanted_btn->setChecked(!wanted_btn->isChecked());
             }
         }
     }
@@ -1766,23 +1788,6 @@ void MainWindow::data_logger(const QString &input_data)
     }
 }
 
-void MainWindow::on_up_btn_clicked()
-{
-    itmSwap(ui->treeWidget, "up");
-}
-
-void MainWindow::itmSwap(QTreeWidget * tree_w, QString direction)
-{
-    int cir = tree_w->currentIndex().row();
-    if(cir!=-1){
-        if(direction.toLower()=="up" && cir>0){
-            QTreeWidgetItem * tree_itm = tree_w->takeTopLevelItem(cir);
-            tree_w->insertTopLevelItem(cir-1, tree_itm);
-            tree_w->setCurrentItem(tree_itm, 1);
-        }
-    }
-}
-
 void MainWindow::show_item(bool state)
 {
     ui->label_47->setVisible(state);
@@ -1817,14 +1822,148 @@ void MainWindow::system_fan(double temp)
     }
 }
 
-bool MainWindow::exceptions(QPushButton *exc_btn)
+void MainWindow::on_button_list_currentIndexChanged(int arg1)
 {
-    bool exc;
-    if(exc_btn->objectName() == "pushButton_35"){
-        exc = true;
-    }else{
-        exc = false;
-    }
+    QVariant btn_name = ui->button_list->itemData(arg1);
+    QPushButton *btn = MainWindow::findChild<QPushButton*>(btn_name.toString());
+    QVariant exd_btn_name = btn->property("expanded_btn_name").toString();
+    QVariant map_btn_name = btn->property("mapped_btn_name").toString();
+    int inx1 = ui->button_list_hold->findData(exd_btn_name, Qt::UserRole, Qt::MatchCaseSensitive);
+    int inx2 = ui->button_list_hold->findData(map_btn_name, Qt::UserRole, Qt::MatchCaseSensitive);
+    ui->button_list_hold->setCurrentIndex(inx1);
+    ui->button_list_click->setCurrentIndex(inx2);
+}
 
-    return exc;
+void MainWindow::on_pushButton_set_clicked()
+{
+    if(ui->button_list->currentIndex()!=-1){
+        QVariant btn_name = ui->button_list->currentData();
+        QVariant exd_btn_name = ui->button_list_hold->currentData();
+        QVariant mapped_btn_name = ui->button_list_click->currentData();
+        QPushButton *btn = MainWindow::findChild<QPushButton*>(btn_name.toString());
+        if(ui->button_list_hold->currentIndex()!=-1){
+            btn->setProperty("expanded", true);
+
+            //dodanie symbolu informującego o rozszerzeniu przycisku
+            if(MainWindow::findChild<QLabel*>("ex_" + btn->objectName())==nullptr){
+                create_icon(btn, "ex_", ex_button, 7);
+            }
+        }else{
+            remove_icon(btn, "ex_", "expanded");
+        }
+
+        if(ui->button_list_click->currentIndex()!=-1){
+            btn->setProperty("mapped", true);
+
+            //dodanie symbolu informującego o mapowaniu przycisku
+            if(MainWindow::findChild<QLabel*>("map_" + btn->objectName())==nullptr){
+                create_icon(btn, "map_", map_button, 17);
+            }
+        }else{
+            remove_icon(btn, "map_", "mapped");
+        }
+
+        btn->setProperty("expanded_btn_name", exd_btn_name.toString());
+        btn->setProperty("mapped_btn_name", mapped_btn_name.toString());
+
+        mydbs baza(sceny);
+        QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+        qry->prepare("UPDATE defaults SET hold=?, click=? WHERE button='"+btn_name.toString()+"'");
+        qry->addBindValue(exd_btn_name);
+        qry->addBindValue(mapped_btn_name);
+        qry->exec();
+    }
+}
+
+void MainWindow::on_pushButton_read_clicked()
+{
+    read_btn_property(1);
+}
+
+void MainWindow::btn_exp(QString b_name)
+{
+    QPushButton *btn = MainWindow::findChild<QPushButton*>(b_name);
+    btn->setChecked(!btn->isChecked());
+}
+
+void MainWindow::on_pushButton_clear_clicked()
+{
+    ui->button_list_click->setCurrentIndex(-1);
+}
+
+void MainWindow::on_pushButton_clear_2_clicked()
+{
+    ui->button_list_hold->setCurrentIndex(-1);
+}
+
+void MainWindow::create_icon(QPushButton *btn, QString prefix, QPixmap &pix, int x)
+{
+    QLabel *label = new QLabel(btn->parentWidget());
+    label->setObjectName(prefix + btn->objectName());
+    label->setGeometry(btn->x()+btn->width()-x,btn->y()+btn->height()+2, 7,7);
+    label->setPixmap(pix);
+    label->setScaledContents(true);
+    label->show();
+}
+
+void MainWindow::remove_icon(QPushButton *btn, QString prefix, QString property)
+{
+    btn->setProperty(property.toLocal8Bit(), false);
+    QLabel *label = MainWindow::findChild<QLabel*>(prefix + btn->objectName());
+    delete label;
+}
+
+void MainWindow::read_btn_property(int mode)
+{
+    QString btn_name, exd_btn_name, map_btn_name;
+    mydbs baza(sceny);
+    QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+    qry->prepare("SELECT * FROM defaults");
+    if(qry->exec()){
+        while(qry->next()){
+            btn_name = qry->value("button").toString();
+            QPushButton *btn = MainWindow::findChild<QPushButton*>(btn_name);
+
+            switch(mode){
+            case 1:
+                exd_btn_name = qry->value("hold").toString();
+                map_btn_name = qry->value("click").toString();
+                break;
+            default:
+                map_btn_name = "";
+                exd_btn_name = qry->value("d_hold").toString();
+                remove_icon(btn, "map_", "mapped");
+                remove_icon(btn, "ex_", "expanded");
+                break;
+            }
+
+            btn->setProperty("mapped", map_btn_name!="");
+            btn->setProperty("mapped_btn_name", map_btn_name);
+            btn->setProperty("expanded", exd_btn_name!="");
+            btn->setProperty("expanded_btn_name", exd_btn_name);
+
+            if((map_btn_name!="")==true){
+                create_icon(btn, "map_", map_button, 17);
+            }
+            if((exd_btn_name!="")==true){
+                create_icon(btn, "ex_", ex_button, 7);
+            }
+        }
+    }
+    delete qry;
+}
+
+//RETURN FUNCTIONS
+bool MainWindow::expanded(QPushButton *exd_btn, const char *prop)
+{
+    if(exd_btn->property(prop).toBool() == true){
+        return true;
+    }else{
+        return false;
+    }
+}
+//dostep do MainWindow z innych klas
+MainWindow *MainWindow::getMainWinPtr()
+{
+    return pMainWindow;
 }

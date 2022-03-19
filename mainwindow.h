@@ -37,12 +37,16 @@ public:
     void pir_status();
     void translator(QString &text_to_translate);
     void data_logger(const QString &input_data);
-    void itmSwap(QTreeWidget * tree_w, QString direction);
+
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt, close_1, close_2} driving;
     void show_item(bool state);
     void delete_schedule(int itm);
     void rekuperator(int speed);
-    bool exceptions(QPushButton *exc_btn);
+    bool expanded(QPushButton *exd_btn, const char *prop);
+    void btn_exp(QString b_name);
+    void create_icon(QPushButton *btn, QString prefix, QPixmap &pix, int x);
+    void remove_icon(QPushButton *btn, QString prefix, QString property);
+    void read_btn_property(int mode);
 
 private slots:
 
@@ -98,7 +102,15 @@ private slots:
 
   void mqtt_processor(QString msg);
 
-  void on_up_btn_clicked();
+  void on_button_list_currentIndexChanged(int arg1);
+
+  void on_pushButton_set_clicked();
+
+  void on_pushButton_read_clicked();
+
+  void on_pushButton_clear_clicked();
+
+  void on_pushButton_clear_2_clicked();
 
 private:
 
@@ -123,6 +135,8 @@ private:
 	QPixmap temp_off;
 	QPixmap con_err_off;
 	QPixmap con_err_on;
+    QPixmap ex_button;
+    QPixmap map_button;
 
   protected:
     void timerEvent(QTimerEvent *event);
