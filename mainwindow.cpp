@@ -38,7 +38,6 @@ QList<QLabel*> c_e;
 QList<QPushButton*> bList; //lista przycisków oświetlenia
 QList<QPushButton*> sbList; //lista przycisków scen
 QList<QDial*> dList; //lista regulatorów temperatury
-QList<QDial*> dpList; //lista regulatorów czujek pir
 QList<QLabel*> lList; //lista etykiet temperatur
 QList<QLabel*> ldList; //lista opisów regulatorów
 QList<QLabel*> pir_label; //lista etykiet timerów PIR
@@ -108,7 +107,6 @@ MainWindow::MainWindow(QWidget *parent) :
     sbList = MainWindow::findChildren<QPushButton*>(QRegExp ("scene_*"));
     chlist = MainWindow::findChildren<QCheckBox*>(QRegExp ("conf_ch_*"));
     dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*")) + ui->tab_2->findChildren<QDial*>(QRegExp ("dial_temp_*"));
-    dpList = MainWindow::findChildren<QDial*>(QRegExp ("dial_pir_*"));
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pir_label = MainWindow::findChildren<QLabel*>(QRegExp ("label_pir_btn_*"));
@@ -153,10 +151,7 @@ MainWindow::MainWindow(QWidget *parent) :
         num++;
     }
 
-    foreach(QDial* dpL, dpList){
-        dpL->setVisible(false);
-        connect(dpL, SIGNAL(valueChanged(int)), this, SLOT(settimers(int)));
-    }
+    connect(ui->pir_dial, SIGNAL(valueChanged(int)), this, SLOT(settimers(int)));
 
     connect(ui->timery_pir, &QCheckBox::toggled, [=](bool checked){
         qDebug() << checked;
@@ -180,6 +175,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_48->setVisible(false);
     ui->label_shelly_106->setVisible(false);
     ui->label_ventilation->setVisible(false);
+    ui->pir_dial->setVisible(false);
 
     webView = new QWebPage(this);
     webView->setVisibilityState(QWebPage::VisibilityStateHidden);
@@ -1103,14 +1099,6 @@ void MainWindow::readscheduler(){
         }
     }
 
-    qry->prepare("SELECT timer_time FROM PIR");
-    if(qry->exec()){
-        foreach (QDial* dpL, dpList){
-            qry->next();
-            dpL->setValue((qry->value(0).toInt())/1000);
-        }
-    }
-
     qry->prepare("SELECT *, group_concat(sources.btn_desc) AS btns FROM main INNER JOIN sources ON main.id=sources.main_id GROUP BY id");
     qry->exec();
     if(qry->exec()){
@@ -1231,13 +1219,12 @@ void MainWindow::settimers(int dial_value)
 {
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
-    for(int i=0; i<dpList.length(); i++){
-        if(dpList.at(i)==QObject::sender()){
-            qry->prepare("UPDATE PIR SET timer_time=? WHERE no='"+QString::number(i)+"'");
-            qry->addBindValue(dial_value*1000);
-            qry->exec();
-        }
-    }
+    QString code_PIRname = QObject::sender()->property("pir_name").toString();
+
+    qry->prepare("UPDATE PIR SET timer_time=? WHERE code_name='"+code_PIRname+"'");
+    qry->addBindValue(dial_value*1000);
+    qry->exec();
+    delete qry;
 }
 
 void MainWindow::getHumidity()
@@ -1788,10 +1775,21 @@ void MainWindow::data_logger(const QString &input_data)
     }
 }
 
-void MainWindow::show_item(bool state)
+void MainWindow::show_item(bool state, QWidget *parentW, QString txt)
 {
-    ui->label_47->setVisible(state);
+    ui->label_48->setParent(parentW);
     ui->label_48->setVisible(state);
+    ui->label_48->setGeometry(111,24,128,111);
+
+    ui->pir_dial->setParent(parentW);
+    ui->pir_dial->setGeometry(130,32,90,100);
+    ui->pir_dial->setVisible(state);
+
+    ui->label_47->setParent(parentW);
+    ui->label_47->setGeometry(145,57,60,41);
+    ui->label_47->raise();
+    ui->label_47->setVisible(state);
+    ui->label_47->setText(txt);
 }
 
 void MainWindow::delete_schedule(int itm)

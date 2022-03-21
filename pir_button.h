@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include "mainwindow.h"
+#include "mydbs.h"
 
 class pir_button : public QPushButton
 {

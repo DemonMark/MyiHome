@@ -168,5 +168,9 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.gif</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_22.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_22.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/save_set.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/save_set_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/del_set.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/del_set_on.png</file>
     </qresource>
 </RCC>

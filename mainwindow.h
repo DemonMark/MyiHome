@@ -39,7 +39,7 @@ public:
     void data_logger(const QString &input_data);
 
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt, close_1, close_2} driving;
-    void show_item(bool state);
+    void show_item(bool state, QWidget *parentW, QString txt);
     void delete_schedule(int itm);
     void rekuperator(int speed);
     bool expanded(QPushButton *exd_btn, const char *prop);

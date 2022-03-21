@@ -25,11 +25,11 @@ int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch, QString
                 ton = qry->value(update_col_name).toInt();
             }
         }
-    //WRITE DATA
+        //WRITE DATA
     }else{
-    qry->prepare("UPDATE "+tb+" SET aktywna=? WHERE nazwa = '"+rec+"'");
-    qry->addBindValue(val);
-    qry->exec();
+        qry->prepare("UPDATE "+tb+" SET aktywna=? WHERE nazwa = '"+rec+"'");
+        qry->addBindValue(val);
+        qry->exec();
     }
     return ton;
 }
