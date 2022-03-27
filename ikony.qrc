@@ -166,11 +166,23 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.gif</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_22.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_22.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/save_set.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/save_set_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/del_set.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/del_set_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/load_set.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/load_set_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/save_set_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/save_set.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/default.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/default_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_23.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_24.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_25.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_23.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_24.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_25.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_22.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_22.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_11_v3.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_11_v3.png</file>
     </qresource>
 </RCC>

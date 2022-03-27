@@ -1040,8 +1040,10 @@ void MainWindow::ClickedbtnFinder(){
     qDebug() << button->objectName();
     if(button->isChecked()){
         maskawysl[button->property("mask").toInt()]|=button->property("hexx").toInt();
+        database_access(1, button->objectName());
     }else{
         maskawysl[button->property("mask").toInt()]&=~button->property("hexx").toInt();
+        database_access(0, button->objectName());
     }
     emit UDP_ReadytoSend(button->property("IP_holder").toString());
 
@@ -1865,17 +1867,23 @@ void MainWindow::on_pushButton_set_clicked()
         btn->setProperty("mapped_btn_name", mapped_btn_name.toString());
 
         mydbs baza(sceny);
-        QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+        QSqlQuery *qry = baza.query();
         qry->prepare("UPDATE defaults SET hold=?, click=? WHERE button='"+btn_name.toString()+"'");
         qry->addBindValue(exd_btn_name);
         qry->addBindValue(mapped_btn_name);
         qry->exec();
+        delete qry;
     }
 }
 
 void MainWindow::on_pushButton_read_clicked()
 {
     read_btn_property(1);
+}
+
+void MainWindow::on_pushButton_read_2_clicked()
+{
+    read_btn_property(0);
 }
 
 void MainWindow::btn_exp(QString b_name)
@@ -1898,9 +1906,11 @@ void MainWindow::create_icon(QPushButton *btn, QString prefix, QPixmap &pix, int
 {
     QLabel *label = new QLabel(btn->parentWidget());
     label->setObjectName(prefix + btn->objectName());
-    label->setGeometry(btn->x()+btn->width()-x,btn->y()+btn->height()+2, 7,7);
+    label->setGeometry(btn->x()+btn->width()-x,btn->y()+btn->height()-2, 7,7);
     label->setPixmap(pix);
     label->setScaledContents(true);
+    label->setStyleSheet("QLabel { background-color: transparent;"
+                         "border: none;}");
     label->show();
 }
 
@@ -1946,9 +1956,20 @@ void MainWindow::read_btn_property(int mode)
             if((exd_btn_name!="")==true){
                 create_icon(btn, "ex_", ex_button, 7);
             }
+
+            if(qry->value("active").toInt()==1){btn->setChecked(true);}
         }
     }
     delete qry;
+}
+
+void MainWindow::database_access(int value, QString btn_name)
+{
+    mydbs baza(sceny);
+    QSqlQuery *qry = baza.query();
+    qry->prepare("UPDATE defaults SET active=? WHERE button='"+btn_name+"'");
+    qry->addBindValue(value);
+    qry->exec();
 }
 
 //RETURN FUNCTIONS

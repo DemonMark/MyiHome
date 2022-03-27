@@ -50,8 +50,6 @@ void pir_button::setdial(){
     if(p_mw!=nullptr){
         QDial *pir_dial = p_mw->findChild<QDial*>("pir_dial");
 
-        //pir_dial->setParent(this->parentWidget());
-        //pir_dial->setGeometry(130,32,90,100);
         pir_dial->setProperty("pir_name", this->objectName());
         code_PIRname = pir_dial->property("pir_name").toString();
 

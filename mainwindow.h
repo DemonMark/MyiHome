@@ -47,6 +47,7 @@ public:
     void create_icon(QPushButton *btn, QString prefix, QPixmap &pix, int x);
     void remove_icon(QPushButton *btn, QString prefix, QString property);
     void read_btn_property(int mode);
+    void database_access(int value, QString btn_name);
 
 private slots:
 
@@ -111,6 +112,8 @@ private slots:
   void on_pushButton_clear_clicked();
 
   void on_pushButton_clear_2_clicked();
+
+  void on_pushButton_read_2_clicked();
 
 private:
 
