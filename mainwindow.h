@@ -40,6 +40,7 @@ public:
 
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt, close_1, close_2} driving;
     void show_item(bool state, QWidget *parentW, QString txt);
+    void show_item_temp(bool state, QWidget *parentW, QString txt);
     void delete_schedule(int itm);
     void rekuperator(int speed);
     bool expanded(QPushButton *exd_btn, const char *prop);
@@ -66,8 +67,6 @@ private slots:
   void btnFinderfromHEX();
 
   void ClickedscenebtnFinder(bool checked);
-
-  void ClickedlabelFinder();
 
   void settimers(int dial_value);
 

@@ -3,6 +3,8 @@
 
 #include <QLabel>
 #include <QMouseEvent>
+#include "mainwindow.h"
+#include "mydbs.h"
 
 class label_temp : public QLabel
 {
@@ -12,11 +14,15 @@ public:
 
     void mousePressEvent(QMouseEvent *ev);
 
+    MainWindow *p_mw;
+
 signals:
 
     void mouse_clicked();
 
 public slots:
+
+    void setdial();
 
 };
 

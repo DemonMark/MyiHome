@@ -53,7 +53,6 @@ unsigned char maskawysl[10];
 extern int odliczG;
 int qu;
 int ventilation_time;
-int flaga=0,flaga_1=0,flaga_2=0,flaga_4=0,flaga_5=0,flaga_6=0,flaga_7=0,flaga_8=0,flaga_9=0,flaga_10=0;
 int dzien;  //jeśli = 1 czujki nie włączają świateł
 int spimy;  //jeśli = 1 odliczanie 10min od detekcji do wyłączenia światła(wyjść)
 int obecnosc=0; //jeśli = 1 wyłączenie świateł(wyjść) o ustalonej godzinie nie odpala się
@@ -143,13 +142,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(sbtn, SIGNAL(toggled(bool)) , this, SLOT(ClickedscenebtnFinder(bool)));
     }
 
-    foreach(QDial* dL, dList){
-        connect(dL, SIGNAL(valueChanged(int)), this, SLOT(settemperature(int)));
-        connect(lList.at(num), SIGNAL(mouse_clicked()), this, SLOT(ClickedlabelFinder()));
-        dL->setVisible(false);
-        ldList.at(num)->setVisible(false);
-        num++;
-    }
+    connect(ui->temp_dial, SIGNAL(valueChanged(int)), this, SLOT(settemperature(int)));
 
     connect(ui->pir_dial, SIGNAL(valueChanged(int)), this, SLOT(settimers(int)));
 
@@ -170,12 +163,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //PARAMETRY POCZĄTKOWE//
     plugsocket[2]=0x00;
     ui->label_32->setVisible(false);
-    ui->label_36->setVisible(false);
     ui->label_47->setVisible(false);
     ui->label_48->setVisible(false);
     ui->label_shelly_106->setVisible(false);
     ui->label_ventilation->setVisible(false);
     ui->pir_dial->setVisible(false);
+    ui->temp_dial->setVisible(false);
 
     webView = new QWebPage(this);
     webView->setVisibilityState(QWebPage::VisibilityStateHidden);
@@ -458,7 +451,7 @@ void MainWindow::receiving(){
     //****WIATROLAP****//
     b7.append(QString("%1").arg(temperatura[24]));
     t7.append(QString("%1").arg(temperatura[25]));
-    //****POKOJ MYSZKI****//
+    //****POKOJ MISI****//
     b8.append(QString("%1").arg(temperatura[27]));
     t8.append(QString("%1").arg(temperatura[28]));
     //****LOFT****//
@@ -496,6 +489,9 @@ void MainWindow::receiving(){
     ui->label_16->setText(b13+"."+t13 + DC);
     ui->label_21->setText(b14+"."+t14 + DC);
 
+    ui->label_pompa_1->setProperty("status", false);
+    ui->label_pompa_2->setProperty("status", false);
+
     //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
     if(subzero=="1"){
         ui->label_31->setText("-"+b10+"."+t10 + DC);
@@ -504,187 +500,56 @@ void MainWindow::receiving(){
     }
     //
 
-    //**HISTEREZA BIBLIOTEKA**//
-    if (((temperatura[3]*10)+temperatura[4]-ui->dial_7->value()) >=ui->dial_temp_9->value()){
-        ui->th_10->setPixmap(temp_off);
-        flaga=1;
-    }
-    if (((temperatura[3]*10)+temperatura[4]+ui->dial_7->value()) <=ui->dial_temp_9->value()){
-        ui->th_10->setPixmap(temp_on);
-        flaga=0;
-    }
-    //**HISTEREZA SYPIALNIA**//
-    if (((temperatura[9]*10)+temperatura[10]-ui->dial_7->value()) >=ui->dial_temp_6->value()){
-        ui->th_7->setPixmap(temp_off);
-        flaga_7=1;
-    }
-    if (((temperatura[9]*10)+temperatura[10]+ui->dial_7->value()) <=ui->dial_temp_6->value()){
-        ui->th_7->setPixmap(temp_on);
-        flaga_7=0;
-    }
-    //**HISTEREZA LOFT**//
-    if(((temperatura[30]*10)+temperatura[31]-ui->dial_7->value())>=ui->dial_temp_10->value()){
-        ui->th_11->setPixmap(temp_off);
-        flaga_8=1;
-    }
-    if(((temperatura[30]*10)+temperatura[31]+ui->dial_7->value())<=ui->dial_temp_10->value()){
-        ui->th_11->setPixmap(temp_on);
-        flaga_8=0;
-    }
-    //**HISTEREZA ŁAZIENKA GÓRA**//
-    if(((temperatura[33]*10)+temperatura[34]-ui->dial_7->value())>=ui->dial_temp_7->value()){
-        ui->th_8->setPixmap(temp_off);
-        flaga_9=1;
-    }
-    if(((temperatura[33]*10)+temperatura[34]+ui->dial_7->value())<=ui->dial_temp_7->value()){
-        ui->th_8->setPixmap(temp_on);
-        flaga_9=0;
-    }
-    //**HISTEREZA POKOJ MYSZKI**//
-    if(((temperatura[27]*10)+temperatura[28]-ui->dial_7->value())>=ui->dial_temp_8->value()){
-        ui->th_9->setPixmap(temp_off);
-        flaga_10=1;
-    }
-    if(((temperatura[27]*10)+temperatura[28]+ui->dial_7->value())<=ui->dial_temp_8->value()){
-        ui->th_9->setPixmap(temp_on);
-        flaga_10=0;
-    }
-    //**HISTEREZA SALON**//
-    if (((temperatura[6]*10)+temperatura[7]-ui->dial_7->value()) >=ui->dial_temp_2->value()){
-
-        ui->th_2->setPixmap(temp_off);
-        flaga_1=1;
-    }
-    if (((temperatura[6]*10)+temperatura[7]+ui->dial_7->value()) <=ui->dial_temp_2->value()){
-
-        ui->th_2->setPixmap(temp_on);
-        flaga_1=0;
-    }
-    //**KUCHNIA-JADALNIA**//
-    if (((temperatura[21]*10)+temperatura[22]-ui->dial_7->value()) >=ui->dial_temp_4->value()){
-
-        ui->th_5->setPixmap(temp_off);
-        flaga_2=1;
-    }
-    if (((temperatura[21]*10)+temperatura[22]+ui->dial_7->value()) <=ui->dial_temp_4->value()){
-
-        ui->th_5->setPixmap(temp_on);
-        flaga_2=0;
-    }
-    //**MARYNARSKI**//
-    if (((temperatura[15]*10)+temperatura[16]-ui->dial_7->value()) >=ui->dial_temp_3->value()){
-
-        ui->th_3->setPixmap(temp_off);
-        flaga_4=1;
-    }
-    if (((temperatura[15]*10)+temperatura[16]+ui->dial_7->value()) <=ui->dial_temp_3->value()){
-
-        ui->th_3->setPixmap(temp_on);
-        flaga_4=0;
-    }
-    //**LAZIENKA DOL**//
-    if (((temperatura[18]*10)+temperatura[19]-ui->dial_7->value()) >=ui->dial_temp_1->value()){
-
-        ui->th_1->setPixmap(temp_off);
-        flaga_5=1;
-    }
-    if (((temperatura[18]*10)+temperatura[19]+ui->dial_7->value()) <=ui->dial_temp_1->value()){
-
-        ui->th_1->setPixmap(temp_on);
-        flaga_5=0;
-    }
-    //**WIATROLAP**//
-    if (((temperatura[24]*10)+temperatura[25]-ui->dial_7->value()) >=ui->dial_temp_5->value()){
-
-        ui->th_6->setPixmap(temp_off);
-        flaga_6=1;
-    }
-    if (((temperatura[24]*10)+temperatura[25]+ui->dial_7->value()) <=ui->dial_temp_5->value()){
-
-        ui->th_6->setPixmap(temp_on);
-        flaga_6=0;
-    }
-
     qu++;
     if (qu==15){
+        //***ODCZYT NASTAW TEMPERATURY Z BAZY I PORÓWNANIE Z TEMPARATURĄ ZMIERZONĄ***
+        mydbs baza(sceny);
+        QSqlQuery *qry = baza.query();
+
+        qry->prepare("SELECT * FROM temperature");
+        if(qry->exec()){
+            while(qry->next()){
+                int INT = qry->value("frame_integer").toInt();
+                int DECIMAL = qry->value("frame_decimal").toInt();
+                int SET_TEMP = qry->value("value").toInt();
+                int maska = qry->value("maska").toInt();
+                int hex = qry->value("hex").toInt();
+                QLabel *th = MainWindow::findChild<QLabel*>(qry->value("th").toString());
+
+                if(temperatura[INT]*10+temperatura[DECIMAL]-ui->dial_7->value() >= SET_TEMP){
+                    th->setPixmap(temp_off);
+                    maskawysl[maska]&=~hex;
+                }
+                if(temperatura[INT]*10+temperatura[DECIMAL]+ui->dial_7->value() <= SET_TEMP){
+                    th->setPixmap(temp_on);
+                    maskawysl[maska]|=hex;
+                    if(ui->label_pompa_1->property("id")==maska){
+                        ui->label_pompa_1->setProperty("status", true);
+                    }
+                    if(ui->label_pompa_2->property("id")==maska){
+                        ui->label_pompa_2->setProperty("status", true);
+                    }
+                }
+            }
+        }
         if(ui->CO->isChecked()){
-            if(flaga==0){
-                maskawysl[2]|=0x08;
-            }
-            if(flaga==1){
-                maskawysl[2]&=~0x08;
-            }
-            if (flaga_7==0){
-                maskawysl[2]|=0x10;
-            }
-            if (flaga_7==1){
-                maskawysl[2]&=~0x10;
-            }
-            if(flaga_8==0){
-                maskawysl[2]|=0x40;
-            }
-            if(flaga_8==1){
-                maskawysl[2]&=~0x40;
-            }
-            if(flaga_9==0){
-                maskawysl[2]|=0x80;
-            }
-            if(flaga_9==1){
-                maskawysl[2]&=~0x80;
-            }
-            if(flaga_10==0){
-                maskawysl[2]|=0x20;
-            }
-            if(flaga_10==1){
-                maskawysl[2]&=~0x20;
-            }
-            if (flaga_1==0){
-                maskawysl[3]|=0x04;
-            }
-            if (flaga_1==1){
-                maskawysl[3]&=~0x04;
-            }
-            if (flaga_2==0){
-                maskawysl[3]|=0x02;
-            }
-            if (flaga_2==1){
-                maskawysl[3]&=~0x02;
-            }
-            if (flaga_4==0){
-                maskawysl[3]|=0x08;
-            }
-            if (flaga_4==1){
-                maskawysl[3]&=~0x08;
-            }
-            if (flaga_5==0){
-                maskawysl[3]|=0x10;
-            }
-            if (flaga_5==1){
-                maskawysl[3]&=~0x10;
-            }
-            if (flaga_6==0){
-                maskawysl[3]|=0x20;
-            }
-            if (flaga_6==1){
-                maskawysl[3]&=~0x20;
-            }
             //*************flaga dla pomp podłogówki*******
-            if (flaga_1==0 || flaga_2==0 || flaga_4==0 || flaga_5==0 || flaga_6==0){
+            if(ui->label_pompa_1->property("status")==true){
                 maskawysl[3]|=0x40;
                 ui->label_pompa_1->setMovie(movie_pompa_1);
                 movie_pompa_1->start();
             }
-            if(flaga_1==1 && flaga_2==1 && flaga_4==1 && flaga_5==1 && flaga_6==1){
+            if(ui->label_pompa_1->property("status")==false){
                 maskawysl[3]&=~0x40;
                 movie_pompa_1->stop();
                 ui->label_pompa_1->setPixmap(pompa_off);
             }
-            if (flaga==0 || flaga_7==0 || flaga_8==0 || flaga_9==0 || flaga_10==0){
+            if(ui->label_pompa_2->property("status")==true){
                 maskawysl[3]|=0x80;
                 ui->label_pompa_2->setMovie(movie_pompa_2);
                 movie_pompa_2->start();
             }
-            if (flaga==1 && flaga_7==1 && flaga_8==1 && flaga_9==1 && flaga_10==1){
+            if(ui->label_pompa_2->property("status")==false){
                 maskawysl[3]&=~0x80;
                 movie_pompa_2->stop();
                 ui->label_pompa_2->setPixmap(pompa_off);
@@ -695,7 +560,7 @@ void MainWindow::receiving(){
                     plugsocket[2]=0x01;
                     movie_pompa_3->start();
                 }
-            } else{
+            }else{
                 plugsocket[2]=0x00;
                 movie_pompa_3->stop();
             }
@@ -1067,13 +932,11 @@ void MainWindow::settemperature(int temp_value){
 
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
-    for(int i=0; i<dList.length(); i++){
-        if(dList.at(i)==QObject::sender()){
-            qry->prepare("UPDATE temperature SET value=? WHERE id='"+QString::number(i)+"'");
-            qry->addBindValue(temp_value);
-            qry->exec();
-        }
-    }
+    QString code_TEMPname = QObject::sender()->property("temp_name").toString();
+
+    qry->prepare("UPDATE temperature SET value=? WHERE code_name='"+code_TEMPname+"' AND value <> '"+temp_value+"'");
+    qry->addBindValue(temp_value);
+    qry->exec();
     delete qry;
 }
 
@@ -1093,13 +956,6 @@ void MainWindow::readscheduler(){
     QString stop;
     QString timerName,
             icon;
-    qry->prepare("SELECT value FROM temperature");
-    if(qry->exec()){
-        foreach(QDial* dL, dList){
-            qry->next();
-            dL->setValue(qry->value(0).toInt());
-        }
-    }
 
     qry->prepare("SELECT *, group_concat(sources.btn_desc) AS btns FROM main INNER JOIN sources ON main.id=sources.main_id GROUP BY id");
     qry->exec();
@@ -1190,40 +1046,13 @@ void MainWindow::rekuperator(int speed)
     }
 }
 
-void MainWindow::ClickedlabelFinder(){
-
-    for(int i=0; i<dList.length(); i++){
-        if(lList.at(i)==QObject::sender()){
-            if(dList.at(i)->isVisible() == true){
-                dList.at(i)->setVisible(false);
-                ldList.at(i)->setVisible(false);
-                ui->label_36->setVisible(false);
-                ui->label_32->setVisible(false);
-            }else{
-                dList.at(i)->setVisible(true);
-                ldList.at(i)->setVisible(true);
-                if(i>4){
-                    ui->label_36->setVisible(true);
-                    ui->label_32->setVisible(false);
-                }else{
-                    ui->label_32->setVisible(true);
-                    ui->label_36->setVisible(false);
-                }
-            }
-        }else{
-            dList.at(i)->setVisible(false);
-            ldList.at(i)->setVisible(false);
-        }
-    }
-}
-
 void MainWindow::settimers(int dial_value)
 {
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
     QString code_PIRname = QObject::sender()->property("pir_name").toString();
 
-    qry->prepare("UPDATE PIR SET timer_time=? WHERE code_name='"+code_PIRname+"'");
+    qry->prepare("UPDATE PIR SET timer_time=? WHERE code_name='"+code_PIRname+"' AND timer_time <> '"+dial_value*1000+"'");
     qry->addBindValue(dial_value*1000);
     qry->exec();
     delete qry;
@@ -1792,6 +1621,23 @@ void MainWindow::show_item(bool state, QWidget *parentW, QString txt)
     ui->label_47->raise();
     ui->label_47->setVisible(state);
     ui->label_47->setText(txt);
+}
+
+void MainWindow::show_item_temp(bool state, QWidget *parentW, QString txt)
+{
+    ui->label_32->setParent(parentW);
+    ui->label_32->setVisible(state);
+    ui->label_32->setGeometry(1037,14,178,160);
+
+    ui->temp_dial->setParent(parentW);
+    ui->temp_dial->setGeometry(1060,32,131,131);
+    ui->temp_dial->setVisible(state);
+
+    ui->label_dsc_1->setParent(parentW);
+    ui->label_dsc_1->setGeometry(1097,84,61,30);
+    ui->label_dsc_1->raise();
+    ui->label_dsc_1->setVisible(state);
+    ui->label_dsc_1->setText(txt);
 }
 
 void MainWindow::delete_schedule(int itm)

@@ -20,7 +20,6 @@ QString ips;
 extern QString time_text;
 extern int dzien;
 extern int spimy;
-extern int flaga;
 extern int obecnosc;
 extern int arg[12];
 extern int arg_check;
