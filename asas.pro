@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     bcm2835.c \
     mydbs.cpp \
     shelly.cpp \
-    mqtt_client.cpp
+    mqtt_client.cpp \
+    icon_temp.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     bcm2835.h \
     mydbs.h \
     shelly.h \
-    mqtt_client.h
+    mqtt_client.h \
+    icon_temp.h
 
 FORMS    += mainwindow.ui
 

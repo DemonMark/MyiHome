@@ -5,6 +5,7 @@
 #include "pir_button.h"
 #include "shelly.h"
 #include "mydbs.h"
+#include "icon_temp.h"
 #include <QtGui>
 #include <QLCDNumber>
 #include <QUdpSocket>
@@ -515,19 +516,20 @@ void MainWindow::receiving(){
                 int maska = qry->value("maska").toInt();
                 int hex = qry->value("hex").toInt();
                 QLabel *th = MainWindow::findChild<QLabel*>(qry->value("th").toString());
-
-                if(temperatura[INT]*10+temperatura[DECIMAL]-ui->dial_7->value() >= SET_TEMP){
-                    th->setPixmap(temp_off);
-                    maskawysl[maska]&=~hex;
-                }
-                if(temperatura[INT]*10+temperatura[DECIMAL]+ui->dial_7->value() <= SET_TEMP){
-                    th->setPixmap(temp_on);
-                    maskawysl[maska]|=hex;
-                    if(ui->label_pompa_1->property("id")==maska){
-                        ui->label_pompa_1->setProperty("status", true);
+                if(th->property("status")==true){
+                    if(temperatura[INT]*10+temperatura[DECIMAL]-ui->dial_7->value() >= SET_TEMP){
+                        th->setPixmap(temp_off);
+                        maskawysl[maska]&=~hex;
                     }
-                    if(ui->label_pompa_2->property("id")==maska){
-                        ui->label_pompa_2->setProperty("status", true);
+                    if(temperatura[INT]*10+temperatura[DECIMAL]+ui->dial_7->value() <= SET_TEMP){
+                        th->setPixmap(temp_on);
+                        maskawysl[maska]|=hex;
+                        if(ui->label_pompa_1->property("id")==maska){
+                            ui->label_pompa_1->setProperty("status", true);
+                        }
+                        if(ui->label_pompa_2->property("id")==maska){
+                            ui->label_pompa_2->setProperty("status", true);
+                        }
                     }
                 }
             }

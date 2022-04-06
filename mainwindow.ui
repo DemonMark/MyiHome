@@ -3108,7 +3108,7 @@ border: none;
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="th_1">
+       <widget class="icon_temp" name="th_1">
         <property name="geometry">
          <rect>
           <x>499</x>
@@ -3137,6 +3137,9 @@ border: none;
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_2">
@@ -3236,7 +3239,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="th_2">
+       <widget class="icon_temp" name="th_2">
         <property name="geometry">
          <rect>
           <x>726</x>
@@ -3265,6 +3268,9 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="label_temp" name="label_temp_2">
@@ -3478,7 +3484,7 @@ border: none;
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="th_3">
+       <widget class="icon_temp" name="th_3">
         <property name="geometry">
          <rect>
           <x>760</x>
@@ -3507,6 +3513,9 @@ border: none;
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="label_temp" name="label_temp_3">
@@ -3677,7 +3686,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="th_5">
+       <widget class="icon_temp" name="th_5">
         <property name="geometry">
          <rect>
           <x>439</x>
@@ -3706,6 +3715,9 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_7">
@@ -3833,7 +3845,7 @@ border: none;
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="th_6">
+       <widget class="icon_temp" name="th_6">
         <property name="geometry">
          <rect>
           <x>338</x>
@@ -3862,6 +3874,9 @@ border: none;
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="label_temp" name="label_temp_5">
@@ -5406,7 +5421,7 @@ font: 75 10pt &quot;Roboto Condensed&quot;;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/weather_conditions.png</pixmap>
+         <pixmap>:/HDD1/admin/iHome/28-02-2018/media/weather_conditions.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -7626,7 +7641,7 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="th_7">
+       <widget class="icon_temp" name="th_7">
         <property name="geometry">
          <rect>
           <x>454</x>
@@ -7656,8 +7671,11 @@ border: none;
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
+        </property>
        </widget>
-       <widget class="QLabel" name="th_8">
+       <widget class="icon_temp" name="th_8">
         <property name="geometry">
          <rect>
           <x>433</x>
@@ -7687,8 +7705,11 @@ border: none;
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
+        </property>
        </widget>
-       <widget class="QLabel" name="th_9">
+       <widget class="icon_temp" name="th_9">
         <property name="geometry">
          <rect>
           <x>500</x>
@@ -7718,8 +7739,11 @@ border: none;
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
+        </property>
        </widget>
-       <widget class="QLabel" name="th_10">
+       <widget class="icon_temp" name="th_10">
         <property name="geometry">
          <rect>
           <x>690</x>
@@ -7749,8 +7773,11 @@ border: none;
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
+        </property>
        </widget>
-       <widget class="QLabel" name="th_11">
+       <widget class="icon_temp" name="th_11">
         <property name="geometry">
          <rect>
           <x>760</x>
@@ -7779,6 +7806,9 @@ border: none;
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+        <property name="status" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="label_temp" name="label_temp_6">
@@ -8564,10 +8594,15 @@ border: none;
    <extends>QPushButton</extends>
    <header>shelly.h</header>
   </customwidget>
+  <customwidget>
+   <class>icon_temp</class>
+   <extends>QLabel</extends>
+   <header>icon_temp.h</header>
+  </customwidget>
  </customwidgets>
  <resources>
-  <include location="ikony.qrc"/>
   <include location="grafika.qrc"/>
+  <include location="ikony.qrc"/>
  </resources>
  <connections/>
 </ui>

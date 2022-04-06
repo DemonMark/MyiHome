@@ -10,7 +10,7 @@ class label_temp : public QLabel
 {
     Q_OBJECT
 public:
-    explicit label_temp(QWidget *parent = 0);
+    explicit label_temp(QWidget *parent = nullptr);
 
     void mousePressEvent(QMouseEvent *ev);
 
