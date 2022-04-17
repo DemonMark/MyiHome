@@ -21,7 +21,7 @@ void icon_temp::mousePressEvent(QMouseEvent *ev)
 void icon_temp::mouseReleaseEvent(QMouseEvent *ev)
 {
     tmp_counter->stop();
-    if(temp_counter>3){
+    if(temp_counter>2){
         this->setProperty("status", !this->property("status").toBool());
         int status = this->property("status").toInt();
         this->setPixmap(QPixmap("/media/HDD1/admin/iHome/28-02-2018/media/thermo_" + QString::number(status) + ".png"));

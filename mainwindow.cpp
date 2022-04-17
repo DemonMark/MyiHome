@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (timer,SIGNAL(timeout()),this,SLOT (showTime()));
     timer->start();
 
-    bList = ui->tab_5->findChildren<QPushButton*>(QRegExp ("pushButton*")) + ui->tab_2->findChildren<QPushButton*>(QRegExp ("pushButton*"));
+    bList = MainWindow::findChildren<QPushButton*>(QRegExp ("pushButton*")) + MainWindow::findChildren<QPushButton*>(QRegExp ("shelly*"));
     sbList = MainWindow::findChildren<QPushButton*>(QRegExp ("scene_*"));
     chlist = MainWindow::findChildren<QCheckBox*>(QRegExp ("conf_ch_*"));
     dList = ui->tab_5->findChildren<QDial*>(QRegExp ("dial_temp_*")) + ui->tab_2->findChildren<QDial*>(QRegExp ("dial_temp_*"));
@@ -117,27 +117,38 @@ MainWindow::MainWindow(QWidget *parent) :
         c_e.append(MainWindow::findChildren<QLabel*>("con_err_"+ln));
     }
 
+    mydbs baza(sceny);
+    QSqlQuery *qry = baza.query();
+
+    //***DODANIE PRZYCISKÓW DO LIST***//
+    QStandardItemModel *myModel = new QStandardItemModel;
+    int modelRowCounter = 0;
+
     foreach(QPushButton *btn, bList)
     {
-        //qDebug() << btn->objectName();
         connect(btn, SIGNAL(toggled(bool)), this, SLOT(ClickedbtnFinder()));
         if(btn->dynamicPropertyNames().contains("proper_name")){
-            ui->button_list->addItem(btn->property("proper_name").toString(), btn->objectName());
+            qry->prepare("SELECT no_off FROM defaults WHERE button='"+btn->objectName()+"'");
+            qry->exec();
+            qry->next();
+            QStandardItem *myItem = new QStandardItem(btn->property("proper_name").toString());
+            myItem->setFlags(Qt::ItemIsUserCheckable| Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+            myItem->setData(qry->value("no_off").toInt(), Qt::CheckStateRole);
+            myItem->setData(btn->objectName(), Qt::UserRole);
+            myModel->setItem(modelRowCounter++,0,myItem);
+
             ui->button_list_hold->addItem(btn->property("proper_name").toString(),btn->objectName());
             ui->button_list_click->addItem(btn->property("proper_name").toString(),btn->objectName());
         }
     }
-
-    ui->button_list_hold->addItem("Łazienka góra LED wanna","shelly_109");
-    ui->button_list_click->addItem("Łazienka góra LED wanna","shelly_109");
-    ui->button_list_hold->addItem("Łazienka góra LED umywalka","shelly_110");
-    ui->button_list_click->addItem("Łazienka góra LED umywalka","shelly_110");
+    ui->button_list->setModel(myModel);
     ui->button_list->model()->sort(0);
     ui->button_list_hold->model()->sort(0);
     ui->button_list_click->model()->sort(0);
     ui->button_list_click->setCurrentIndex(-1);
     ui->button_list_hold->setCurrentIndex(-1);
     ui->button_list->setStyleSheet("combobox-popup: 0;");
+    //
 
     foreach (QPushButton *sbtn, sbList) {
         connect(sbtn, SIGNAL(toggled(bool)) , this, SLOT(ClickedscenebtnFinder(bool)));
@@ -312,8 +323,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //sprawdzenie źródeł do włączenia/wyłączenia w czasie
     QTimer *scheduledTimer = new QTimer(this);
-    mydbs baza(sceny);
-    QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+    //mydbs baza(sceny);
+    //QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
     connect(scheduledTimer, &QTimer::timeout, [=](){
         qry->prepare("SELECT btn_no, id, tmp, stop_at, CASE WHEN strftime('%H:%M',main.start_at)='"+time_h_m+"' THEN 'true' WHEN strftime('%H:%M',main.stop_at)='"+time_h_m+"' THEN 'false' ELSE 'no_match' END AS on_off FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.type_id=2");
         if(qry->exec()){
@@ -361,7 +372,7 @@ void MainWindow::showTime(){
      if(time_text==ui->timeEdit_3->text() && obecnosc==0){
          spimy=1;
          ui->scene_ide_spac->setChecked(true);
-         emit all_off();
+         LOff();
      }
      else if (time_text==ui->timeEdit_3->text() && obecnosc==1){
          spimy=1;
@@ -534,6 +545,8 @@ void MainWindow::receiving(){
                 }
             }
         }
+        delete qry;
+
         if(ui->CO->isChecked()){
             //*************flaga dla pomp podłogówki*******
             if(ui->label_pompa_1->property("status")==true){
@@ -740,7 +753,7 @@ void MainWindow::wyjezdzam(){
 }
 
 //konfiguracja harmonogramów
-void MainWindow::on_pushButton_23_clicked()
+void MainWindow::on_button_23_clicked()
 {
     int id_rand = QRandomGenerator::global()->bounded(1,100000);
     QString db_time,
@@ -755,7 +768,7 @@ void MainWindow::on_pushButton_23_clicked()
     int it = 0,
         db_tmp = NULL;
 
-    if((ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0) || (ui->pushButton_31->isChecked() && ui->listWidget_2->currentRow()>=0 && (ui->checkBox_t1->isChecked() || ui->checkBox_t2->isChecked()))){
+    if((ui->listWidget->currentRow()>=0 && ui->listWidget_2->currentRow()>=0) || (ui->button_31->isChecked() && ui->listWidget_2->currentRow()>=0 && (ui->checkBox_t1->isChecked() || ui->checkBox_t2->isChecked()))){
 
         QListWidgetItem *new_item = new QListWidgetItem;
         new_item->setData(Qt::UserRole, QVariant(id_rand));
@@ -764,7 +777,7 @@ void MainWindow::on_pushButton_23_clicked()
         QList<QListWidgetItem*> itempirlist = ui->listWidget->selectedItems();
         selected_sources(scheduledbtn, tempnames);
 
-        if(ui->pushButton_29->isChecked()){ //akcje wieczorne - znacznik 1
+        if(ui->button_29->isChecked()){ //akcje wieczorne - znacznik 1
             db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
             db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "1";
@@ -777,7 +790,7 @@ void MainWindow::on_pushButton_23_clicked()
                 icon = "/media/HDD1/admin/iHome/28-02-2018/media/evening_timer.png";
             }
         }
-        if(ui->pushButton_43->isChecked()){ //akcje dzienne - znacznik 3
+        if(ui->button_43->isChecked()){ //akcje dzienne - znacznik 3
             db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
             db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "3";
@@ -789,7 +802,7 @@ void MainWindow::on_pushButton_23_clicked()
                 icon = "/media/HDD1/admin/iHome/28-02-2018/media/day_timer.png";
             }
         }
-        if(ui->pushButton_30->isChecked()){ //akcje stałe - znacznik 0
+        if(ui->button_30->isChecked()){ //akcje stałe - znacznik 0
             db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
             db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "0";
@@ -801,7 +814,7 @@ void MainWindow::on_pushButton_23_clicked()
                 icon = "/media/HDD1/admin/iHome/28-02-2018/media/allday_timer.png";
             }
         }
-        if(ui->pushButton_31->isChecked()){ //akcje czasowe - znacznik 2
+        if(ui->button_31->isChecked()){ //akcje czasowe - znacznik 2
             db_time = "2";
             db_pirhex = nullptr;
             db_pirtext = nullptr;
@@ -818,7 +831,7 @@ void MainWindow::on_pushButton_23_clicked()
             }
             new_item->setText(db_start + " - " + db_stop + " -> " + tempnames);
         }
-        if(ui->pushButton_tmp->isChecked()){
+        if(ui->button_tmp->isChecked()){
             db_tmp = 1;
             icon.replace(QString(".png"), QString("_tmp.png"));
         }
@@ -844,7 +857,7 @@ void MainWindow::on_pushButton_23_clicked()
 }
 
 //usuwanie pozycji z harmonogramu//
-void MainWindow::on_pushButton_27_clicked()
+void MainWindow::on_button_27_clicked()
 {
     delete_schedule(QVariant(ui->listWidget_3->currentItem()->data(Qt::UserRole)).toInt());
 
@@ -852,8 +865,7 @@ void MainWindow::on_pushButton_27_clicked()
 
 void MainWindow::on_button_OFF_clicked()
 {
-    odliczG=0;
-    emit all_off();
+    LOff();
 }
 
 void MainWindow::offfff(){
@@ -879,7 +891,7 @@ void MainWindow::offfff(){
     delete qry;
 }
 
-void MainWindow::on_pushButton_31_toggled(bool checked)
+void MainWindow::on_button_31_toggled(bool checked)
 {
     if (checked){
         ui->listWidget->setDisabled(true);
@@ -1151,20 +1163,25 @@ void MainWindow::barometer()
 
 }
 
-void MainWindow::on_pushButton_32_clicked(bool checked)
+void MainWindow::on_button_32_clicked(bool checked)
 {
-    if(checked){
-        emit simulating(true);
-    }else{
-        emit simulating(false);
-    }
+        emit simulating(checked);
 }
 
 void MainWindow::LOff()
 {
-    foreach(QPushButton *turnoff_btn, bList){
-        if(turnoff_btn->objectName()!="pushButton_42"){turnoff_btn->setChecked(false);}
+    mydbs baza(sceny);
+    QSqlQuery *qry = baza.query();
+
+    qry->prepare("SELECT button, no_off FROM defaults");
+    if(qry->exec()){
+        while(qry->next()){
+            if(qry->value("no_off").toInt()==0){
+                MainWindow::findChild<QPushButton*>(qry->value("button").toString())->setChecked(false);
+            }
+        }
     }
+    delete qry;
     movie_countdown->stop();
     scene_active=false;
 }
@@ -1368,7 +1385,7 @@ void MainWindow::scene_executor(int *arg, QString &aktywna_scena, QString &butto
         arg_check--;
     }
     if(arg[3]==1){//swiatla
-        emit all_off();
+        LOff();
     }
     if(arg[4]>=1){ //rekuperator
         if(!(aktywna_scena=="wracam")){//***dodanie do sceny 'wracam' w celu odwołania po powrocie***
@@ -1468,6 +1485,7 @@ void MainWindow::scene_executor(int *arg, QString &aktywna_scena, QString &butto
         qDebug() << backi << " " << backv;
     }
     qry->exec();
+    delete qry;
 }
 
 void MainWindow::gates(int type, bool timer, int ms)
@@ -1682,7 +1700,7 @@ void MainWindow::on_button_list_currentIndexChanged(int arg1)
     ui->button_list_click->setCurrentIndex(inx2);
 }
 
-void MainWindow::on_pushButton_set_clicked()
+void MainWindow::on_button_set_clicked()
 {
     if(ui->button_list->currentIndex()!=-1){
         QVariant btn_name = ui->button_list->currentData();
@@ -1724,12 +1742,12 @@ void MainWindow::on_pushButton_set_clicked()
     }
 }
 
-void MainWindow::on_pushButton_read_clicked()
+void MainWindow::on_button_read_clicked()
 {
     read_btn_property(1);
 }
 
-void MainWindow::on_pushButton_read_2_clicked()
+void MainWindow::on_button_read_2_clicked()
 {
     read_btn_property(0);
 }
@@ -1740,12 +1758,12 @@ void MainWindow::btn_exp(QString b_name)
     btn->setChecked(!btn->isChecked());
 }
 
-void MainWindow::on_pushButton_clear_clicked()
+void MainWindow::on_button_clear_clicked()
 {
     ui->button_list_click->setCurrentIndex(-1);
 }
 
-void MainWindow::on_pushButton_clear_2_clicked()
+void MainWindow::on_button_clear_2_clicked()
 {
     ui->button_list_hold->setCurrentIndex(-1);
 }
@@ -1818,6 +1836,25 @@ void MainWindow::database_access(int value, QString btn_name)
     qry->prepare("UPDATE defaults SET active=? WHERE button='"+btn_name+"'");
     qry->addBindValue(value);
     qry->exec();
+    delete qry;
+}
+
+void MainWindow::on_button_nooff_clicked()
+{
+    int index = ui->button_list->currentIndex();
+    QVariant current_flag = ui->button_list->itemData(index, Qt::CheckStateRole).toInt();
+    QVariant btn_name = ui->button_list->currentData();
+
+    const int new_flag = current_flag == 0 ? 2: 0;
+
+    ui->button_list->setItemData(index, new_flag, Qt::CheckStateRole);
+
+    mydbs baza(sceny);
+    QSqlQuery *qry = baza.query();
+    qry->prepare("UPDATE defaults SET no_off=? WHERE button='"+btn_name.toString()+"'");
+    qry->addBindValue(new_flag);
+    qry->exec();
+    delete qry;
 }
 
 //RETURN FUNCTIONS

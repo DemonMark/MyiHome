@@ -154,9 +154,6 @@
       <property name="contextMenuPolicy">
        <enum>Qt::DefaultContextMenu</enum>
       </property>
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wysylanie&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
@@ -275,7 +272,7 @@ background-color: rgb(255, 255, 255);</string>
          <string notr="true">color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>Akcje przycisku:</string>
+         <string>Przycisk:</string>
         </property>
        </widget>
        <widget class="QComboBox" name="button_list_click">
@@ -353,7 +350,7 @@ background-color: rgb(255, 255, 255);</string>
          <string>Przytrzymanie:</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_set">
+       <widget class="QPushButton" name="button_set">
         <property name="geometry">
          <rect>
           <x>350</x>
@@ -362,15 +359,21 @@ background-color: rgb(255, 255, 255);</string>
           <height>60</height>
          </rect>
         </property>
+        <property name="toolTip">
+         <string>Zapisz</string>
+        </property>
+        <property name="toolTipDuration">
+         <number>3</number>
+        </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_set {
+         <string notr="true">QPushButton#button_set {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/save_set.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_set:pressed
+QPushButton#button_set:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/save_set_on.png);
 background-color: transparent;
@@ -381,7 +384,7 @@ border:none;
          <string/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_read">
+       <widget class="QPushButton" name="button_read">
         <property name="geometry">
          <rect>
           <x>476</x>
@@ -391,14 +394,14 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_read {
+         <string notr="true">QPushButton#button_read {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/load_set.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_read:pressed
+QPushButton#button_read:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/load_set_on.png);
 background-color: transparent;
@@ -409,7 +412,7 @@ border:none;
          <string/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_clear">
+       <widget class="QPushButton" name="button_clear">
         <property name="geometry">
          <rect>
           <x>680</x>
@@ -419,14 +422,14 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_clear {
+         <string notr="true">QPushButton#button_clear {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/del_set.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_clear:pressed
+QPushButton#button_clear:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/del_set_on.png);
 background-color: transparent;
@@ -437,7 +440,7 @@ border:none;
          <string/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_clear_2">
+       <widget class="QPushButton" name="button_clear_2">
         <property name="geometry">
          <rect>
           <x>680</x>
@@ -447,14 +450,14 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_clear_2 {
+         <string notr="true">QPushButton#button_clear_2 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/del_set.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_clear_2:pressed
+QPushButton#button_clear_2:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/del_set_on.png);
 background-color: transparent;
@@ -465,7 +468,7 @@ border:none;
          <string/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_read_2">
+       <widget class="QPushButton" name="button_read_2">
         <property name="geometry">
          <rect>
           <x>601</x>
@@ -475,16 +478,44 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_read_2 {
+         <string notr="true">QPushButton#button_read_2 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/default.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_read_2:pressed
+QPushButton#button_read_2:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/deafult_on.png);
+background-color: transparent;
+border:none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="button_nooff">
+        <property name="geometry">
+         <rect>
+          <x>680</x>
+          <y>70</y>
+          <width>34</width>
+          <height>34</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#button_nooff {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/no_off.png);
+background-repeat: none;
+border:none;
+}
+
+QPushButton#button_nooff:pressed
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/no_off.png);
 background-color: transparent;
 border:none;
 }</string>
@@ -1104,7 +1135,7 @@ background-color: transparent;
          <string>Restart modułów:</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_32">
+       <widget class="QPushButton" name="button_32">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1114,14 +1145,14 @@ background-color: transparent;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_32 {
+         <string notr="true">QPushButton#button_32 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/robot_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#pushButton_32:checked
+QPushButton#button_32:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/robot_on.png);
 background-color: transparent;
@@ -1608,7 +1639,7 @@ background-color: transparent;
        <zorder>label_ctime</zorder>
        <zorder>resetButton</zorder>
        <zorder>label_18</zorder>
-       <zorder>pushButton_32</zorder>
+       <zorder>button_32</zorder>
        <zorder>label_22</zorder>
        <zorder>cwu_ob</zorder>
        <zorder>cwu_nob</zorder>
@@ -2290,7 +2321,7 @@ background-color: transparent;
          </property>
         </item>
        </widget>
-       <widget class="QPushButton" name="pushButton_23">
+       <widget class="QPushButton" name="button_23">
         <property name="geometry">
          <rect>
           <x>350</x>
@@ -2300,13 +2331,13 @@ background-color: transparent;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_23 {
+         <string notr="true">QPushButton#button_23 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/plus_off.png);
 background-repeat: none;
 }
 
-QPushButton#pushButton_23:pressed
+QPushButton#button_23:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/plus_on.png);
 background-color: transparent;
@@ -2335,7 +2366,7 @@ background-color: transparent;
          <number>0</number>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_27">
+       <widget class="QPushButton" name="button_27">
         <property name="geometry">
          <rect>
           <x>480</x>
@@ -2345,13 +2376,13 @@ background-color: transparent;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_27 {
+         <string notr="true">QPushButton#button_27 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/minus_off.png);
 background-repeat: none;
 }
 
-QPushButton#pushButton_27:pressed
+QPushButton#button_27:pressed
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/minus_on.png);
 background-color: transparent;
@@ -2430,7 +2461,7 @@ background-color: transparent;
          <string>źródło do załączenia</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_29">
+       <widget class="QPushButton" name="button_29">
         <property name="geometry">
          <rect>
           <x>666</x>
@@ -2440,14 +2471,14 @@ background-color: transparent;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_29 {
+         <string notr="true">QPushButton#button_29 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sdown_v2_off.png);
 background-repeat: none;
 border:none
 }
 
-QPushButton#pushButton_29:checked
+QPushButton#button_29:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sdown_v2_on.png);
 background-color: transparent;
@@ -2470,7 +2501,7 @@ border:none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_30">
+       <widget class="QPushButton" name="button_30">
         <property name="geometry">
          <rect>
           <x>960</x>
@@ -2480,14 +2511,14 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_30 {
+         <string notr="true">QPushButton#button_30 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/allday_off.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_30:checked
+QPushButton#button_30:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/allday_on.png);
 background-color: transparent;
@@ -2510,7 +2541,7 @@ border:none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_31">
+       <widget class="QPushButton" name="button_31">
         <property name="geometry">
          <rect>
           <x>1100</x>
@@ -2520,14 +2551,14 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_31 {
+         <string notr="true">QPushButton#button_31 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/timer_3_off.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_31:checked
+QPushButton#button_31:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/timer_3_on.png);
 background-color: transparent;
@@ -2746,7 +2777,7 @@ border:none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_43">
+       <widget class="QPushButton" name="button_43">
         <property name="geometry">
          <rect>
           <x>810</x>
@@ -2756,14 +2787,14 @@ border:none;
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_43 {
+         <string notr="true">QPushButton#button_43 {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sup_v2_off.png);
 background-repeat: none;
 border:none
 }
 
-QPushButton#pushButton_43:checked
+QPushButton#button_43:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/sup_v2_on.png);
 background-color: transparent;
@@ -2981,7 +3012,7 @@ border:none;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_tmp">
+       <widget class="QPushButton" name="button_tmp">
         <property name="geometry">
          <rect>
           <x>420</x>
@@ -2991,14 +3022,14 @@ border:none;</string>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#pushButton_tmp {
+         <string notr="true">QPushButton#button_tmp {
 background-color: transparent;
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/tmp_off.png);
 background-repeat: none;
 border:none;
 }
 
-QPushButton#pushButton_tmp:checked
+QPushButton#button_tmp:checked
 {
 background-image: url(:/HDD1/admin/iHome/28-02-2018/media/tmp_on.png);
 background-color: transparent;
@@ -6522,6 +6553,9 @@ border: none;
         <property name="hexx" stdset="0">
          <UInt>4</UInt>
         </property>
+        <property name="proper_name" stdset="0">
+         <string>Oświetlenie podjazdu</string>
+        </property>
        </widget>
        <widget class="QPushButton" name="cwu">
         <property name="geometry">
@@ -7361,9 +7395,9 @@ border: none;
         <property name="geometry">
          <rect>
           <x>770</x>
-          <y>39</y>
+          <y>52</y>
           <width>22</width>
-          <height>72</height>
+          <height>53</height>
          </rect>
         </property>
         <property name="focusPolicy">
@@ -8287,6 +8321,9 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
+        <property name="proper_name" stdset="0">
+         <string>Łazienka góra LED wanna</string>
+        </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_109">
         <property name="geometry">
@@ -8350,6 +8387,9 @@ border: none;
         </property>
         <property name="mute" stdset="0">
          <number>0</number>
+        </property>
+        <property name="proper_name" stdset="0">
+         <string>Łazienka góra LED umywalka</string>
         </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_110">

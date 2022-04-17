@@ -28,8 +28,6 @@ private:
 
   public slots:
         void readyRead();
-        void lightsOff();
-        void obecnosc_none();
         void simulation(bool on);
         void random_off();
         void WYSUDP(QString addr);

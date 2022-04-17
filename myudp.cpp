@@ -13,7 +13,6 @@ QList<QList<unsigned char> > rand_hexxs;
 unsigned char scene_pir=0x10;
 QList<QTimer*> rand_timers;
 unsigned char temperatura[63];
-int wej241,wej212;
 extern unsigned char maskawysl[10];
 QString ipadress;
 QString ips;
@@ -38,15 +37,28 @@ MyUDP::MyUDP(QObject *parent) :
   socket->bind(QHostAddress("192.168.1.2"),1200);         // moj ip
   connect(socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
     qDebug() << "UTWORZONO UDP";
-//******************TIMER WYŁĄCZAJĄCY WYJŚCIA*******************//
 
+//******************TIMER WYŁĄCZAJĄCY WYJŚCIA*******************//
   timer_LOff = new QTimer(this);
-  connect(timer_LOff,SIGNAL(timeout()),this,SLOT(lightsOff()));
+  connect(timer_LOff, &QTimer::timeout, [=](){
+      if(odliczG==0){
+          emit all_off_();
+          arg_check--;
+          qDebug() << "ARG_CH: " << arg_check;
+      }
+      odliczG--;
+      if(odliczG<0){
+          odliczG=0;
+          timer_LOff->stop();
+      }
+  });
 
 //******************TIMER SPRAWDZAJĄCY OBECNOŚĆ****************//
-
   timer_obecnosc = new QTimer(this);
-  connect(timer_obecnosc,SIGNAL(timeout()),this,SLOT(obecnosc_none()));
+  connect(timer_obecnosc,&QTimer::timeout,[=](){
+      timer_obecnosc->stop();
+      obecnosc=0;
+  });
 
   //timer do losowego włączania symulacji//
   action = new QTimer(this);
@@ -262,33 +274,6 @@ void MyUDP::readyRead(){
         }
 
     }
-}
-
-//**********FUNKCJA DO WYŁĄCZENIA WSZYSTKICH WYJŚĆ***************//
-void MyUDP::lightsOff(){
-
-    if(odliczG==0){
-        maskawysl[0]&=~0xff;
-        maskawysl[1]&=~0xff;
-        maskawysl[2]&=~0xff;
-        maskawysl[4]&=~0xff;
-        maskawysl[5]&=~0x3b;//ominięto wyjscie oswietlania podjazdu
-        WYSUDP("192.168.1.101");
-        WYSUDP("192.168.1.104");
-        emit all_off_();
-        arg_check--;
-        qDebug() << "ARG_CH: " << arg_check;
-    }
-    odliczG--;
-    if(odliczG<0){
-        odliczG=0;
-        timer_LOff->stop();
-    }
-}
-//***********FUNKCJA ZERUJĄCA OBECNOŚĆ**************************//
-void MyUDP::obecnosc_none(){
-    timer_obecnosc->stop();
-    obecnosc=0;
 }
 
 //*****SYMULACJA OBECNOŚCI*****//

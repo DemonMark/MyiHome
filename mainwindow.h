@@ -72,15 +72,15 @@ private slots:
 
   void LOff();
 
-  void on_pushButton_23_clicked();
-  void on_pushButton_27_clicked();
+  void on_button_23_clicked();
+  void on_button_27_clicked();
   void on_button_OFF_clicked();
-  void on_pushButton_31_toggled(bool checked);
+  void on_button_31_toggled(bool checked);
   void readTimeFromWWW();
 
   void on_pushButton_33_toggled(bool checked);
 
-  void on_pushButton_32_clicked(bool checked);
+  void on_button_32_clicked(bool checked);
 
   void on_go_floor_clicked();
 
@@ -104,15 +104,17 @@ private slots:
 
   void on_button_list_currentIndexChanged(int arg1);
 
-  void on_pushButton_set_clicked();
+  void on_button_set_clicked();
 
-  void on_pushButton_read_clicked();
+  void on_button_read_clicked();
 
-  void on_pushButton_clear_clicked();
+  void on_button_clear_clicked();
 
-  void on_pushButton_clear_2_clicked();
+  void on_button_clear_2_clicked();
 
-  void on_pushButton_read_2_clicked();
+  void on_button_read_2_clicked();
+
+  void on_button_nooff_clicked();
 
 private:
 
@@ -145,7 +147,6 @@ private:
 
 signals:
     void simulating(bool on);
-    void all_off();
     void UDP_ReadytoSend(QString addr);
 
 };
