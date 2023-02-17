@@ -16,7 +16,14 @@ pir_button::pir_button(QWidget *parent) :
                                            "font: 75 7pt 'Piboto Condensed';"
                                            "color: rgb(76, 76, 76);}");
             this->setChecked(false);
+            this->setProperty("active", false);
+            db_activ();
             present->stop();
+
+            if(this->property("auto_off")==true){
+                p_mw = MainWindow::getMainWinPtr();
+                p_mw->auto_room_off(this->accessibleName());
+            }
         }
     });
 
@@ -38,6 +45,9 @@ void pir_button::naruszeniestrefy(int &time){
                                    "color: rgb(0, 0, 255);}");
     c_time=time/1000;
     present->start(1000);
+
+    this->setProperty("active", true);
+    db_activ();
 }
 
 void pir_button::setdial(){
@@ -48,7 +58,11 @@ void pir_button::setdial(){
 
     p_mw = MainWindow::getMainWinPtr();
     if(p_mw!=nullptr){
+        mydbs read_value(baza);
+        QSqlQuery *qry = read_value.query();
+
         QDial *pir_dial = p_mw->findChild<QDial*>("pir_dial");
+        QPushButton *a_off_pointer = p_mw->findChild<QPushButton*>("a_off");
 
         pir_dial->setProperty("pir_name", this->objectName());
         code_PIRname = pir_dial->property("pir_name").toString();
@@ -60,8 +74,6 @@ void pir_button::setdial(){
             pir_dial->setProperty("old_pir_name", code_PIRname);
         }
 
-        mydbs read_value(baza);
-        QSqlQuery *qry = read_value.query();
         qry->prepare("SELECT timer_time, nazwa FROM PIR WHERE code_name='"+code_PIRname+"'");
         if(qry->exec()){
             qry->next();
@@ -69,6 +81,18 @@ void pir_button::setdial(){
             pir_name = qry->value("nazwa").toString();
         }
         p_mw->show_item(state, this->parentWidget(), pir_name);
+        a_off_pointer->setChecked(this->property("auto_off").toBool());
         delete qry;
     }
+}
+
+void pir_button::db_active(){
+
+    mydbs set_active(baza);
+    QSqlQuery *active_qry = set_active.query();
+    active_qry->prepare("UPDATE PIR SET zone_active=? WHERE code_name='"+this->objectName()+"'");
+    active_qry->addBindValue(this->isChecked());
+    active_qry->exec();
+
+    delete active_qry;
 }

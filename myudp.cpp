@@ -133,7 +133,7 @@ void MyUDP::readyRead(){
         ips=sender.toString();
 
         if("192.168.1.102"==ips){
-            //qDebug() << "Ramka: " << k;
+            //qDebug() << "Ramka temp: " << Buffer.toHex();
             emit changes(); //sygnal do odbierania
             for (i=3;i<(Buffer.length());i++){
                 temperatura[i]=Buffer[i];
@@ -144,7 +144,7 @@ void MyUDP::readyRead(){
             for (int i=3; i<=(Buffer.length());i++){
                 temp[i-3]=Buffer[i];
             }
-            qDebug() << Buffer.toHex();
+            //qDebug() << Buffer.toHex();
             emit hex_comming(); //sygnal do odbierania
         }
         //**************************ODBIERANIE CZUJEK PIR***********************//

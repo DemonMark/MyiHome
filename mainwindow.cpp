@@ -68,7 +68,6 @@ extern bool simulating_on;
 bool scene_active;
 bool scene_driving;
 bool jestem = false;
-bool write_off=false;
 extern QByteArray plugsocket;
 int arg[17];
 int arg_check=-3;//potwierdzenie wykonania składników sceny
@@ -85,6 +84,7 @@ void initGPIO()
     bcm2835_gpio_fsel(REKU_SPEED_2, BCM2835_GPIO_FSEL_OUTP);
     bcm2835_gpio_fsel(REKU_SPEED_3, BCM2835_GPIO_FSEL_OUTP);
     bcm2835_gpio_fsel(REKU_STOP, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(FAN_ON, BCM2835_GPIO_FSEL_OUTP);
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -164,7 +164,11 @@ MainWindow::MainWindow(QWidget *parent) :
             lb->setHidden(checked);
         }
     });
-
+    temporary_cwu_checker = new QTimer(this);
+    connect(temporary_cwu_checker, &QTimer::timeout, [=](){
+        data_logger("");
+    });
+    temporary_cwu_checker->start(30000);
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, &QTimer::timeout, [=]() {
@@ -181,6 +185,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_ventilation->setVisible(false);
     ui->pir_dial->setVisible(false);
     ui->temp_dial->setVisible(false);
+    ui->th_master->setVisible(false);
+    ui->th_priority->setVisible(false);
+    ui->a_off->setVisible(false);
 
     webView = new QWebPage(this);
     webView->setVisibilityState(QWebPage::VisibilityStateHidden);
@@ -192,62 +199,36 @@ MainWindow::MainWindow(QWidget *parent) :
 
     movie_pompa_1 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_pompa_2 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
-    movie_pompa_3 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_cyrkulacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/circulation_on.gif");
     movie_wentylacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/wentylator.gif");
     movie_countdown = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/countdown.gif");
+    movie_heat_fan = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pump_fan.gif");
 
-    movie_reku = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/reku.gif");
+    movie_reku = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/reku_old.gif");
     movie_reku->setCacheMode(QMovie::CacheAll);
     movie_reku->jumpToFrame(ui->button_wentylator->property("current_speed").toInt());
 
     ui->label_19->setMovie(movie_countdown);
     ui->label_wentylator->setMovie(movie_wentylacja);
-    ui->label_wentylator_2->setMovie(movie_wentylacja);
+    ui->pump_fan->setMovie(movie_heat_fan);
     movie_wentylacja->start();
+    movie_heat_fan->start();
     pir_status();
     rekuperator(1);
 
     pompa_off.load("/media/HDD1/admin/iHome/28-02-2018/media/pompa_off.png");
-    temp_on.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_on_1.png");
-    temp_off.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_1.png");
+    temp_on.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_true.png");
+    temp_off.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_false.png");
+    temp_dis.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_0.png");
     con_err_off.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_off.png");
     con_err_on.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_on.png");
     ex_button.load("/media/HDD1/admin/iHome/28-02-2018/media/ex.png");
     map_button.load("/media/HDD1/admin/iHome/28-02-2018/media/map.png");
 
-    //wsparcie dla zdublowanych przycisków
-    connect(ui->button_wentylator, SIGNAL(toggled(bool)), ui->button_wentylator_3, SLOT(setChecked(bool)));
-    connect(ui->button_wentylator_3, SIGNAL(toggled(bool)), ui->button_wentylator, SLOT(setChecked(bool)));
-    connect(ui->copyButton_8, SIGNAL(toggled(bool)), ui->pushButton_8,SLOT(setChecked(bool)));
-    connect(ui->pushButton_8, SIGNAL(toggled(bool)), ui->copyButton_8,SLOT(setChecked(bool)));
-
     //cyrkulacja
     connect(movie_cyrkulacja, &QMovie::frameChanged, [=]() {
         ui->pushButton_33->setIcon(movie_cyrkulacja->currentPixmap());
         ui->pushButton_33->setIconSize(QSize(45,45));
-    });
-
-    //***************zarządzanie temperaturą CWU*******************//
-    QTimer *t_cwu = new QTimer(this);
-    t_cwu->start(60000);
-    connect(t_cwu, &QTimer::timeout,[=] () {
-        double temp_cwu = ui->label_21->text().split(DC)[0].toDouble();
-        switch(obecnosc){
-        case 1:
-            if(temp_cwu < (ui->cwu_ob->value())){
-                ui->cwu->setChecked(true);
-            }else {
-                ui->cwu->setChecked(false);
-            }
-            break;
-        case 0:
-            if(temp_cwu < (ui->cwu_nob->value())){
-                ui->cwu->setChecked(true);
-            }else {
-                ui->cwu->setChecked(false);
-            }
-        }
     });
 
     //REKUPERACJA
@@ -295,24 +276,55 @@ MainWindow::MainWindow(QWidget *parent) :
     });
     humidity_timer->start(45000);
     //
+    //AKTYWACJA OGRZEWANIA / AKTYWACJA STREF OGRZEWANIA
     connect(ui->CO, &QPushButton::toggled, [=](bool checked){
         if(!checked){
-            plugsocket[2]=0x00;
             maskawysl[2]&=~0xf8;
             maskawysl[3]&=~0xfe;
             emit UDP_ReadytoSend("192.168.1.101");
             movie_pompa_1->stop();
             movie_pompa_2->stop();
-            movie_pompa_3->stop();
             ui->label_pompa_1->setPixmap(pompa_off);
             ui->label_pompa_2->setPixmap(pompa_off);
         }
     });
 
-    connect(movie_pompa_3, &QMovie::frameChanged, [=]() {
-        ui->shelly_108->setIcon(movie_pompa_3->currentPixmap());
+    QSqlQuery *heat_qry = baza.query();
+    connect(ui->th_master, &QPushButton::toggled, [=](bool checked){
+
+        heat_qry->prepare("UPDATE temperature SET aktywna=? WHERE th='"+ui->th_master->property("th").toString()+"'");
+        heat_qry->addBindValue(checked);
+        heat_qry->exec();
+
+        QLabel *p_heat_label = MainWindow::findChild<QLabel*>(ui->th_master->property("th").toString());
+        p_heat_label->setProperty("status", checked);
+
+        if(checked==true){
+            ui->th_master->setStyleSheet("QPushButton {background-image: url(:/HDD1/admin/iHome/28-02-2018/media/thermo_"+QVariant(p_heat_label->property("ON").toBool()).toString()+".png);"
+                                                                                                                                                        "background-repeat: none;"
+                                                                                                                                                        "background-color: transparent;"
+                                                                                                                                                        "border: none;}");
+        }else{
+            p_heat_label->setPixmap(QPixmap("/media/HDD1/admin/iHome/28-02-2018/media/thermo_" + QString::number(checked) + ".png"));
+            ui->th_master->setStyleSheet("QPushButton {background-image: url(:/HDD1/admin/iHome/28-02-2018/media/thermo_0.png);"
+                                       "background-repeat: none;"
+                                       "background-color: transparent;"
+                                       "border: none;}");
+        }
+    });
+    //automatyczne wyłączenie świateł w pokoju
+    connect(ui->a_off, &QPushButton::toggled, [=](bool checked){
+        qDebug() << "POINTER CONNECTED";
+        qry->prepare("UPDATE PIR SET auto_off=? WHERE code_name='"+ui->pir_dial->property("pir_name").toString()+"'");
+        qry->addBindValue(checked);
+        qry->exec();
+
+        pir_button *pbp = MainWindow::findChild<pir_button*>(ui->pir_dial->property("pir_name").toString());
+        pbp->setProperty("auto_off", checked);
     });
 
+
+    //ALARM - w trakcie
     connect(ui->alarm_btn, &QPushButton::toggled, [=](bool checked){
         locked = checked;
     });
@@ -323,8 +335,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //sprawdzenie źródeł do włączenia/wyłączenia w czasie
     QTimer *scheduledTimer = new QTimer(this);
-    //mydbs baza(sceny);
-    //QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
+
     connect(scheduledTimer, &QTimer::timeout, [=](){
         qry->prepare("SELECT btn_no, id, tmp, stop_at, CASE WHEN strftime('%H:%M',main.start_at)='"+time_h_m+"' THEN 'true' WHEN strftime('%H:%M',main.stop_at)='"+time_h_m+"' THEN 'false' ELSE 'no_match' END AS on_off FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.type_id=2");
         if(qry->exec()){
@@ -437,7 +448,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
 void MainWindow::receiving(){
 
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
-    QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11,b12,t12,b13,t13,b14,t14,subzero;
+    QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11,b12,t12,b13,t13,b14,t14,b15,t15,subzero;
 
     //****BIBLIOTEKA****//
     b.append(QString("%1").arg(temperatura[3]));
@@ -472,19 +483,22 @@ void MainWindow::receiving(){
     //****ŁAZIENKA GÓRA****//
     b11.append(QString("%1").arg(temperatura[33]));
     t11.append(QString("%1").arg(temperatura[34]));
-    //****ZASOBNIK C.W.U.*****//
-    b14.append(QString("%1").arg(temperatura[36]));
-    t14.append(QString("%1").arg(temperatura[37]));
+    //****ZASOBNIK C.O.*****//
+    b14.append(QString("%1").arg(temperatura[45]));
+    t14.append(QString("%1").arg(temperatura[46]));
     //****KOTŁOWNIA****//
-    b12.append(QString("%1").arg(temperatura[39]));
-    t12.append(QString("%1").arg(temperatura[40]));
+    b12.append(QString("%1").arg(temperatura[36]));
+    t12.append(QString("%1").arg(temperatura[37]));
     //****ZEWNATRZ****//
-    b10.append(QString("%1").arg(temperatura[45]));
-    t10.append(QString("%1").arg(temperatura[46]));
-    subzero.append(QString("%1").arg(temperatura[47]));
+    b10.append(QString("%1").arg(temperatura[39]));
+    t10.append(QString("%1").arg(temperatura[40]));
+    subzero.append(QString("%1").arg(temperatura[41]));
     //****GARAŻ****//
     b13.append(QString("%1").arg(temperatura[42]));
     t13.append(QString("%1").arg(temperatura[43]));
+    //*****ZBIORNIK CWU*****//
+    b15.append(QString("%1").arg(temperatura[50]));
+    t15.append(QString("%1").arg(temperatura[51]));
 
     ui->label_temp_9->setText(b+"."+t + DC);
     ui->label_temp_2->setText(b1+"."+t1 + DC);
@@ -500,6 +514,7 @@ void MainWindow::receiving(){
     ui->label_15->setText(b12+"."+t12 + DC);
     ui->label_16->setText(b13+"."+t13 + DC);
     ui->label_21->setText(b14+"."+t14 + DC);
+    ui->label_22->setText(b15+"."+t15 + DC);
 
     ui->label_pompa_1->setProperty("status", false);
     ui->label_pompa_2->setProperty("status", false);
@@ -513,7 +528,7 @@ void MainWindow::receiving(){
     //
 
     qu++;
-    if (qu==15){
+    if (qu==30){
         //***ODCZYT NASTAW TEMPERATURY Z BAZY I PORÓWNANIE Z TEMPARATURĄ ZMIERZONĄ***
         mydbs baza(sceny);
         QSqlQuery *qry = baza.query();
@@ -527,13 +542,22 @@ void MainWindow::receiving(){
                 int maska = qry->value("maska").toInt();
                 int hex = qry->value("hex").toInt();
                 QLabel *th = MainWindow::findChild<QLabel*>(qry->value("th").toString());
+
+                //inicjacja statusu ikony
+                if(qry->value("aktywna")==0 && th->property("status")==true){
+                    th->setProperty("status", false);
+                }
+                //
+
                 if(th->property("status")==true){
                     if(temperatura[INT]*10+temperatura[DECIMAL]-ui->dial_7->value() >= SET_TEMP){
                         th->setPixmap(temp_off);
+                        th->setProperty("ON", false);
                         maskawysl[maska]&=~hex;
                     }
                     if(temperatura[INT]*10+temperatura[DECIMAL]+ui->dial_7->value() <= SET_TEMP){
                         th->setPixmap(temp_on);
+                        th->setProperty("ON", true);
                         maskawysl[maska]|=hex;
                         if(ui->label_pompa_1->property("id")==maska){
                             ui->label_pompa_1->setProperty("status", true);
@@ -542,6 +566,9 @@ void MainWindow::receiving(){
                             ui->label_pompa_2->setProperty("status", true);
                         }
                     }
+                }else{
+                    th->setPixmap(temp_dis);
+                    maskawysl[maska]&=~hex;
                 }
             }
         }
@@ -569,24 +596,15 @@ void MainWindow::receiving(){
                 movie_pompa_2->stop();
                 ui->label_pompa_2->setPixmap(pompa_off);
             }
-            //********flaga dla pompy C.O.*************************
-            if(movie_pompa_1->state()==QMovie::Running || movie_pompa_2->state()==QMovie::Running){
-                if(movie_pompa_3->state()!=QMovie::Running){
-                    plugsocket[2]=0x01;
-                    movie_pompa_3->start();
-                }
-            }else{
-                plugsocket[2]=0x00;
-                movie_pompa_3->stop();
-            }
+
             emit UDP_ReadytoSend("192.168.1.101");
         }
         qu=0;
     }
 //****************sprawdzanie obecności czujników CT**********************************//
-    uint16_t id[15]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40}; //numer czujnika
-    int tn[15]={48,48,48,48,48,48,48,48,49,49,49,49,49,49,49}; //numer bajtu kontrolnego stan czujnika
-    for(int i=0; i<15;i++){
+    uint16_t id[16]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //numer czujnika
+    int tn[16]={48,48,48,48,48,48,48,48,49,49,49,49,49,49,49,49}; //numer bajtu kontrolnego stan czujnika
+    for(int i=0; i<16 ;i++){
         if(temperatura[tn[i]]&id[i]){
             c_e.at(i)->setPixmap(con_err_off);
         }else{
@@ -620,7 +638,7 @@ void MainWindow::btnFinderfromHEX()
             }else if(expanded(wanted_btn, "mapped")==true){
                 btn_exp(wanted_btn->property("mapped_btn_name").toString());
             }else{
-                wanted_btn->setChecked(!wanted_btn->isChecked());
+                if(temp[0]||temp[1]||temp[2]||temp[4]||temp[5]){wanted_btn->setChecked(!wanted_btn->isChecked());}
             }
         }
     }
@@ -631,23 +649,23 @@ void MainWindow::btnFinderfromHEX()
         if (otwarta==0){
             QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoorup.png");
             QIcon biBrama(bBrama);
-            bList.at(13)->setIcon(biBrama);
-            bList.at(13)->setIconSize(bBrama.rect().size());
+            ui->pushButton_16->setIcon(biBrama);
+            ui->pushButton_16->setIconSize(bBrama.rect().size());
             otwarta=1;
         }
         if (otwarta==2){
             QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoordown.png");
             QIcon biBrama(bBrama);
-            bList.at(13)->setIcon(biBrama);
-            bList.at(13)->setIconSize(bBrama.rect().size());
+            ui->pushButton_16->setIcon(biBrama);
+            ui->pushButton_16->setIconSize(bBrama.rect().size());
             otwarta=1;
         }
     }
     if(temp[3] & 0x02) {
         QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdooropen.png");
         QIcon biBrama(bBrama);
-        bList.at(13)->setIcon(biBrama);
-        bList.at(13)->setIconSize(bBrama.rect().size());
+        ui->pushButton_16->setIcon(biBrama);
+        ui->pushButton_16->setIconSize(bBrama.rect().size());
         otwarta=2;
         QTime GOT=QTime::currentTime();
         ui->label_otime->setText(GOT.toString());
@@ -662,8 +680,8 @@ void MainWindow::btnFinderfromHEX()
         else{
             QPixmap bBrama("/media/HDD1/admin/iHome/28-02-2018/media/gdoorclose.png");
             QIcon biBrama(bBrama);
-            bList.at(13)->setIcon(biBrama);
-            bList.at(13)->setIconSize(bBrama.rect().size());
+            ui->pushButton_16->setIcon(biBrama);
+            ui->pushButton_16->setIconSize(bBrama.rect().size());
             otwarta=0;
             QTime GOT=QTime::currentTime();
             ui->label_ctime->setText(GOT.toString());
@@ -870,7 +888,7 @@ void MainWindow::on_button_OFF_clicked()
 
 void MainWindow::offfff(){
     QString t_name = QObject::sender()->objectName();
-    data_logger(t_name);
+    //data_logger(t_name);
     mydbs baza(sceny);
     QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
     qry->prepare("SELECT btn_no,id,tmp FROM main INNER JOIN sources ON main.id = sources.main_id WHERE timer_name='"+t_name+"'");
@@ -885,7 +903,7 @@ void MainWindow::offfff(){
             if(qry->value("tmp").toInt() == 1){
                 delete_schedule(qry->value("id").toInt());
             }
-            data_logger(qry->value("btn_no").toString());
+            //data_logger(qry->value("btn_no").toString());
         }
     }
     delete qry;
@@ -952,6 +970,9 @@ void MainWindow::settemperature(int temp_value){
     qry->addBindValue(temp_value);
     qry->exec();
     delete qry;
+
+    QLabel *tmp_temp_label = MainWindow::findChild<QLabel*>(ui->temp_dial->property("temp_name").toString());
+    tmp_temp_label->setText(QString::number(temp_value).insert(2,".") + DC);
 }
 
 void MainWindow::readscheduler(){
@@ -1134,13 +1155,13 @@ void MainWindow::getHumidity()
         ui->label_13->setText(hum +"%");
         ui->label_14->setText(temp + DC);
 
-        if(humidity>ui->spinBox->value() && spimy==0){
+        if(humidity>ui->spinBox->value() && ui->button_wentylator->property("current_speed")==1 && spimy==0){
             ventilation=true;
             humiditywatcher=true;
             rekuperator(2);
-            ui->button_wentylator->setProperty("current_speed", 2);
+            //ui->button_wentylator->setProperty("current_speed", 2);
         }
-        if(humidity<=ui->spinBox->value() && ventilation==true){
+        if(humidity<ui->spinBox->value() && ventilation==true){
             ventilation=false;
             humiditywatcher=false;
             rekuperator(humidityholder);
@@ -1173,17 +1194,31 @@ void MainWindow::LOff()
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
 
-    qry->prepare("SELECT button, no_off FROM defaults");
+    qry->prepare("SELECT button, pir, no_off, CASE WHEN PIR.zone_activ=1 THEN 'true' WHEN PIR.zone_activ=0 THEN 'false' END AS stat FROM defaults LEFT JOIN PIR ON PIR.code_name=defaults.pir WHERE no_off=0 AND (stat=0 OR pir='null')");
     if(qry->exec()){
         while(qry->next()){
-            if(qry->value("no_off").toInt()==0){
-                MainWindow::findChild<QPushButton*>(qry->value("button").toString())->setChecked(false);
-            }
+                    MainWindow::findChild<QPushButton*>(qry->value("button").toString())->setChecked(false);
         }
     }
     delete qry;
     movie_countdown->stop();
     scene_active=false;
+}
+
+void MainWindow::auto_room_off(QString room)
+{
+    mydbs baza(sceny);
+    QSqlQuery *auto_off_qry = baza.query();
+    auto_off_qry->prepare("SELECT button, room, type_id, start_at, stop_at, CASE WHEN sources.btn_no = defaults.button AND ((type_id=1 AND "+QString::number(dzien)+"=0) OR (type_id=3 AND "+QString::number(dzien)+"=1) OR (type_id=2 AND ((strftime('%H:%M',main.start_at)<'"+time_h_m+"' AND main.stop_at='') OR (strftime('%H:%M',main.start_at)<'"+time_h_m+"' AND strftime('%H:%M',main.stop_at)>'"+time_h_m+"') OR (strftime('%H:%M',main.stop_at)>'"+time_h_m+"' AND main.start_at='')))) THEN 'true' ELSE 'false' END AS SCHEDULER FROM defaults LEFT JOIN sources ON sources.btn_no = defaults.button LEFT JOIN main ON sources.main_id = main.id WHERE room = '"+room+"'");
+    if(auto_off_qry->exec()){
+        while(auto_off_qry->next()){
+            //int type_result = auto_off_qry->value("type_id").toInt();
+            if(auto_off_qry->value("SCHEDULER")==false){
+                MainWindow::findChild<QPushButton*>(auto_off_qry->value("button").toString())->setChecked(false);
+            }
+        }
+    }
+
 }
 
 void MainWindow::on_go_floor_clicked()
@@ -1301,18 +1336,6 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 void MainWindow::on_resetButton_clicked()
 {
     emit UDP_ReadytoSend("192.168.1.102");
-}
-
-void MainWindow::on_cwu_toggled(bool checked)
-{
-    if (checked){  
-        maskawysl[5]|=0x08;
-        write_off=true;
-    }else if ((!checked) && write_off){
-        maskawysl[5]&=~0x08;
-        write_off=false;
-    }
-    emit UDP_ReadytoSend("192.168.1.104");
 }
 
 //***śledzenie czasu wschodu/zachodu złońca i zmiana czasu świecenia źródła***
@@ -1559,17 +1582,26 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 void MainWindow::pir_status()
 {
     QString name;
-    int value;
     mydbs pir_check(sceny);
+    QSqlQuery *pir_check_qry = new QSqlQuery(pir_check.getDatabase());
+
     int pirs = ui->listWidget->count();
     for(int x=0; x<pirs; x++){
         name = ui->listWidget->item(x)->text();
-        if((pir_check.myqueries("PIR", name, value, false,"nazwa","aktywna"))==1){
-            ui->listWidget->item(x)->setCheckState(Qt::CheckState::Checked);
-        }else{
-            ui->listWidget->item(x)->setCheckState(Qt::CheckState::Unchecked);
+        pir_check_qry->prepare("SELECT * FROM PIR WHERE nazwa = '"+name+"' ");
+        if(pir_check_qry->exec()){
+            while(pir_check_qry->next()){
+                if(pir_check_qry->value("aktywna").toInt()==1){
+                    ui->listWidget->item(x)->setCheckState(Qt::CheckState::Checked);
+                }else{
+                    ui->listWidget->item(x)->setCheckState(Qt::CheckState::Unchecked);
+                }
+                pir_button *pbp = MainWindow::findChild<pir_button*>(pir_check_qry->value("code_name").toString());
+                pbp->setProperty("auto_off", pir_check_qry->value("auto_off").toBool());
+            }
         }
     }
+    delete pir_check_qry;
 }
 
 void MainWindow::mqtt_processor(QString msg)
@@ -1621,7 +1653,7 @@ void MainWindow::data_logger(const QString &input_data)
     QFile plik("/media/HDD1/admin/iHome/28-02-2018/log.txt");
     if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
         QTextStream on(&plik);
-        on << time_text << " " << input_data << "\n";
+        on << dateStamptext << " " << time_text << " " << input_data << " " << ui->label_21->text() << "\n";
         plik.close();
     }
 }
@@ -1636,11 +1668,23 @@ void MainWindow::show_item(bool state, QWidget *parentW, QString txt)
     ui->pir_dial->setGeometry(130,32,90,100);
     ui->pir_dial->setVisible(state);
 
+    ui->a_off->setParent(parentW);
+    ui->a_off->setGeometry(227,28,36,36);
+    ui->a_off->setVisible(state);
+
     ui->label_47->setParent(parentW);
     ui->label_47->setGeometry(145,57,60,41);
     ui->label_47->raise();
     ui->label_47->setVisible(state);
     ui->label_47->setText(txt);
+}
+
+void MainWindow::show_item2(QWidget *parentW, QWidget *widget, QRect geometry)
+{
+    widget->setParent(parentW);
+    widget->setGeometry(geometry);
+    if(widget->objectName()!="speed_label"){widget->setVisible(true);}
+
 }
 
 void MainWindow::show_item_temp(bool state, QWidget *parentW, QString txt)
@@ -1683,7 +1727,7 @@ void MainWindow::system_fan(double temp)
 {
     if(temp>29){
         bcm2835_gpio_write(FAN_ON, LOW);
-    }else if(temp<27){
+    }else if(temp<28.1){
         bcm2835_gpio_write(FAN_ON, HIGH);
     }
 }
@@ -1855,6 +1899,30 @@ void MainWindow::on_button_nooff_clicked()
     qry->addBindValue(new_flag);
     qry->exec();
     delete qry;
+}
+
+void MainWindow::on_Tab_currentChanged(int index)
+{
+    if(ui->Tab->tabText(index) == "Parter" || ui->Tab->tabText(index) == "Piętro"){
+        show_item2(ui->Tab->currentWidget(), ui->button_OFF, ui->button_OFF->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_19, ui->label_19->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_11, ui->label_11->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->pushButton_42, ui->pushButton_42->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->shelly_105, ui->shelly_105->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->rsi_shelly_105, ui->rsi_shelly_105->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->shelly_107, ui->shelly_107->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->_helly_107_2, ui->_helly_107_2->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->temp_shelly_107, ui->temp_shelly_107->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->rsi_shelly_107, ui->rsi_shelly_107->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_wentylator, ui->label_wentylator->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->button_wentylator, ui->button_wentylator->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->pushButton_8, ui->pushButton_8->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->speed_label, ui->speed_label->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_31, ui->label_31->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_35, ui->label_35->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_8, ui->label_8->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_17, ui->label_17->geometry());
+    }
 }
 
 //RETURN FUNCTIONS

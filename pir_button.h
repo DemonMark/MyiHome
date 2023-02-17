@@ -15,6 +15,7 @@ class pir_button : public QPushButton
 public:
     explicit pir_button(QWidget *parent = 0);
     void mousePressEvent(QMouseEvent *ev);
+    void db_active();
     QTimer *present;
     QLabel *label_countdown;
     MainWindow *p_mw;

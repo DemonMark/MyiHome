@@ -40,6 +40,7 @@ public:
 
     enum scenes {activated, deactivated, garage_gate, main_gate, both, Matylda, main_gate_prt, close_1, close_2} driving;
     void show_item(bool state, QWidget *parentW, QString txt);
+    void show_item2(QWidget *parentW, QWidget *widget, QRect geometry);
     void show_item_temp(bool state, QWidget *parentW, QString txt);
     void delete_schedule(int itm);
     void rekuperator(int speed);
@@ -49,6 +50,11 @@ public:
     void remove_icon(QPushButton *btn, QString prefix, QString property);
     void read_btn_property(int mode);
     void database_access(int value, QString btn_name);
+
+public slots:
+
+      void LOff();
+      void auto_room_off(QString room);
 
 private slots:
 
@@ -69,8 +75,6 @@ private slots:
   void ClickedscenebtnFinder(bool checked);
 
   void settimers(int dial_value);
-
-  void LOff();
 
   void on_button_23_clicked();
   void on_button_27_clicked();
@@ -94,8 +98,6 @@ private slots:
 
   void on_resetButton_clicked();
 
-  void on_cwu_toggled(bool checked);
-
   void on_config_cl_clicked();
 
   void on_listWidget_itemClicked(QListWidgetItem *item);
@@ -116,6 +118,8 @@ private slots:
 
   void on_button_nooff_clicked();
 
+  void on_Tab_currentChanged(int index);
+
 private:
 
     Ui::MainWindow *ui;
@@ -126,17 +130,19 @@ private:
     QTimer *reku_timer;
     QTimer *humidity_timer;
     QTimer *ventilation_timer;
+    QTimer *temporary_cwu_checker;
     QWebPage *webView;
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;
-    QMovie *movie_pompa_3;
     QMovie *movie_cyrkulacja;
     QMovie *movie_wentylacja;
     QMovie *movie_countdown;
     QMovie *movie_reku;
+    QMovie *movie_heat_fan;
     QPixmap pompa_off;
 	QPixmap temp_on;
 	QPixmap temp_off;
+    QPixmap temp_dis;
 	QPixmap con_err_off;
 	QPixmap con_err_on;
     QPixmap ex_button;

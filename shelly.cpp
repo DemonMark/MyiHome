@@ -30,7 +30,7 @@ shelly::shelly(QWidget *parent) : QPushButton(parent)
 
     connect(mute_counter, &QTimer::timeout, [=](){
 
-        if(++counter==3){
+        if(++counter==2){
             if(label_cd!=nullptr){
                 this->setProperty("mute", 1);
                 this->setIcon(this->property("mute_icon").value<QIcon>());
@@ -40,7 +40,7 @@ shelly::shelly(QWidget *parent) : QPushButton(parent)
                 val = mute_counter_val->value()*60;
             }
         }
-        if(counter<3 && this->property("mute").toInt()==1){
+        if(counter<2 && this->property("mute").toInt()==1){
             this->setProperty("mute", 0);
             this->setIcon(this->property("off").value<QIcon>());
             if(label_cd!=nullptr){
@@ -53,7 +53,7 @@ shelly::shelly(QWidget *parent) : QPushButton(parent)
             }
             mute_counter->stop();
         }
-        if(counter>=3 && this->property("mute").toInt()==1){
+        if(counter>=2 && this->property("mute").toInt()==1){
             if(label_cd!=nullptr){
                 label_cd->setText(QDateTime::fromTime_t(val-counter).toUTC().toString("mm:ss"));
                 label_cd->setVisible(true);

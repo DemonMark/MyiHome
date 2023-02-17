@@ -31,6 +31,7 @@ int mydbs::myqueries(QString tb, const QString &rec, int &val, bool sch, QString
         qry->addBindValue(val);
         qry->exec();
     }
+    delete qry;
     return ton;
 }
 

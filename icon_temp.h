@@ -13,13 +13,8 @@ public:
     explicit icon_temp(QWidget *parent = nullptr);
 
     void mousePressEvent(QMouseEvent *ev);
-    void mouseReleaseEvent(QMouseEvent *ev);
-
-    int temp_counter;
 
     MainWindow *tp_mw;
-
-    QTimer *tmp_counter;
 
 signals:
 
