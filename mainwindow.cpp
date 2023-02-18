@@ -379,16 +379,13 @@ void MainWindow::showTime(){
     time_h_m=time.toString("hh:mm");
     ui->digitalclock->setText(time_text);
 
-//*****************WYŁĄCZANIE WSZYSTKICH WYJŚĆ*****************//
+//*****************TRYB SPANIA*****************//
      if(time_text==ui->timeEdit_3->text() && obecnosc==0){
          spimy=1;
          ui->scene_ide_spac->setChecked(true);
          LOff();
      }
-     else if (time_text==ui->timeEdit_3->text() && obecnosc==1){
-         spimy=1;
-         ui->scene_ide_spac->setChecked(true);
-     }
+
 //****************DZIEŃ LUB NOC*********************************//
 
      if(time_text>=ui->label_25->text() && time_text<=ui->label_26->text()){
@@ -1194,7 +1191,7 @@ void MainWindow::LOff()
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
 
-    qry->prepare("SELECT button, pir, no_off, CASE WHEN PIR.zone_activ=1 THEN 'true' WHEN PIR.zone_activ=0 THEN 'false' END AS stat FROM defaults LEFT JOIN PIR ON PIR.code_name=defaults.pir WHERE no_off=0 AND (stat=0 OR pir='null')");
+    qry->prepare("SELECT button, pir, no_off, CASE WHEN PIR.zone_active=1 THEN 'true' WHEN PIR.zone_active=0 THEN 'false' END AS stat FROM defaults LEFT JOIN PIR ON PIR.code_name=defaults.pir WHERE no_off=0 AND (stat='false' OR pir='null')");
     if(qry->exec()){
         while(qry->next()){
                     MainWindow::findChild<QPushButton*>(qry->value("button").toString())->setChecked(false);

@@ -17,7 +17,7 @@ pir_button::pir_button(QWidget *parent) :
                                            "color: rgb(76, 76, 76);}");
             this->setChecked(false);
             this->setProperty("active", false);
-            db_activ();
+            db_active();
             present->stop();
 
             if(this->property("auto_off")==true){
@@ -47,7 +47,7 @@ void pir_button::naruszeniestrefy(int &time){
     present->start(1000);
 
     this->setProperty("active", true);
-    db_activ();
+    db_active();
 }
 
 void pir_button::setdial(){
