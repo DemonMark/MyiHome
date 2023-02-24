@@ -203,7 +203,7 @@ MainWindow::MainWindow(QWidget *parent) :
     movie_wentylacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/wentylator.gif");
     movie_countdown = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/countdown.gif");
     movie_heat_fan = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pump_fan.gif");
-
+    movie_all_off = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/power_on.gif");
     movie_reku = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/reku_old.gif");
     movie_reku->setCacheMode(QMovie::CacheAll);
     movie_reku->jumpToFrame(ui->button_wentylator->property("current_speed").toInt());
@@ -225,10 +225,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ex_button.load("/media/HDD1/admin/iHome/28-02-2018/media/ex.png");
     map_button.load("/media/HDD1/admin/iHome/28-02-2018/media/map.png");
 
-    //cyrkulacja
+    //przycisk cyrkulacja
     connect(movie_cyrkulacja, &QMovie::frameChanged, [=]() {
         ui->pushButton_33->setIcon(movie_cyrkulacja->currentPixmap());
         ui->pushButton_33->setIconSize(QSize(45,45));
+    });
+
+    //przycisk ALL OFF
+    connect(movie_all_off, &QMovie::frameChanged, [=](){
+        ui->button_OFF->setIcon(movie_all_off->currentPixmap());
+        ui->button_OFF->setIconSize(QSize(47,46));
     });
 
     //REKUPERACJA
@@ -380,7 +386,7 @@ void MainWindow::showTime(){
     ui->digitalclock->setText(time_text);
 
 //*****************TRYB SPANIA*****************//
-     if(time_text==ui->timeEdit_3->text() && obecnosc==0){
+     if(time_text==ui->timeEdit_3->text()){
          spimy=1;
          ui->scene_ide_spac->setChecked(true);
          LOff();
@@ -1188,18 +1194,31 @@ void MainWindow::on_button_32_clicked(bool checked)
 
 void MainWindow::LOff()
 {
+    bool violation = false;
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
 
-    qry->prepare("SELECT button, pir, no_off, CASE WHEN PIR.zone_active=1 THEN 'true' WHEN PIR.zone_active=0 THEN 'false' END AS stat FROM defaults LEFT JOIN PIR ON PIR.code_name=defaults.pir WHERE no_off=0 AND (stat='false' OR pir='null')");
+    //qry->prepare("SELECT button, pir, no_off, CASE WHEN PIR.zone_active=1 THEN 'true' WHEN PIR.zone_active=0 THEN 'false' END AS stat FROM defaults LEFT JOIN PIR ON PIR.code_name=defaults.pir WHERE no_off=0 AND (stat='false' OR pir='null')");
+    qry->prepare("SELECT button, pir, no_off, CASE WHEN PIR.zone_active=1 THEN 'true' WHEN PIR.zone_active=0 THEN 'false' END AS stat FROM defaults LEFT JOIN PIR ON PIR.code_name=defaults.pir WHERE no_off=0");
     if(qry->exec()){
         while(qry->next()){
-                    MainWindow::findChild<QPushButton*>(qry->value("button").toString())->setChecked(false);
+            if(qry->value("stat").toString()=="true"){violation=true;}
+            else{MainWindow::findChild<QPushButton*>(qry->value("button").toString())->setChecked(false);}
         }
     }
     delete qry;
     movie_countdown->stop();
     scene_active=false;
+    //ui->button_OFF->setChecked(false);
+    movie_all_off->stop();
+    movie_all_off->jumpToFrame(0);
+
+    if(violation){
+        QTimer::singleShot(60000,this,SLOT(LOff()));
+        //ui->button_OFF->setChecked(true);
+        movie_all_off->start();
+    }
+
 }
 
 void MainWindow::auto_room_off(QString room)

@@ -139,6 +139,7 @@ private:
     QMovie *movie_countdown;
     QMovie *movie_reku;
     QMovie *movie_heat_fan;
+    QMovie *movie_all_off;
     QPixmap pompa_off;
 	QPixmap temp_on;
 	QPixmap temp_off;
