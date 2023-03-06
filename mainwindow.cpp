@@ -280,7 +280,7 @@ MainWindow::MainWindow(QWidget *parent) :
         barometer();
         system_fan(ui->label_37->text().toDouble());
     });
-    humidity_timer->start(45000);
+    humidity_timer->start(60000);
     //
     //AKTYWACJA OGRZEWANIA / AKTYWACJA STREF OGRZEWANIA
     connect(ui->CO, &QPushButton::toggled, [=](bool checked){
@@ -1158,17 +1158,17 @@ void MainWindow::getHumidity()
         ui->label_13->setText(hum +"%");
         ui->label_14->setText(temp + DC);
 
-        if(humidity>ui->spinBox->value() && ui->button_wentylator->property("current_speed")==1 && spimy==0){
+        if(humidity>=ui->spinBox->value() && !ventilation && spimy==0){
             ventilation=true;
             humiditywatcher=true;
             rekuperator(2);
+            QTimer::singleShot(601000, [=]() {
+                ventilation=false;
+                humiditywatcher=false;
+                rekuperator(humidityholder);
+                //ui->button_wentylator->setProperty("current_speed", humidityholder);
+            });
             //ui->button_wentylator->setProperty("current_speed", 2);
-        }
-        if(humidity<ui->spinBox->value() && ventilation==true){
-            ventilation=false;
-            humiditywatcher=false;
-            rekuperator(humidityholder);
-            ui->button_wentylator->setProperty("current_speed", humidityholder);
         }
     }
 }
