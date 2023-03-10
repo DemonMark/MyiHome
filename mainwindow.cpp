@@ -451,82 +451,80 @@ void MainWindow::timerEvent(QTimerEvent *event){
 void MainWindow::receiving(){
 
     /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
-    QString b,t,b1,t1,b2,t2,b3,t3,b4,t4,b5,t5,b6,t6,b7,t7,b8,t8,b9,t9,b10,t10,b11,t11,b12,t12,b13,t13,b14,t14,b15,t15,subzero;
-
     //****BIBLIOTEKA****//
-    b.append(QString("%1").arg(temperatura[3]));
-    t.append(QString("%1").arg(temperatura[4]));
+    //b.append(QString("%1").arg(temperatura[3]));
+    //t.append(QString("%1").arg(temperatura[4]));
     //****SALON****//
-    b1.append(QString("%1").arg(temperatura[6]));
-    t1.append(QString("%1").arg(temperatura[7]));
+    //b1.append(QString("%1").arg(temperatura[6]));
+    //t1.append(QString("%1").arg(temperatura[7]));
     //****SYPIALNIA****//
-    b2.append(QString("%1").arg(temperatura[9]));
-    t2.append(QString("%1").arg(temperatura[10]));
+    //b2.append(QString("%1").arg(temperatura[9]));
+    //t2.append(QString("%1").arg(temperatura[10]));
     //****KORYTARZ DOL****//
-    b3.append(QString("%1").arg(temperatura[12]));
-    t3.append(QString("%1").arg(temperatura[13]));
+    //b3.append(QString("%1").arg(temperatura[12]));
+    //t3.append(QString("%1").arg(temperatura[13]));
     //****MARYNARSKI****//
-    b4.append(QString("%1").arg(temperatura[15]));
-    t4.append(QString("%1").arg(temperatura[16]));
+    //b4.append(QString("%1").arg(temperatura[15]));
+    //t4.append(QString("%1").arg(temperatura[16]));
     //****LAZIENKA DOL****//
-    b5.append(QString("%1").arg(temperatura[18]));
-    t5.append(QString("%1").arg(temperatura[19]));
+    //b5.append(QString("%1").arg(temperatura[18]));
+    //t5.append(QString("%1").arg(temperatura[19]));
     //****KUCHNIA-JADALNIA****//
-    b6.append(QString("%1").arg(temperatura[21]));
-    t6.append(QString("%1").arg(temperatura[22]));
+    //b6.append(QString("%1").arg(temperatura[21]));
+    //t6.append(QString("%1").arg(temperatura[22]));
     //****WIATROLAP****//
-    b7.append(QString("%1").arg(temperatura[24]));
-    t7.append(QString("%1").arg(temperatura[25]));
+    //b7.append(QString("%1").arg(temperatura[24]));
+    //t7.append(QString("%1").arg(temperatura[25]));
     //****POKOJ MISI****//
-    b8.append(QString("%1").arg(temperatura[27]));
-    t8.append(QString("%1").arg(temperatura[28]));
+    //b8.append(QString("%1").arg(temperatura[27]));
+    //t8.append(QString("%1").arg(temperatura[28]));
     //****LOFT****//
-    b9.append(QString("%1").arg(temperatura[30]));
-    t9.append(QString("%1").arg(temperatura[31]));
+    //b9.append(QString("%1").arg(temperatura[30]));
+    //t9.append(QString("%1").arg(temperatura[31]));
     //****ŁAZIENKA GÓRA****//
-    b11.append(QString("%1").arg(temperatura[33]));
-    t11.append(QString("%1").arg(temperatura[34]));
+    //b11.append(QString("%1").arg(temperatura[33]));
+    //t11.append(QString("%1").arg(temperatura[34]));
     //****ZASOBNIK C.O.*****//
-    b14.append(QString("%1").arg(temperatura[45]));
-    t14.append(QString("%1").arg(temperatura[46]));
+    //b14.append(QString("%1").arg(temperatura[45]));
+    //t14.append(QString("%1").arg(temperatura[46]));
     //****KOTŁOWNIA****//
-    b12.append(QString("%1").arg(temperatura[36]));
-    t12.append(QString("%1").arg(temperatura[37]));
+    //b12.append(QString("%1").arg(temperatura[36]));
+    //t12.append(QString("%1").arg(temperatura[37]));
     //****ZEWNATRZ****//
-    b10.append(QString("%1").arg(temperatura[39]));
-    t10.append(QString("%1").arg(temperatura[40]));
-    subzero.append(QString("%1").arg(temperatura[41]));
+    //b10.append(QString("%1").arg(temperatura[39]));
+    //t10.append(QString("%1").arg(temperatura[40]));
+    //subzero.append(QString("%1").arg(temperatura[41]));
     //****GARAŻ****//
-    b13.append(QString("%1").arg(temperatura[42]));
-    t13.append(QString("%1").arg(temperatura[43]));
+    //b13.append(QString("%1").arg(temperatura[42]));
+    //t13.append(QString("%1").arg(temperatura[43]));
     //*****ZBIORNIK CWU*****//
-    b15.append(QString("%1").arg(temperatura[50]));
-    t15.append(QString("%1").arg(temperatura[51]));
+    //b15.append(QString("%1").arg(temperatura[50]));
+    //t15.append(QString("%1").arg(temperatura[51]));
 
-    ui->label_temp_9->setText(b+"."+t + DC);
-    ui->label_temp_2->setText(b1+"."+t1 + DC);
-    ui->label_temp_6->setText(b2+"."+t2 + DC);
-    ui->label_12->setText(b3+"."+t3 + DC);
-    ui->label_temp_3->setText(b4+"."+t4 + DC);
-    ui->label_temp_1->setText(b5+"."+t5 + DC);
-    ui->label_temp_4->setText(b6+"."+t6 + DC);
-    ui->label_temp_5->setText(b7+"."+t7 + DC);
-    ui->label_temp_8->setText(b8+"."+t8 + DC);
-    ui->label_temp_10->setText(b9+"."+t9 + DC);
-    ui->label_temp_7->setText(b11+"."+t11 + DC);
-    ui->label_15->setText(b12+"."+t12 + DC);
-    ui->label_16->setText(b13+"."+t13 + DC);
-    ui->label_21->setText(b14+"."+t14 + DC);
-    ui->label_22->setText(b15+"."+t15 + DC);
+    //ui->label_temp_9->setText(b+"."+t + DC);
+    //ui->label_temp_2->setText(b1+"."+t1 + DC);
+    //ui->label_temp_6->setText(b2+"."+t2 + DC);
+    //ui->label_temp_11->setText(b3+"."+t3 + DC);
+    //ui->label_temp_3->setText(b4+"."+t4 + DC);
+    //ui->label_temp_1->setText(b5+"."+t5 + DC);
+    //ui->label_temp_4->setText(b6+"."+t6 + DC);
+    //ui->label_temp_5->setText(b7+"."+t7 + DC);
+    //ui->label_temp_8->setText(b8+"."+t8 + DC);
+    //ui->label_temp_10->setText(b9+"."+t9 + DC);
+    //ui->label_temp_7->setText(b11+"."+t11 + DC);
+    //ui->label_temp_13->setText(b12+"."+t12 + DC);
+    //ui->label_temp_12->setText(b13+"."+t13 + DC);
+    //ui->label_21->setText(b14+"."+t14 + DC);
+    //ui->label_22->setText(b15+"."+t15 + DC);
 
     ui->label_pompa_1->setProperty("status", false);
     ui->label_pompa_2->setProperty("status", false);
 
     //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
-    if(subzero=="1"){
-        ui->label_31->setText("-"+b10+"."+t10 + DC);
-    }else{
-        ui->label_31->setText(b10+"."+t10 + DC);
+    ui->label_31->setText(ui->label_31->text().remove(QChar('-'), Qt::CaseInsensitive));
+
+    if(temperatura[41]==1){
+        ui->label_31->setText(ui->label_31->text().prepend("-"));
     }
     //
 
@@ -542,23 +540,28 @@ void MainWindow::receiving(){
                 int INT = qry->value("frame_integer").toInt();
                 int DECIMAL = qry->value("frame_decimal").toInt();
                 int SET_TEMP = qry->value("value").toInt();
+                int OFFSET = qry->value("offset").toInt();
                 int maska = qry->value("maska").toInt();
                 int hex = qry->value("hex").toInt();
-                QLabel *th = MainWindow::findChild<QLabel*>(qry->value("th").toString());
+                double PROCESSED_TEMP = temperatura[INT]*10 + temperatura[DECIMAL] + OFFSET;
 
-                //inicjacja statusu ikony
+                QLabel *th = MainWindow::findChild<QLabel*>(qry->value("th").toString());
+                label_temp *temp_label = MainWindow::findChild<label_temp*>(qry->value("code_name").toString());
+                temp_label->setText(QString::number(PROCESSED_TEMP/10) + DC);
+
+                //inicjalizacja statusu ikony
                 if(qry->value("aktywna")==0 && th->property("status")==true){
                     th->setProperty("status", false);
                 }
                 //
 
                 if(th->property("status")==true){
-                    if(temperatura[INT]*10+temperatura[DECIMAL]-ui->dial_7->value() >= SET_TEMP){
+                    if(PROCESSED_TEMP-ui->dial_7->value() >= SET_TEMP){
                         th->setPixmap(temp_off);
                         th->setProperty("ON", false);
                         maskawysl[maska]&=~hex;
                     }
-                    if(temperatura[INT]*10+temperatura[DECIMAL]+ui->dial_7->value() <= SET_TEMP){
+                    if(PROCESSED_TEMP+ui->dial_7->value() <= SET_TEMP){
                         th->setPixmap(temp_on);
                         th->setProperty("ON", true);
                         maskawysl[maska]|=hex;
@@ -569,8 +572,8 @@ void MainWindow::receiving(){
                             ui->label_pompa_2->setProperty("status", true);
                         }
                     }
-                }else{
-                    th->setPixmap(temp_dis);
+                }else if(th->property("status")==false && th->property("ON")==true){
+                    //th->setPixmap(temp_dis);
                     maskawysl[maska]&=~hex;
                 }
             }

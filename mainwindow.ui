@@ -3509,7 +3509,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_12">
+       <widget class="QLabel" name="label_temp_11">
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -4106,7 +4106,7 @@ border: none;
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="label_31">
+       <widget class="QLabel" name="label_temp_16">
         <property name="geometry">
          <rect>
           <x>1075</x>
@@ -5919,7 +5919,7 @@ border: none;
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_15">
+       <widget class="QLabel" name="label_temp_13">
         <property name="geometry">
          <rect>
           <x>1043</x>
@@ -5938,7 +5938,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
          <string>00.0</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_16">
+       <widget class="QLabel" name="label_temp_12">
         <property name="geometry">
          <rect>
           <x>582</x>
@@ -6167,7 +6167,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_21">
+       <widget class="QLabel" name="label_temp_14">
         <property name="geometry">
          <rect>
           <x>981</x>
@@ -6935,7 +6935,7 @@ border: none;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_22">
+       <widget class="QLabel" name="label_temp_15">
         <property name="geometry">
          <rect>
           <x>1056</x>
@@ -7049,7 +7049,7 @@ border: none;
        <zorder>th_3</zorder>
        <zorder>label_temp_3</zorder>
        <zorder>th_4</zorder>
-       <zorder>label_12</zorder>
+       <zorder>label_temp_11</zorder>
        <zorder>pushButton_6</zorder>
        <zorder>label_temp_4</zorder>
        <zorder>th_5</zorder>
@@ -7061,7 +7061,7 @@ border: none;
        <zorder>pushButton_10</zorder>
        <zorder>pushButton_11</zorder>
        <zorder>pushButton_12</zorder>
-       <zorder>label_31</zorder>
+       <zorder>label_temp_16</zorder>
        <zorder>pushButton_15</zorder>
        <zorder>pushButton_16</zorder>
        <zorder>pushButton_17</zorder>
@@ -7101,8 +7101,8 @@ border: none;
        <zorder>button_wentylator_2</zorder>
        <zorder>pushButton_41</zorder>
        <zorder>th_12</zorder>
-       <zorder>label_15</zorder>
-       <zorder>label_16</zorder>
+       <zorder>label_temp_13</zorder>
+       <zorder>label_temp_12</zorder>
        <zorder>th_13</zorder>
        <zorder>con_err_2</zorder>
        <zorder>con_err_4</zorder>
@@ -7139,9 +7139,9 @@ border: none;
        <zorder>CO</zorder>
        <zorder>pump_fan</zorder>
        <zorder>label_CO</zorder>
-       <zorder>label_21</zorder>
+       <zorder>label_temp_14</zorder>
        <zorder>con_err_12</zorder>
-       <zorder>label_22</zorder>
+       <zorder>label_temp_15</zorder>
        <zorder>th_priority</zorder>
        <zorder>th_master</zorder>
        <zorder>con_err_16</zorder>
