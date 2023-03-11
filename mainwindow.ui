@@ -3509,7 +3509,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_temp_11">
+       <widget class="label_temp" name="label_temp_11">
         <property name="geometry">
          <rect>
           <x>490</x>
@@ -4106,7 +4106,7 @@ border: none;
          <string/>
         </property>
        </widget>
-       <widget class="QLabel" name="label_temp_16">
+       <widget class="label_temp" name="label_temp_16">
         <property name="geometry">
          <rect>
           <x>1075</x>
@@ -5919,7 +5919,7 @@ border: none;
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_temp_13">
+       <widget class="label_temp" name="label_temp_13">
         <property name="geometry">
          <rect>
           <x>1043</x>
@@ -5938,7 +5938,7 @@ font: 75 10pt &quot;PibotoLt&quot;;</string>
          <string>00.0</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_temp_12">
+       <widget class="label_temp" name="label_temp_12">
         <property name="geometry">
          <rect>
           <x>582</x>
@@ -6167,7 +6167,7 @@ font: 75 10pt &quot;Roboto&quot;;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_temp_14">
+       <widget class="label_temp" name="label_temp_14">
         <property name="geometry">
          <rect>
           <x>981</x>
@@ -6935,7 +6935,7 @@ border: none;</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_temp_15">
+       <widget class="label_temp" name="label_temp_15">
         <property name="geometry">
          <rect>
           <x>1056</x>
@@ -8654,8 +8654,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="ikony.qrc"/>
   <include location="grafika.qrc"/>
+  <include location="ikony.qrc"/>
  </resources>
  <connections/>
 </ui>

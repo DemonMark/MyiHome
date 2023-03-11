@@ -521,10 +521,10 @@ void MainWindow::receiving(){
     ui->label_pompa_2->setProperty("status", false);
 
     //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
-    ui->label_31->setText(ui->label_31->text().remove(QChar('-'), Qt::CaseInsensitive));
+    ui->label_temp_16->setText(ui->label_temp_16->text().remove(QChar('-'), Qt::CaseInsensitive));
 
     if(temperatura[41]==1){
-        ui->label_31->setText(ui->label_31->text().prepend("-"));
+        ui->label_temp_16->setText(ui->label_temp_16->text().prepend("-"));
     }
     //
 
@@ -537,6 +537,7 @@ void MainWindow::receiving(){
         qry->prepare("SELECT * FROM temperature");
         if(qry->exec()){
             while(qry->next()){
+                qDebug() << qry->value("code_name").toString();
                 int INT = qry->value("frame_integer").toInt();
                 int DECIMAL = qry->value("frame_decimal").toInt();
                 int SET_TEMP = qry->value("value").toInt();
@@ -1672,7 +1673,7 @@ void MainWindow::data_logger(const QString &input_data)
     QFile plik("/media/HDD1/admin/iHome/28-02-2018/log.txt");
     if(plik.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
         QTextStream on(&plik);
-        on << dateStamptext << " " << time_text << " " << input_data << " " << ui->label_21->text() << "\n";
+        on << dateStamptext << " " << time_text << " " << input_data << " " << ui->label_temp_14->text() << "\n";
         plik.close();
     }
 }
@@ -1937,7 +1938,7 @@ void MainWindow::on_Tab_currentChanged(int index)
         show_item2(ui->Tab->currentWidget(), ui->button_wentylator, ui->button_wentylator->geometry());
         show_item2(ui->Tab->currentWidget(), ui->pushButton_8, ui->pushButton_8->geometry());
         show_item2(ui->Tab->currentWidget(), ui->speed_label, ui->speed_label->geometry());
-        show_item2(ui->Tab->currentWidget(), ui->label_31, ui->label_31->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->label_temp_16, ui->label_temp_16->geometry());
         show_item2(ui->Tab->currentWidget(), ui->label_35, ui->label_35->geometry());
         show_item2(ui->Tab->currentWidget(), ui->label_8, ui->label_8->geometry());
         show_item2(ui->Tab->currentWidget(), ui->label_17, ui->label_17->geometry());
