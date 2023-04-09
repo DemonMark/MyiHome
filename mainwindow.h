@@ -130,7 +130,6 @@ private:
     QTimer *reku_timer;
     QTimer *humidity_timer;
     QTimer *ventilation_timer;
-    QTimer *temporary_cwu_checker;
     QWebPage *webView;
     QMovie *movie_pompa_1;
     QMovie *movie_pompa_2;

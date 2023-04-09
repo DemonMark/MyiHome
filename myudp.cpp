@@ -224,55 +224,33 @@ void MyUDP::readyRead(){
             MainWindow *udp_mw = MainWindow::getMainWinPtr();
             shelly *shelly_ptr = udp_mw->findChild<shelly*>("shelly_"+ips.split(".")[3]);
             QLabel *rsi_label = udp_mw->findChild<QLabel*>("rsi_shelly_"+ips.split(".")[3]);
-            if(shelly_ptr!=nullptr){
-
-                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&shelly_ptr->property("mute").toInt()!=1){
-                    shelly_ptr->setIcon(shelly_ptr->property("off").value<QIcon>());
-                }
-                if((Buffer[1]&0x53)&&!(Buffer[2]&0x01)&&shelly_ptr->property("mute").toInt()==1){
-                    shelly_ptr->setIcon(shelly_ptr->property("mute_icon").value<QIcon>());
-                }
-                if((Buffer[2]&0x01)&&(shelly_ptr->property("mute").toInt()!=1)){
-                    shelly_ptr->setIcon(shelly_ptr->property("on").value<QIcon>());
-                }
-                //dzwonek
-                if((Buffer[3]&0x01)&&(ips=="192.168.1.105")){
-
-                    shelly_ptr = udp_mw->findChild<shelly*>("shelly_106");
-                    if(shelly_ptr->property("mute").toInt()!=1){
-                        QByteArray plugsockett;
-                        QByteArray psDataa;
-
-                        QUdpSocket *shellsockk = new QUdpSocket(this);
-
-                        plugsockett[0]=0x53;
-                        plugsockett[1]=0x01;
-
-                        psDataa.clear();
-                        psDataa.append(plugsockett);
-                        shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
-                        delete shellsockk;
-                    }
-                }
-                if(rsi_label!=nullptr){
-                    bool ok;
-                    uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
-                    rsi_label->setText(QString::number(signal) + "%");
-                    //wyjątek dla Shelly2.5 - termistor + drugie skrzydło
-                    if(ips=="192.168.1.107"){
-                        signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
-                        rsi_label = udp_mw->findChild<QLabel*>("temp_shelly_"+ips.split(".")[3]);
-                        rsi_label->setText(QString::number(signal)+DC);
-                        //drugie skrzydło
-                        if(Buffer[2]&0x02){
-                            shelly_ptr = udp_mw->findChild<shelly*>("_helly_107_2");
-                            shelly_ptr->setIcon(shelly_ptr->property("on").value<QIcon>());
-                        }
+            qDebug() << ips << " " << Buffer.toHex();
+            if(rsi_label!=nullptr){
+                bool ok;
+                uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
+                rsi_label->setText(QString::number(signal) + "%");
+                //wyjątek dla Shelly2.5 - termistor + 2 skrzydło
+                if(ips=="192.168.1.107"){
+                    signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
+                    rsi_label = udp_mw->findChild<QLabel*>("temp_shelly_"+ips.split(".")[3]);
+                    rsi_label->setText(QString::number(signal)+DC);
+                    //jedno skrzydło
+                    if(Buffer[2]&0x02 || Buffer[2].operator==(0)){
+                        shelly *shelly_ptr_2 = udp_mw->findChild<shelly*>("shelly_107_2");
+                        shelly_ptr_2->setProperty("Relay", QVariant(Buffer[2]).toBool());
+                        emit shelly_ptr_2->Relay(shelly_ptr_2->property("Relay").toBool());
                     }
                 }
             }
-        }
+            if(shelly_ptr!=nullptr && (Buffer[2]&0x01 || Buffer[2].operator==(0))){
 
+                shelly_ptr->setProperty("SW", QVariant(Buffer[3]).toBool());
+                shelly_ptr->setProperty("Relay", QVariant(Buffer[2]).toBool());
+                emit shelly_ptr->SW(shelly_ptr->property("SW").toBool());
+                emit shelly_ptr->Relay(shelly_ptr->property("Relay").toBool());
+
+            }
+        }
     }
 }
 

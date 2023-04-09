@@ -164,11 +164,7 @@ MainWindow::MainWindow(QWidget *parent) :
             lb->setHidden(checked);
         }
     });
-    temporary_cwu_checker = new QTimer(this);
-    connect(temporary_cwu_checker, &QTimer::timeout, [=](){
-        data_logger("");
-    });
-    temporary_cwu_checker->start(30000);
+
     //***timer styku bramy***//
     timer_bramaStykOff = new QTimer(this);
     connect(timer_bramaStykOff, &QTimer::timeout, [=]() {
@@ -212,7 +208,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_wentylator->setMovie(movie_wentylacja);
     ui->pump_fan->setMovie(movie_heat_fan);
     movie_wentylacja->start();
+    movie_heat_fan->setSpeed(150);
     movie_heat_fan->start();
+
     pir_status();
     rekuperator(1);
 
@@ -224,6 +222,26 @@ MainWindow::MainWindow(QWidget *parent) :
     con_err_on.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_on.png");
     ex_button.load("/media/HDD1/admin/iHome/28-02-2018/media/ex.png");
     map_button.load("/media/HDD1/admin/iHome/28-02-2018/media/map.png");
+
+    //WENTYLATOR AQUAMI
+    connect(ui->shelly_108, &shelly::SW, [=](bool ON){
+        movie_heat_fan->setPaused(!ON);
+    });
+    //DZWONEK
+    connect(ui->shelly_105, &shelly::SW, [=](bool ON){
+        if(ui->shelly_106->property("mute").toInt()!=1 && ON){
+            QByteArray plugsockett;
+            QByteArray psDataa;
+            QUdpSocket *shellsockk = new QUdpSocket(this);
+
+            plugsockett[0]=0x53;
+            plugsockett[1]=0x01;
+            psDataa.clear();
+            psDataa.append(plugsockett);
+            shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
+            delete shellsockk;
+        }
+    });
 
     //przycisk cyrkulacja
     connect(movie_cyrkulacja, &QMovie::frameChanged, [=]() {
@@ -283,7 +301,7 @@ MainWindow::MainWindow(QWidget *parent) :
     humidity_timer->start(60000);
     //
     //AKTYWACJA OGRZEWANIA / AKTYWACJA STREF OGRZEWANIA
-    connect(ui->CO, &QPushButton::toggled, [=](bool checked){
+    connect(ui->shelly_108, &QPushButton::toggled, [=](bool checked){
         if(!checked){
             maskawysl[2]&=~0xf8;
             maskawysl[3]&=~0xfe;
@@ -520,14 +538,6 @@ void MainWindow::receiving(){
     ui->label_pompa_1->setProperty("status", false);
     ui->label_pompa_2->setProperty("status", false);
 
-    //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
-    ui->label_temp_16->setText(ui->label_temp_16->text().remove(QChar('-'), Qt::CaseInsensitive));
-
-    if(temperatura[41]==1){
-        ui->label_temp_16->setText(ui->label_temp_16->text().prepend("-"));
-    }
-    //
-
     qu++;
     if (qu==30){
         //***ODCZYT NASTAW TEMPERATURY Z BAZY I PORÓWNANIE Z TEMPARATURĄ ZMIERZONĄ***
@@ -548,7 +558,7 @@ void MainWindow::receiving(){
 
                 QLabel *th = MainWindow::findChild<QLabel*>(qry->value("th").toString());
                 label_temp *temp_label = MainWindow::findChild<label_temp*>(qry->value("code_name").toString());
-                temp_label->setText(QString::number(PROCESSED_TEMP/10) + DC);
+                temp_label->setText((QString("%1").arg(PROCESSED_TEMP/10, 0, 'f', 1)) + DC);
 
                 //inicjalizacja statusu ikony
                 if(qry->value("aktywna")==0 && th->property("status")==true){
@@ -581,7 +591,7 @@ void MainWindow::receiving(){
         }
         delete qry;
 
-        if(ui->CO->isChecked()){
+        if(ui->shelly_108->property("Relay")==true){
             //*************flaga dla pomp podłogówki*******
             if(ui->label_pompa_1->property("status")==true){
                 maskawysl[3]|=0x40;
@@ -607,6 +617,14 @@ void MainWindow::receiving(){
             emit UDP_ReadytoSend("192.168.1.101");
         }
         qu=0;
+
+        //warunek do wyswietlenia temperatury ujemnej (zastosowano tylko do czujnika zewnętrznego)
+        ui->label_temp_16->setText(ui->label_temp_16->text().remove(QChar('-'), Qt::CaseInsensitive));
+
+        if(temperatura[41]==1){
+            ui->label_temp_16->setText(ui->label_temp_16->text().prepend("-"));
+        }
+        //
     }
 //****************sprawdzanie obecności czujników CT**********************************//
     uint16_t id[16]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //numer czujnika
@@ -772,7 +790,7 @@ void MainWindow::wyjezdzam(){
         ui->shelly_107->setChecked(false);
         break;
     case close_2:
-        ui->_helly_107_2->setChecked(false);
+        ui->shelly_107_2->setChecked(false);
         break;
     }
 }
@@ -1542,7 +1560,7 @@ void MainWindow::gates(int type, bool timer, int ms)
         driving=close_1;
         break;
     case 2:
-        ui->_helly_107_2->setChecked(true);
+        ui->shelly_107_2->setChecked(true);
         driving=close_2;
         break;
     }
@@ -1931,7 +1949,7 @@ void MainWindow::on_Tab_currentChanged(int index)
         show_item2(ui->Tab->currentWidget(), ui->shelly_105, ui->shelly_105->geometry());
         show_item2(ui->Tab->currentWidget(), ui->rsi_shelly_105, ui->rsi_shelly_105->geometry());
         show_item2(ui->Tab->currentWidget(), ui->shelly_107, ui->shelly_107->geometry());
-        show_item2(ui->Tab->currentWidget(), ui->_helly_107_2, ui->_helly_107_2->geometry());
+        show_item2(ui->Tab->currentWidget(), ui->shelly_107_2, ui->shelly_107_2->geometry());
         show_item2(ui->Tab->currentWidget(), ui->temp_shelly_107, ui->temp_shelly_107->geometry());
         show_item2(ui->Tab->currentWidget(), ui->rsi_shelly_107, ui->rsi_shelly_107->geometry());
         show_item2(ui->Tab->currentWidget(), ui->label_wentylator, ui->label_wentylator->geometry());

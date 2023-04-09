@@ -6,25 +6,26 @@ int val = 3;
 
 shelly::shelly(QWidget *parent) : QPushButton(parent)
 {
+    sp_mw = MainWindow::getMainWinPtr();
     shellsock = new QUdpSocket(this);
     mute_counter = new QTimer(this);
-    QTimer *auto_open = new QTimer(this);
     QTimer *schonline = new QTimer (this);
-    qDebug() << &counter;
+
     connect(schonline, SIGNAL(timeout()), this, SLOT(answer()));
     schonline->start(10000);
-
-    connect(auto_open, &QTimer::timeout, [=](){
-        open(this->accessibleDescription().toInt());
-    });
 
     connect(this, &shelly::toggled, [=](bool checked){
         if(checked){
             open(this->accessibleDescription().toInt());
-            auto_open->start(20000);
         }else{
             open(0);
-            auto_open->stop();
+        }
+    });
+    connect(this, &shelly::Relay, [=](bool ON){
+        if(ON){
+            this->setIcon(this->property("on").value<QIcon>());
+        }else{
+            this->setIcon(this->property("off").value<QIcon>());
         }
     });
 
@@ -74,13 +75,16 @@ void shelly::answer(){
         psData.clear();
         psData.append(plugsocket);
         shellsock->writeDatagram(psData,QHostAddress(this->accessibleName()),4210);
-        QTimer::singleShot(10000, this, SLOT(offline()));
+        QTimer::singleShot(10000, [=](){
+            QLabel *rsi_label = sp_mw->findChild<QLabel*>("rsi_shelly_" + this->objectName().split("_")[1]);
+            if(rsi_label!=nullptr){rsi_label->setText("--");}
+        });
     }
 }
 
 void shelly::mousePressEvent(QMouseEvent *ev){
 
-    sp_mw = MainWindow::getMainWinPtr();
+    //sp_mw = MainWindow::getMainWinPtr();
     label_cd = sp_mw->findChild<QLabel*>("label_" + this->objectName());
     mute_ind = sp_mw->findChild<QLabel*>("label_mute");
     counter = 0;
@@ -90,11 +94,7 @@ void shelly::mousePressEvent(QMouseEvent *ev){
         mute_counter->start(1000);
     }
     if(this->isCheckable()){
-        if(this->isChecked()){
-            this->setChecked(false);
-        }else{
-            this->setChecked(true);
-        }
+        this->setChecked(!this->isChecked());
     }
 }
 void shelly::mouseReleaseEvent(QMouseEvent *ev){
@@ -103,19 +103,12 @@ void shelly::mouseReleaseEvent(QMouseEvent *ev){
         mute_counter->stop();
         open(this->accessibleDescription().toInt());
     }else if(this->property("mute").toInt()==1 && label_cd!=nullptr){
-        qDebug() << "jestem tu";
         mute_ind->setVisible(false);
     }
 }
 
-void shelly::offline(){
-    if(!this->isChecked()){
-        this->setIcon(this->property("offline").value<QIcon>());
-    }
-}
-
 void shelly::open(int state){
-    //bool ok;
+
     plugsocket[1]=state;
     psData.clear();
     psData.append(plugsocket);

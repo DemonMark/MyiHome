@@ -30,10 +30,12 @@ private:
 
 signals:
 
+    void SW(bool ON);
+    void Relay(bool ON);
+
 public slots:
 
      void answer();
-     void offline();
      void open(int state);
 };
 

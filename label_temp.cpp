@@ -21,7 +21,6 @@ void label_temp::setdial(){
     p_mw = MainWindow::getMainWinPtr();
     if(p_mw!=nullptr){
         QDial *temp_dial = p_mw->findChild<QDial*>("temp_dial");
-        qDebug() << temp_dial->objectName();
         temp_dial->setProperty("temp_name", this->objectName());
         code_TEMPname = temp_dial->property("temp_name").toString();
 

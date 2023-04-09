@@ -193,5 +193,7 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/priority_v2.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/a_off_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/a_off_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/pump_fan.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_offline.png</file>
     </qresource>
 </RCC>

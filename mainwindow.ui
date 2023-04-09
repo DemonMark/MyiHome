@@ -4665,6 +4665,12 @@ border: none;
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_offline.png</iconset>
         </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
         <property name="geometry">
@@ -4860,39 +4866,53 @@ border: none;
          <UInt>16</UInt>
         </property>
        </widget>
-       <widget class="QPushButton" name="CO">
+       <widget class="shelly" name="shelly_108">
         <property name="geometry">
          <rect>
-          <x>901</x>
-          <y>360</y>
-          <width>70</width>
-          <height>54</height>
+          <x>879</x>
+          <y>351</y>
+          <width>85</width>
+          <height>60</height>
          </rect>
         </property>
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
+        <property name="accessibleName">
+         <string>192.168.1.108</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>1</string>
+        </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#CO {
+         <string notr="true">QPushButton#shelly_108{
 background-color: transparent;
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/heat_off.png);
 background-repeat: none;
 border: none;
 }
 
-QPushButton#CO:checked
+QPushButton#shelly_108:checked
 {
-background-image: url(:/HDD1/admin/iHome/28-02-2018/media/heat_on.png);
 background-color: transparent;
-background-repeat: none;
 border: none;
 }</string>
         </property>
         <property name="text">
          <string/>
         </property>
+        <property name="icon">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_off.png</normaloff>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/heat_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/heat_off.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>85</width>
+          <height>60</height>
+         </size>
+        </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="autoRepeat">
          <bool>false</bool>
@@ -4900,14 +4920,26 @@ border: none;
         <property name="flat">
          <bool>true</bool>
         </property>
-        <property name="IP_holder" stdset="0">
-         <string/>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
         </property>
-        <property name="mask" stdset="0">
+        <property name="on" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_on.png</iconset>
+        </property>
+        <property name="off" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_off.png</iconset>
+        </property>
+        <property name="offline" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/heat_off.png</iconset>
+        </property>
+        <property name="mute" stdset="0">
          <number>0</number>
         </property>
-        <property name="hexx" stdset="0">
-         <UInt>0</UInt>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QLabel" name="label_32">
@@ -6281,6 +6313,12 @@ border: none;
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</iconset>
         </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
+        </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_105">
         <property name="geometry">
@@ -6318,7 +6356,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
          <string>00%</string>
         </property>
        </widget>
-       <widget class="shelly" name="_helly_107_2">
+       <widget class="shelly" name="shelly_107_2">
         <property name="geometry">
          <rect>
           <x>47</x>
@@ -6361,7 +6399,7 @@ border: none;
          </size>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -6380,6 +6418,9 @@ border: none;
         <property name="offline" stdset="0">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</iconset>
+        </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="shelly" name="shelly_107">
@@ -6425,7 +6466,7 @@ border: none;
          </size>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="autoExclusive">
          <bool>true</bool>
@@ -6447,6 +6488,12 @@ border: none;
         <property name="offline" stdset="0">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side.png</iconset>
+        </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_107">
@@ -6892,8 +6939,8 @@ color: rgb(0, 199, 246);</string>
        <widget class="QLabel" name="pump_fan">
         <property name="geometry">
          <rect>
-          <x>911</x>
-          <y>370</y>
+          <x>889</x>
+          <y>367</y>
           <width>30</width>
           <height>30</height>
          </rect>
@@ -6907,7 +6954,7 @@ border: none;</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>../../../HDD1/admin/iHome/28-02-2018/media/pump_fan.gif</pixmap>
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/pump_fan.gif</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -7036,6 +7083,24 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QLabel" name="rsi_shelly_108">
+        <property name="geometry">
+         <rect>
+          <x>968</x>
+          <y>344</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
+        </property>
+       </widget>
        <zorder>label_parter</zorder>
        <zorder>pushButton</zorder>
        <zorder>th_1</zorder>
@@ -7116,7 +7181,7 @@ border: none;
        <zorder>shelly_105</zorder>
        <zorder>rsi_shelly_105</zorder>
        <zorder>rsi_shelly_106</zorder>
-       <zorder>_helly_107_2</zorder>
+       <zorder>shelly_107_2</zorder>
        <zorder>shelly_107</zorder>
        <zorder>rsi_shelly_107</zorder>
        <zorder>temp_shelly_107</zorder>
@@ -7136,7 +7201,7 @@ border: none;
        <zorder>label_ventilation</zorder>
        <zorder>temp_dial</zorder>
        <zorder>label_dsc_1</zorder>
-       <zorder>CO</zorder>
+       <zorder>shelly_108</zorder>
        <zorder>pump_fan</zorder>
        <zorder>label_CO</zorder>
        <zorder>label_temp_14</zorder>
@@ -7145,6 +7210,7 @@ border: none;
        <zorder>th_priority</zorder>
        <zorder>th_master</zorder>
        <zorder>con_err_16</zorder>
+       <zorder>rsi_shelly_108</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -8302,6 +8368,12 @@ border: none;
         <property name="proper_name" stdset="0">
          <string>Łazienka góra LED wanna</string>
         </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
+        </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_109">
         <property name="geometry">
@@ -8368,6 +8440,12 @@ border: none;
         </property>
         <property name="proper_name" stdset="0">
          <string>Łazienka góra LED umywalka</string>
+        </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_110">
@@ -8654,8 +8732,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="grafika.qrc"/>
   <include location="ikony.qrc"/>
+  <include location="grafika.qrc"/>
  </resources>
  <connections/>
 </ui>
