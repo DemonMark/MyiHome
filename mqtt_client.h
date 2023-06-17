@@ -2,7 +2,7 @@
 #define MQTT_CLIENT_H
 
 #include <QObject>
-#include "qmqtt.h"
+#include <QMqttClient>
 
 class mqtt_client : public QObject
 {
@@ -11,7 +11,7 @@ public:
     explicit mqtt_client(QObject *parent = 0);
     virtual ~mqtt_client();
 
-    QMQTT::Client *subscriber;
+    QMqttClient *iHome_mqtt;
 
 signals:
 

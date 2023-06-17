@@ -32,6 +32,7 @@ signals:
 
     void SW(bool ON);
     void Relay(bool ON);
+    void TIMER();
 
 public slots:
 

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 #
-QT       += core gui network sql webkit webkitwidgets qmqtt
+QT       += core gui network sql webkit webkitwidgets mqtt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -47,7 +47,7 @@ RESOURCES += \
 
 DISTFILES +=
 
-INCLUDEPATH += /home/pi/qmqtt-master/src/mqtt/
+INCLUDEPATH += /home/marek/qmqtt-master/src/mqtt/
 
 QMAKE_CXXFLAGS += -std=gnu++11
 

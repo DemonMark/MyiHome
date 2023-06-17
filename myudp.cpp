@@ -224,7 +224,7 @@ void MyUDP::readyRead(){
             MainWindow *udp_mw = MainWindow::getMainWinPtr();
             shelly *shelly_ptr = udp_mw->findChild<shelly*>("shelly_"+ips.split(".")[3]);
             QLabel *rsi_label = udp_mw->findChild<QLabel*>("rsi_shelly_"+ips.split(".")[3]);
-            qDebug() << ips << " " << Buffer.toHex();
+            qDebug() << ips << ":" << Buffer.toHex();
             if(rsi_label!=nullptr){
                 bool ok;
                 uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
@@ -235,20 +235,18 @@ void MyUDP::readyRead(){
                     rsi_label = udp_mw->findChild<QLabel*>("temp_shelly_"+ips.split(".")[3]);
                     rsi_label->setText(QString::number(signal)+DC);
                     //jedno skrzydło
-                    if(Buffer[2]&0x02 || Buffer[2].operator==(0)){
+                    if(Buffer[1]&0x01 || Buffer[1].operator==(0)){
                         shelly *shelly_ptr_2 = udp_mw->findChild<shelly*>("shelly_107_2");
-                        shelly_ptr_2->setProperty("Relay", QVariant(Buffer[2]).toBool());
+                        shelly_ptr_2->setProperty("Relay", QVariant(Buffer[1]).toBool());
                         emit shelly_ptr_2->Relay(shelly_ptr_2->property("Relay").toBool());
                     }
                 }
             }
-            if(shelly_ptr!=nullptr && (Buffer[2]&0x01 || Buffer[2].operator==(0))){
-
+            if(shelly_ptr!=nullptr){
                 shelly_ptr->setProperty("SW", QVariant(Buffer[3]).toBool());
                 shelly_ptr->setProperty("Relay", QVariant(Buffer[2]).toBool());
                 emit shelly_ptr->SW(shelly_ptr->property("SW").toBool());
                 emit shelly_ptr->Relay(shelly_ptr->property("Relay").toBool());
-
             }
         }
     }

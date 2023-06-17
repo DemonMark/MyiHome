@@ -187,7 +187,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     webView = new QWebPage(this);
     webView->setVisibilityState(QWebPage::VisibilityStateHidden);
-    webView->mainFrame()->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+    //webView->mainFrame()->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+    webView->mainFrame()->load(QUrl("https://halloween.friko.net/slonce/Bielsko-Biala"));
     QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
 
     dateTime = QDate::currentDate();
@@ -224,12 +225,42 @@ MainWindow::MainWindow(QWidget *parent) :
     map_button.load("/media/HDD1/admin/iHome/28-02-2018/media/map.png");
 
     //WENTYLATOR AQUAMI
-    connect(ui->shelly_108, &shelly::SW, [=](bool ON){
+    connect(ui->shelly_108, &shelly::SW, [&](bool ON){
         movie_heat_fan->setPaused(!ON);
     });
+
     //DZWONEK
+    connect(ui->shelly_106, &shelly::SW, [&](bool ON){
+        if(ON){
+            ui->shelly_106->setIcon(ui->shelly_106->property("mute_icon").value<QIcon>());
+        }else{
+            tik_tak->stop();
+            ui->label_shelly_106->setVisible(false);
+        }
+        ui->shelly_106->setProperty("mute", ON);
+    });
+
+    tik_tak = new QTimer(this);
+
+    connect(ui->shelly_106, &shelly::TIMER, [&](){
+        shelly *mut = MainWindow::findChild<shelly*>("shelly_106");
+
+        if(mut->property("mute").toBool()){
+            ui->label_shelly_106->setVisible(true);
+            int t = ui->dzwonek_t->value()*60;
+            connect(tik_tak, &QTimer::timeout, [=]()mutable{
+
+                ui->label_shelly_106->setText(QDateTime::fromTime_t(--t).toUTC().toString("mm:ss"));
+                if(t==0){
+                    mut->open(2);
+                }
+            });
+            tik_tak->start(1000);
+        }
+    });
+
     connect(ui->shelly_105, &shelly::SW, [=](bool ON){
-        if(ui->shelly_106->property("mute").toInt()!=1 && ON){
+        if(ON){
             QByteArray plugsockett;
             QByteArray psDataa;
             QUdpSocket *shellsockk = new QUdpSocket(this);
@@ -301,8 +332,8 @@ MainWindow::MainWindow(QWidget *parent) :
     humidity_timer->start(60000);
     //
     //AKTYWACJA OGRZEWANIA / AKTYWACJA STREF OGRZEWANIA
-    connect(ui->shelly_108, &QPushButton::toggled, [=](bool checked){
-        if(!checked){
+    connect(ui->shelly_108, &shelly::Relay, [=](bool ON){
+        if(!ON){
             maskawysl[2]&=~0xf8;
             maskawysl[3]&=~0xfe;
             emit UDP_ReadytoSend("192.168.1.101");
@@ -429,7 +460,7 @@ void MainWindow::showTime(){
 
 //***********ZMIANA DNIA**************//
     if(datetimetext!=dateStamptext){
-        webView->mainFrame()->load(QUrl("https://calendar.zoznam.sk/sunset-pl.php"));
+        webView->mainFrame()->load(QUrl("https://halloween.friko.net/slonce/Bielsko-Biala"));
         //QObject::connect(webView,SIGNAL(loadFinished(bool)), this, SLOT(readTimeFromWWW()));
         dateStamptext = dateTime.toString("dd/MM/yyyy");
     }
@@ -547,7 +578,7 @@ void MainWindow::receiving(){
         qry->prepare("SELECT * FROM temperature");
         if(qry->exec()){
             while(qry->next()){
-                qDebug() << qry->value("code_name").toString();
+                //qDebug() << qry->value("code_name").toString();
                 int INT = qry->value("frame_integer").toInt();
                 int DECIMAL = qry->value("frame_decimal").toInt();
                 int SET_TEMP = qry->value("value").toInt();
@@ -945,10 +976,13 @@ void MainWindow::on_button_31_toggled(bool checked)
 
 void MainWindow::readTimeFromWWW(){
 
-    QWebElement wTime = webView->mainFrame()->findFirstElement("h1");
+    //QWebElement wTime = webView->mainFrame()->findFirstElement("h1");
+    QWebElement wTime = webView->mainFrame()->findFirstElement("table");
     QString swTime = wTime.toPlainText();
-    ui->label_25->setText(swTime.mid(51,5));
-    ui->label_26->setText(swTime.mid(73,5));
+    //ui->label_25->setText(swTime.mid(51,5));
+    //ui->label_26->setText(swTime.mid(73,5));
+    ui->label_25->setText(swTime.mid(15,5));
+    ui->label_26->setText(swTime.mid(39,5));
 
     sunTimeWatcher("sunset_time", ui->label_26->text(), 0, "start_at");
     sunTimeWatcher("sunrise_time", ui->label_25->text(), 11, "stop_at");
@@ -1644,7 +1678,7 @@ void MainWindow::pir_status()
 
 void MainWindow::mqtt_processor(QString msg)
 {
-    translator(msg);
+    //translator(msg);
     //obsługa głosowa scen
     foreach(QPushButton *sbtn, sbList){
         QRegularExpression re_msg(sbtn->accessibleName(), QRegularExpression::CaseInsensitiveOption);
