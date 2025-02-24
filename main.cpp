@@ -17,6 +17,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    w.readscheduler();
 
     //Set the app style sheet
     QFile style_sheet_file("./style_sheet.qss");
@@ -27,10 +30,10 @@ int main(int argc, char *argv[])
     }
 
     MyUDP client;
-    mqtt_client mosquitto_client;
-    MainWindow w;
-    w.show();
-    w.readscheduler();
+    mqtt_client mosquitto_client("iHOME", "RPi4");
+    mqtt_client aquami("AQUAMI", "aquami_stat"); //shellyplusi4-80646fcc1280/status/switch:0
+    mqtt_client faac("FAAC", "FAAC_STATUS", &w);
+
     QObject::connect(&client, SIGNAL(changes()), &w, SLOT(receiving()));
     QObject::connect(&client, SIGNAL(hex_comming()), &w, SLOT(btnFinderfromHEX()));
     //QObject::connect(&client, SIGNAL(changes()), &pirek, SLOT(naruszeniestrefy()));
@@ -39,6 +42,8 @@ int main(int argc, char *argv[])
     QObject::connect(&client, SIGNAL(gate()), &w, SLOT(wyjezdzam()));
     QObject::connect(&w,SIGNAL(UDP_ReadytoSend(QString)), &client, SLOT(WYSUDP(QString)));
     QObject::connect(&mosquitto_client, SIGNAL(msg(QString)), &w, SLOT(mqtt_processor(QString)));
+    QObject::connect(&aquami, SIGNAL(msg(QString)), &w, SLOT(MQTT_SHELLY(QString)));
+    QObject::connect(&faac, SIGNAL(msg(QString)), &w, SLOT(MQTT_SHELLY(QString)));
     //QObject::connect(&pirek, SIGNAL(violation_name(QString)), &mosquitto_client, SLOT(publish(QString)));
 
   return a.exec();

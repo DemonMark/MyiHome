@@ -1,6 +1,6 @@
 #include "icon_temp.h"
 
-#define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
+#define baza "/home/marek/iHome/scene.db"
 
 icon_temp::icon_temp(QWidget *parent) :
     QLabel(parent)

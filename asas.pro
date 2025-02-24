@@ -47,7 +47,7 @@ RESOURCES += \
 
 DISTFILES +=
 
-INCLUDEPATH += /home/marek/qmqtt-master/src/mqtt/
+#INCLUDEPATH += /home/marek/qmqtt-master/src/mqtt/
 
 QMAKE_CXXFLAGS += -std=gnu++11
 

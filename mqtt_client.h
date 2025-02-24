@@ -3,15 +3,14 @@
 
 #include <QObject>
 #include <QMqttClient>
+#include <QStringLiteral>
 
-class mqtt_client : public QObject
+class mqtt_client : public QMqttClient
 {
     Q_OBJECT
 public:
-    explicit mqtt_client(QObject *parent = 0);
+    explicit mqtt_client(QString name, QString topic, QObject *parent = nullptr);
     virtual ~mqtt_client();
-
-    QMqttClient *iHome_mqtt;
 
 signals:
 
@@ -19,7 +18,7 @@ signals:
 
 public slots:
 
-    void publish(QString vname);
+    void publish(QString pMessage, QString pTopic);
 
 };
 

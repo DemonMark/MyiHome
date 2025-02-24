@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 
 extern bool locked;
-#define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
+#define baza "/home/marek/iHome/scene.db"
 
 pir_button::pir_button(QWidget *parent) :
     QPushButton(parent)

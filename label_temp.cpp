@@ -1,6 +1,6 @@
 #include "label_temp.h"
 
-#define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
+#define baza "/home/marek/iHome/scene.db"
 
 label_temp::label_temp(QWidget *parent) :
     QLabel(parent)

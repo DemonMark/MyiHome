@@ -27,7 +27,6 @@ public:
     void readscheduler();
     void getHumidity();
     void barometer();
-    void system_fan(double temp);
     void sunTimeWatcher(QString sunTime, QString source, int pos, QString editingTime);
     void WoL(QString macc, QString addr);
     void scene_executor(int *arg, QString &aktywna_scena, QString &buttons);
@@ -75,7 +74,7 @@ private slots:
   void ClickedscenebtnFinder(bool checked);
 
   void settimers(int dial_value);
-
+  void on_mq_clicked();
   void on_button_23_clicked();
   void on_button_27_clicked();
   void on_button_OFF_clicked();
@@ -103,6 +102,8 @@ private slots:
   void on_listWidget_itemClicked(QListWidgetItem *item);
 
   void mqtt_processor(QString msg);
+
+  void MQTT_SHELLY(QString msg);
 
   void on_button_list_currentIndexChanged(int arg1);
 
@@ -140,11 +141,11 @@ private:
     QMovie *movie_reku;
     QMovie *movie_heat_fan;
     QMovie *movie_all_off;
+    QMovie *movie_siren;
     QPixmap pompa_off;
 	QPixmap temp_on;
 	QPixmap temp_off;
     QPixmap temp_dis;
-	QPixmap con_err_off;
 	QPixmap con_err_on;
     QPixmap ex_button;
     QPixmap map_button;

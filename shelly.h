@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include "mainwindow.h"
+#include "mqtt_client.h"
 
 class shelly : public QPushButton
 {
@@ -16,7 +17,6 @@ public:
 
     MainWindow *sp_mw;
     QUdpSocket *shellsock;
-    QTimer *mute_counter;
     QLabel *label_cd = nullptr,
            *mute_ind = nullptr;
     QSpinBox *mute_counter_val = nullptr;
@@ -33,6 +33,12 @@ signals:
     void SW(bool ON);
     void Relay(bool ON);
     void TIMER();
+    void INPUT_0(bool ON);
+    void INPUT_1(bool ON);
+    void INPUT_2(bool ON);
+    void INPUT_3(bool ON);
+    void RSSI(uint);
+    void SHELLY_CLICKED();
 
 public slots:
 

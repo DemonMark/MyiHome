@@ -1,30 +1,31 @@
 #include "mqtt_client.h"
 
-mqtt_client::mqtt_client(QObject *parent) :
-    QObject(parent)
+
+mqtt_client::mqtt_client(QString name, QString topic, QObject *parent) :
+    QMqttClient(parent)
 {
-    //subscriber = new QMQTT::Client(QHostAddress::LocalHost, 1883);
-    //subscriber->connectToHost();
-    iHome_mqtt = new QMqttClient(this);
-    iHome_mqtt->setHostname("LocalHost");
-    iHome_mqtt->setPort(1883);
-    iHome_mqtt->connectToHost();
+    this->setObjectName(name);
+    this->setHostname("LocalHost");
+    this->setPort(1883);
+    this->connectToHost();
 
-    connect(iHome_mqtt, &QMqttClient::connected, [=](){
-        iHome_mqtt->subscribe(QMqttTopicFilter("RPi4"));
+    connect(this, &QMqttClient::connected, [=](){
+        this->subscribe(QMqttTopicFilter(topic));
     });
 
-    connect(iHome_mqtt, &QMqttClient::messageReceived, [=](const QByteArray &message){
-            //qDebug() << "MESSAGE FROM LAMBDA: " << QString::fromUtf8(message);
-            emit msg(QString::fromUtf8(message));
+    connect(this, &QMqttClient::messageReceived, [=](const QByteArray &message){
+        qDebug() << "MESSAGE FROM LAMBDA: " << message;
+        emit msg(QString::fromUtf8(message));
     });
-
 }
 
-void mqtt_client::publish(QString vname)
+void mqtt_client::publish(QString pMessage, QString pTopic)
 {
-    //const QMQTT::Message msg(1,"alarm", vname.toUtf8());
-    //subscriber->publish(msg);
+    const QString msg = "{'ID':'1'}";
+    const QString topic = "FAAC_CONTROL";
+    //iHome_mqtt->publish(QMqttTopicName(topic),msg.toUtf8(), 0, false);
+    //quint32 mm = iHome_mqtt->publish(topic, msg.toUtf8(), 0, false);
+    //qDebug() << mm;
 }
 
 mqtt_client::~mqtt_client()

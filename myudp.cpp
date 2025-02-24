@@ -28,7 +28,7 @@ extern bool scene_active;
 extern bool scene_driving;
 extern bool jestem;
 #define DC '\xb0' //znak stopnia
-#define baza "/media/HDD2/Moje projekty/MyiHome/scene.db"
+#define baza "/home/marek/iHome/scene.db"
 
 MyUDP::MyUDP(QObject *parent) :
     QObject(parent)
@@ -128,7 +128,7 @@ void MyUDP::readyRead(){
         quint16 senderPort;
         socket->readDatagram(Buffer.data(),Buffer.size(),&sender,&senderPort);
 
-        //qDebug() <<" Mss from" << sender.toString() << " Ramka: " << k;
+        //qDebug() <<" Mss from" << sender.toString() << " Ramka: " << Buffer.toHex();
 
         ips=sender.toString();
 
@@ -149,14 +149,14 @@ void MyUDP::readyRead(){
         }
         //**************************ODBIERANIE CZUJEK PIR***********************//
         if("192.168.1.103"==ips){
-
+            qDebug() <<" Mss from" << sender.toString() << " Ramka: " << Buffer.toHex();
             mydbs pir_chck(baza);
             QSqlQuery* qry = new QSqlQuery(pir_chck.getDatabase());
 
             for (int i=3; i<=(Buffer.length());i++){
                 if((temp[i-3]=Buffer[i])!=0){
                     //"SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id INNER JOIN PIR ON main.pir_desc = PIR.nazwa WHERE main.pir_hex = '"+QString::number(temp[0])+"' AND PIR.aktywna=1"
-                    qry->prepare("SELECT * FROM PIR LEFT JOIN (SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.pir_hex = '"+QString::number(temp[0])+"') WHERE PIR.pir_hex = '"+QString::number(temp[0])+"' AND aktywna=1");
+                    qry->prepare("SELECT * FROM PIR LEFT JOIN (SELECT * FROM main INNER JOIN sources ON main.id = sources.main_id WHERE main.pir_hex = '"+QString::number(temp[i-3]+(i-3))+"') WHERE PIR.pir_hex = '"+QString::number(temp[i-3]+(i-3))+"' AND aktywna=1");
                     if(qry->exec()){
                         while(qry->next()){
                             MainWindow *mw = MainWindow::getMainWinPtr();
@@ -224,29 +224,18 @@ void MyUDP::readyRead(){
             MainWindow *udp_mw = MainWindow::getMainWinPtr();
             shelly *shelly_ptr = udp_mw->findChild<shelly*>("shelly_"+ips.split(".")[3]);
             QLabel *rsi_label = udp_mw->findChild<QLabel*>("rsi_shelly_"+ips.split(".")[3]);
-            qDebug() << ips << ":" << Buffer.toHex();
+            //qDebug() << ips << ":" << Buffer.toHex();
             if(rsi_label!=nullptr){
                 bool ok;
                 uint signal = ((Buffer.toHex()).mid(0,2)).toUInt(&ok,16);
                 rsi_label->setText(QString::number(signal) + "%");
-                //wyjątek dla Shelly2.5 - termistor + 2 skrzydło
-                if(ips=="192.168.1.107"){
-                    signal = ((Buffer.toHex()).mid(8,2)).toUInt(&ok,16);
-                    rsi_label = udp_mw->findChild<QLabel*>("temp_shelly_"+ips.split(".")[3]);
-                    rsi_label->setText(QString::number(signal)+DC);
-                    //jedno skrzydło
-                    if(Buffer[1]&0x01 || Buffer[1].operator==(0)){
-                        shelly *shelly_ptr_2 = udp_mw->findChild<shelly*>("shelly_107_2");
-                        shelly_ptr_2->setProperty("Relay", QVariant(Buffer[1]).toBool());
-                        emit shelly_ptr_2->Relay(shelly_ptr_2->property("Relay").toBool());
-                    }
-                }
             }
             if(shelly_ptr!=nullptr){
                 shelly_ptr->setProperty("SW", QVariant(Buffer[3]).toBool());
                 shelly_ptr->setProperty("Relay", QVariant(Buffer[2]).toBool());
                 emit shelly_ptr->SW(shelly_ptr->property("SW").toBool());
                 emit shelly_ptr->Relay(shelly_ptr->property("Relay").toBool());
+                emit shelly_ptr->RSSI((Buffer.toHex()).mid(8,2).toUInt(nullptr,16));
             }
         }
     }

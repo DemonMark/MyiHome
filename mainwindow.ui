@@ -979,34 +979,6 @@ background-color: transparent;
          </time>
         </property>
        </widget>
-       <widget class="QLabel" name="label_37">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>320</y>
-          <width>71</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Roboto Condensed</family>
-          <pointsize>20</pointsize>
-          <weight>9</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;
-color: rgb(255, 255, 255);
-/*font: 75 20pt &quot;Roboto&quot;;*/
-font: 75 20pt &quot;Roboto Condensed&quot;;</string>
-        </property>
-        <property name="text">
-         <string>000</string>
-        </property>
-       </widget>
        <widget class="QLabel" name="label_otime">
         <property name="geometry">
          <rect>
@@ -1495,6 +1467,22 @@ background-color: transparent;
          <number>30</number>
         </property>
        </widget>
+       <widget class="QPushButton" name="mq">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>420</y>
+          <width>91</width>
+          <height>30</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(170, 170, 255);</string>
+        </property>
+        <property name="text">
+         <string>MQTT</string>
+        </property>
+       </widget>
        <zorder>label_41</zorder>
        <zorder>label_5</zorder>
        <zorder>dial_7</zorder>
@@ -1514,7 +1502,6 @@ background-color: transparent;
        <zorder>listWidget_4</zorder>
        <zorder>label_33</zorder>
        <zorder>timeEdit_3</zorder>
-       <zorder>label_37</zorder>
        <zorder>label_otime</zorder>
        <zorder>label_9</zorder>
        <zorder>label_10</zorder>
@@ -1538,6 +1525,7 @@ background-color: transparent;
        <zorder>label_39</zorder>
        <zorder>label_40</zorder>
        <zorder>ventilation_t</zorder>
+       <zorder>mq</zorder>
       </widget>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1559,6 +1547,9 @@ background-color: transparent;
          <property name="text">
           <string>Korytarz góra</string>
          </property>
+         <property name="whatsThis">
+          <string>1</string>
+         </property>
          <property name="checkState">
           <enum>Checked</enum>
          </property>
@@ -1575,6 +1566,9 @@ background-color: transparent;
          <property name="text">
           <string>Korytarz dół</string>
          </property>
+         <property name="whatsThis">
+          <string>2</string>
+         </property>
          <property name="checkState">
           <enum>Checked</enum>
          </property>
@@ -1587,6 +1581,9 @@ background-color: transparent;
         <item>
          <property name="text">
           <string>Łazienka dół</string>
+         </property>
+         <property name="whatsThis">
+          <string>4</string>
          </property>
          <property name="checkState">
           <enum>Checked</enum>
@@ -1601,6 +1598,9 @@ background-color: transparent;
          <property name="text">
           <string>Kuchnia</string>
          </property>
+         <property name="whatsThis">
+          <string>8</string>
+         </property>
          <property name="checkState">
           <enum>Checked</enum>
          </property>
@@ -1613,6 +1613,9 @@ background-color: transparent;
         <item>
          <property name="text">
           <string>Garaż</string>
+         </property>
+         <property name="whatsThis">
+          <string>16</string>
          </property>
          <property name="checkState">
           <enum>Checked</enum>
@@ -1627,6 +1630,9 @@ background-color: transparent;
          <property name="text">
           <string>Salon</string>
          </property>
+         <property name="whatsThis">
+          <string>32</string>
+         </property>
          <property name="checkState">
           <enum>Checked</enum>
          </property>
@@ -1640,6 +1646,9 @@ background-color: transparent;
          <property name="text">
           <string>Wiatrołap</string>
          </property>
+         <property name="whatsThis">
+          <string>64</string>
+         </property>
          <property name="checkState">
           <enum>Checked</enum>
          </property>
@@ -1652,6 +1661,26 @@ background-color: transparent;
         <item>
          <property name="text">
           <string>Łazienka góra</string>
+         </property>
+         <property name="whatsThis">
+          <string>128</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
+         <property name="icon">
+          <iconset>
+           <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/pir_off.png</selectedoff>
+           <selectedon>:/HDD1/admin/iHome/28-02-2018/media/pir_on.png</selectedon>
+          </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pokój Misi</string>
+         </property>
+         <property name="whatsThis">
+          <string>2</string>
          </property>
          <property name="checkState">
           <enum>Checked</enum>
@@ -2131,6 +2160,18 @@ background-color: transparent;
            <selectedoff>:/HDD1/admin/iHome/28-02-2018/media/light_off.png</selectedoff>
            <selectedon>:/HDD1/admin/iHome/28-02-2018/media/light_on.png</selectedon>
           </iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Łazienka dół prysznic LED</string>
+         </property>
+         <property name="whatsThis">
+          <string>shelly_108</string>
+         </property>
+         <property name="icon">
+          <iconset resource="ikony.qrc">
+           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bulb_on.png</iconset>
          </property>
         </item>
         <item>
@@ -3019,7 +3060,7 @@ border: none;
        <widget class="icon_temp" name="th_1">
         <property name="geometry">
          <rect>
-          <x>499</x>
+          <x>379</x>
           <y>300</y>
           <width>9</width>
           <height>22</height>
@@ -3120,7 +3161,7 @@ border: none;
        <widget class="label_temp" name="label_temp_1">
         <property name="geometry">
          <rect>
-          <x>511</x>
+          <x>392</x>
           <y>307</y>
           <width>41</width>
           <height>20</height>
@@ -3826,7 +3867,7 @@ border: none;
        <widget class="label_temp" name="label_temp_5">
         <property name="geometry">
          <rect>
-          <x>350</x>
+          <x>351</x>
           <y>224</y>
           <width>41</width>
           <height>21</height>
@@ -4671,6 +4712,15 @@ border: none;
         <property name="Relay" stdset="0">
          <bool>false</bool>
         </property>
+        <property name="MQTT" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="mqtt_pyload" stdset="0">
+         <string>{&quot;MUTE&quot;}</string>
+        </property>
+        <property name="mqtt_topic" stdset="0">
+         <string>BELL_CONTROL</string>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
         <property name="geometry">
@@ -4866,7 +4916,7 @@ border: none;
          <UInt>16</UInt>
         </property>
        </widget>
-       <widget class="shelly" name="shelly_108">
+       <widget class="shelly" name="shelly_111">
         <property name="geometry">
          <rect>
           <x>879</x>
@@ -4879,21 +4929,24 @@ border: none;
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="accessibleName">
-         <string>192.168.1.108</string>
+         <string>192.168.1.111</string>
         </property>
         <property name="accessibleDescription">
          <string>1</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">QPushButton#shelly_108{
+         <string notr="true">QPushButton#shelly_111{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/heat_off.png);
 background-color: transparent;
 background-repeat: none;
 border: none;
 }
 
-QPushButton#shelly_108:checked
+QPushButton#shelly_111:checked
 {
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/heat_on.png);
 background-color: transparent;
+background-repeat: none;
 border: none;
 }</string>
         </property>
@@ -4912,16 +4965,13 @@ border: none;
          </size>
         </property>
         <property name="checkable">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="autoRepeat">
          <bool>false</bool>
         </property>
         <property name="flat">
          <bool>true</bool>
-        </property>
-        <property name="SW" stdset="0">
-         <bool>false</bool>
         </property>
         <property name="on" stdset="0">
          <iconset resource="ikony.qrc">
@@ -4939,6 +4989,18 @@ border: none;
          <number>0</number>
         </property>
         <property name="Relay" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_0" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_1" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_2" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_3" stdset="0">
          <bool>false</bool>
         </property>
        </widget>
@@ -5256,11 +5318,11 @@ border: none;
          <bool>false</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="label_13">
+       <widget class="QLabel" name="label_hum_1">
         <property name="geometry">
          <rect>
-          <x>400</x>
-          <y>309</y>
+          <x>392</x>
+          <y>296</y>
           <width>31</width>
           <height>16</height>
          </rect>
@@ -5268,32 +5330,10 @@ border: none;
         <property name="styleSheet">
          <string notr="true">background-color: transparent;
 color: rgb(0, 199, 246);
-font: 75 10pt &quot;Roboto&quot;;</string>
+font: 75 8pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
-         <string>0%</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>377</x>
-          <y>301</y>
-          <width>20</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/Humidity Sensor.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
+         <string>00%</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_26">
@@ -5358,24 +5398,6 @@ border: none;
         </property>
         <property name="mapped_btn_name" stdset="0">
          <string/>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_14">
-        <property name="geometry">
-         <rect>
-          <x>400</x>
-          <y>297</y>
-          <width>31</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;
-color: rgb(0, 199, 246);
-font: 75 7pt &quot;Roboto&quot;;</string>
-        </property>
-        <property name="text">
-         <string>00°</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_35">
@@ -6028,11 +6050,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_2">
         <property name="geometry">
          <rect>
-          <x>736</x>
-          <y>127</y>
+          <x>724</x>
+          <y>141</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6047,11 +6072,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_4">
         <property name="geometry">
          <rect>
-          <x>489</x>
-          <y>173</y>
+          <x>475</x>
+          <y>183</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6066,11 +6094,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_5">
         <property name="geometry">
          <rect>
-          <x>771</x>
-          <y>212</y>
+          <x>758</x>
+          <y>225</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6085,11 +6116,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_6">
         <property name="geometry">
          <rect>
-          <x>510</x>
-          <y>292</y>
+          <x>377</x>
+          <y>305</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6104,11 +6138,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_7">
         <property name="geometry">
          <rect>
-          <x>449</x>
-          <y>52</y>
+          <x>437</x>
+          <y>65</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6123,11 +6160,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_8">
         <property name="geometry">
          <rect>
-          <x>348</x>
-          <y>211</y>
+          <x>336</x>
+          <y>223</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6142,8 +6182,8 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_12">
         <property name="geometry">
          <rect>
-          <x>1094</x>
-          <y>595</y>
+          <x>1079</x>
+          <y>580</y>
           <width>13</width>
           <height>13</height>
          </rect>
@@ -6164,11 +6204,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_13">
         <property name="geometry">
          <rect>
-          <x>1042</x>
-          <y>511</y>
+          <x>1029</x>
+          <y>525</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6183,11 +6226,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_14">
         <property name="geometry">
          <rect>
-          <x>581</x>
-          <y>452</y>
+          <x>568</x>
+          <y>465</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6220,11 +6266,14 @@ font: 87 10pt &quot;Lato Black&quot;;</string>
        <widget class="QLabel" name="con_err_15">
         <property name="geometry">
          <rect>
-          <x>1071</x>
-          <y>350</y>
+          <x>1055</x>
+          <y>378</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -6356,12 +6405,12 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
          <string>00%</string>
         </property>
        </widget>
-       <widget class="shelly" name="shelly_107_2">
+       <widget class="shelly" name="shelly_107">
         <property name="geometry">
          <rect>
-          <x>47</x>
+          <x>74</x>
           <y>413</y>
-          <width>58</width>
+          <width>71</width>
           <height>71</height>
          </rect>
         </property>
@@ -6389,12 +6438,12 @@ border: none;
         </property>
         <property name="icon">
          <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</normaloff>
-          <normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</iconset>
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close_1.png</normaloff>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_close_1.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>58</width>
+          <width>71</width>
           <height>71</height>
          </size>
         </property>
@@ -6407,28 +6456,49 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
-        <property name="on" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_on.png</iconset>
-        </property>
-        <property name="off" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</iconset>
-        </property>
-        <property name="offline" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</iconset>
-        </property>
         <property name="SW" stdset="0">
          <bool>false</bool>
         </property>
+        <property name="true" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close_1.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close_1.png</iconset>
+        </property>
+        <property name="false" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_opening_1.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_opening_1.png</iconset>
+        </property>
+        <property name="INPUT_0" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_1" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_2" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="INPUT_3" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="open" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_open_1.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_open_1.png</iconset>
+        </property>
+        <property name="MQTT" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="mqtt_pyload" stdset="0">
+         <string>{&quot;ID&quot;:&quot;1&quot;}</string>
+        </property>
+        <property name="mqtt_topic" stdset="0">
+         <string>FAAC_CONTROL</string>
+        </property>
        </widget>
-       <widget class="shelly" name="shelly_107">
+       <widget class="shelly" name="shelly_107_2">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>16</x>
           <y>413</y>
-          <width>46</width>
+          <width>56</width>
           <height>71</height>
          </rect>
         </property>
@@ -6456,12 +6526,12 @@ border: none;
         </property>
         <property name="icon">
          <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</normaloff>
-          <normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</iconset>
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close.png</normaloff>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/gate_close.png</iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>46</width>
+          <width>56</width>
           <height>71</height>
          </size>
         </property>
@@ -6477,30 +6547,39 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
-        <property name="on" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</iconset>
-        </property>
-        <property name="off" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</iconset>
-        </property>
-        <property name="offline" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_2_side.png</iconset>
-        </property>
         <property name="SW" stdset="0">
          <bool>false</bool>
         </property>
         <property name="Relay" stdset="0">
          <bool>false</bool>
         </property>
+        <property name="MQTT" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="mqtt_pyload" stdset="0">
+         <string>{&quot;ID&quot;:&quot;0&quot;}</string>
+        </property>
+        <property name="mqtt_topic" stdset="0">
+         <string>FAAC_CONTROL</string>
+        </property>
+        <property name="true" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close.png</iconset>
+        </property>
+        <property name="false" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_opening.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_opening.png</iconset>
+        </property>
+        <property name="open" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_open.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_open.png</iconset>
+        </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_107">
         <property name="geometry">
          <rect>
-          <x>105</x>
-          <y>406</y>
+          <x>152</x>
+          <y>405</y>
           <width>35</width>
           <height>22</height>
          </rect>
@@ -6512,24 +6591,6 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00%</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="temp_shelly_107">
-        <property name="geometry">
-         <rect>
-          <x>97</x>
-          <y>465</y>
-          <width>35</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: transparent;
-color: rgb(21, 255, 68);
-font: 75 7pt &quot;PibotoLt&quot;;</string>
-        </property>
-        <property name="text">
-         <string>00</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_42">
@@ -6609,7 +6670,7 @@ border: none;
         <property name="icon">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</normaloff>
-          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
+          <normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler_on.png</normalon>:/HDD1/admin/iHome/28-02-2018/media/boiler_off.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -7064,8 +7125,8 @@ border: none;
        <widget class="QLabel" name="con_err_16">
         <property name="geometry">
          <rect>
-          <x>1019</x>
-          <y>585</y>
+          <x>1005</x>
+          <y>571</y>
           <width>13</width>
           <height>13</height>
          </rect>
@@ -7083,7 +7144,7 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLabel" name="rsi_shelly_108">
+       <widget class="QLabel" name="rsi_shelly_111">
         <property name="geometry">
          <rect>
           <x>968</x>
@@ -7099,6 +7160,143 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
         </property>
         <property name="text">
          <string>00%</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_df">
+        <property name="geometry">
+         <rect>
+          <x>885</x>
+          <y>363</y>
+          <width>38</width>
+          <height>38</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/dFrost.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="rsi_shelly_112">
+        <property name="geometry">
+         <rect>
+          <x>152</x>
+          <y>417</y>
+          <width>35</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
+        </property>
+       </widget>
+       <widget class="shelly" name="shelly_108">
+        <property name="geometry">
+         <rect>
+          <x>515</x>
+          <y>280</y>
+          <width>28</width>
+          <height>43</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>192.168.1.108</string>
+        </property>
+        <property name="accessibleDescription">
+         <string>1</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#shelly_108{
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_off_11_v_w.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#shelly_108:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/light_on_11_v_w.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <property name="mute" stdset="0">
+         <number>0</number>
+        </property>
+        <property name="proper_name" stdset="0">
+         <string>Łazienka dół prysznic LED</string>
+        </property>
+        <property name="SW" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="Relay" stdset="0">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="rsi_shelly_108">
+        <property name="geometry">
+         <rect>
+          <x>501</x>
+          <y>279</y>
+          <width>21</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+color: rgb(21, 255, 68);
+font: 75 7pt &quot;PibotoLt&quot;;</string>
+        </property>
+        <property name="text">
+         <string>00%</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="siren">
+        <property name="geometry">
+         <rect>
+          <x>21</x>
+          <y>420</y>
+          <width>12</width>
+          <height>12</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+background-repeat: none;
+border: none;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="ikony.qrc">:/HDD1/admin/iHome/28-02-2018/media/siren_2.gif</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
        <zorder>label_parter</zorder>
@@ -7147,10 +7345,8 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>pir_btn_2</zorder>
        <zorder>pir_btn_3</zorder>
        <zorder>pir_btn_4</zorder>
-       <zorder>label_13</zorder>
-       <zorder>label_3</zorder>
+       <zorder>label_hum_1</zorder>
        <zorder>pushButton_26</zorder>
-       <zorder>label_14</zorder>
        <zorder>label_35</zorder>
        <zorder>label_8</zorder>
        <zorder>label_17</zorder>
@@ -7181,10 +7377,9 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>shelly_105</zorder>
        <zorder>rsi_shelly_105</zorder>
        <zorder>rsi_shelly_106</zorder>
-       <zorder>shelly_107_2</zorder>
        <zorder>shelly_107</zorder>
+       <zorder>shelly_107_2</zorder>
        <zorder>rsi_shelly_107</zorder>
-       <zorder>temp_shelly_107</zorder>
        <zorder>pushButton_42</zorder>
        <zorder>cwu</zorder>
        <zorder>scene_Matylda</zorder>
@@ -7201,7 +7396,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>label_ventilation</zorder>
        <zorder>temp_dial</zorder>
        <zorder>label_dsc_1</zorder>
-       <zorder>shelly_108</zorder>
+       <zorder>shelly_111</zorder>
        <zorder>pump_fan</zorder>
        <zorder>label_CO</zorder>
        <zorder>label_temp_14</zorder>
@@ -7210,7 +7405,12 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
        <zorder>th_priority</zorder>
        <zorder>th_master</zorder>
        <zorder>con_err_16</zorder>
+       <zorder>rsi_shelly_111</zorder>
+       <zorder>label_df</zorder>
+       <zorder>rsi_shelly_112</zorder>
+       <zorder>shelly_108</zorder>
        <zorder>rsi_shelly_108</zorder>
+       <zorder>siren</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
@@ -8103,11 +8303,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_1">
         <property name="geometry">
          <rect>
-          <x>700</x>
-          <y>100</y>
+          <x>688</x>
+          <y>115</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -8122,11 +8325,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_3">
         <property name="geometry">
          <rect>
-          <x>464</x>
-          <y>470</y>
+          <x>452</x>
+          <y>485</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -8141,11 +8347,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_9">
         <property name="geometry">
          <rect>
-          <x>510</x>
-          <y>102</y>
+          <x>498</x>
+          <y>115</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -8160,11 +8369,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_10">
         <property name="geometry">
          <rect>
-          <x>772</x>
-          <y>194</y>
+          <x>758</x>
+          <y>207</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -8179,11 +8391,14 @@ font: 75 10pt &quot;Roboto&quot;;</string>
        <widget class="QLabel" name="con_err_11">
         <property name="geometry">
          <rect>
-          <x>443</x>
-          <y>196</y>
+          <x>431</x>
+          <y>209</y>
           <width>13</width>
           <height>13</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;</string>
         </property>
         <property name="text">
          <string/>
@@ -8654,6 +8869,70 @@ border: none;
          <bool>true</bool>
         </property>
        </widget>
+       <widget class="QLabel" name="label_pir_btn_9">
+        <property name="geometry">
+         <rect>
+          <x>569</x>
+          <y>61</y>
+          <width>26</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: transparent;
+font: 75 7pt &quot;Piboto Condensed&quot;;
+color: rgb(76, 76, 76);</string>
+        </property>
+        <property name="text">
+         <string>00:00</string>
+        </property>
+       </widget>
+       <widget class="pir_button" name="pir_btn_9">
+        <property name="geometry">
+         <rect>
+          <x>594</x>
+          <y>66</y>
+          <width>16</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="accessibleName">
+         <string>pokój Misi</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton#pir_btn_9 {
+background-color: transparent;
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/pir_off_4.png);
+background-repeat: none;
+border: none;
+}
+
+QPushButton#pir_btn_9:checked
+{
+background-image: url(:/HDD1/admin/iHome/28-02-2018/media/pir_on_4.png);
+background-color: transparent;
+border: none;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <property name="auto_off" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="active" stdset="0">
+         <bool>false</bool>
+        </property>
+       </widget>
        <zorder>label_pietro</zorder>
        <zorder>label_48</zorder>
        <zorder>go_ground</zorder>
@@ -8692,6 +8971,8 @@ border: none;
        <zorder>label_47</zorder>
        <zorder>pir_btn_8</zorder>
        <zorder>a_off</zorder>
+       <zorder>label_pir_btn_9</zorder>
+       <zorder>pir_btn_9</zorder>
       </widget>
      </widget>
     </item>
@@ -8732,8 +9013,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="ikony.qrc"/>
   <include location="grafika.qrc"/>
+  <include location="ikony.qrc"/>
  </resources>
  <connections/>
 </ui>

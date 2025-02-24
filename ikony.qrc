@@ -112,7 +112,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/con_err_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_14.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_14.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/boiler.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/restart_t_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/restart_t_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_off.png</file>
@@ -120,8 +119,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/shelly1_offline.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_off.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/bell_on.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_21.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_21.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/cat_off.png</file>
@@ -154,10 +151,6 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_offline_w.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pompa_off_w.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side_on.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_1_side_off.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side_off.png</file>
-        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_2_side_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/reku.gif</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/del_set.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/del_set_on.png</file>
@@ -195,5 +188,17 @@
         <file>../../../HDD1/admin/iHome/28-02-2018/media/a_off_on.png</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/pump_fan.gif</file>
         <file>../../../HDD1/admin/iHome/28-02-2018/media/heat_offline.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/dFrost.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/boiler_on.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_close_1.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_close.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_opening_1.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_opening.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_open_1.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/gate_open.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_off_11_v_w.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/light_on_11_v_w.png</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/siren.gif</file>
+        <file>../../../HDD1/admin/iHome/28-02-2018/media/siren_2.gif</file>
     </qresource>
 </RCC>

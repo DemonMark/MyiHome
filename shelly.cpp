@@ -7,17 +7,15 @@ QDateTime mute_timer;
 shelly::shelly(QWidget *parent) : QPushButton(parent)
 {
     sp_mw = MainWindow::getMainWinPtr();
+
     shellsock = new QUdpSocket(this);
-    mute_counter = new QTimer(this);
     QTimer *schonline = new QTimer (this);
 
     connect(schonline, SIGNAL(timeout()), this, SLOT(answer()));
     schonline->start(10000);
 
     connect(this, &shelly::toggled, [=](bool checked){
-
         open(checked);
-
     });
 
     connect(this, &shelly::Relay, [=](bool ON){
@@ -36,7 +34,7 @@ void shelly::answer(){
     psData.clear();
     psData.append(plugsocket);
     shellsock->writeDatagram(psData,QHostAddress(this->accessibleName()),4210);
-    QTimer::singleShot(10000, [=](){
+    QTimer::singleShot(9000, [=](){
         QLabel *rsi_label = sp_mw->findChild<QLabel*>("rsi_shelly_" + this->objectName().split("_")[1]);
         if(rsi_label!=nullptr){rsi_label->setText("--");}
     });
@@ -46,11 +44,18 @@ void shelly::answer(){
 void shelly::mousePressEvent(QMouseEvent *ev)
 {
     mute_timer = QDateTime::currentDateTime();
-
+    emit SHELLY_CLICKED();
     if(this->isCheckable()){
         this->setChecked(!this->isChecked());
     }else{
         open(this->accessibleDescription().toInt());
+    }
+    if(this->property("MQTT").toBool()){
+        QMqttClient *shelly_c = sp_mw->findChild<QMqttClient*>("FAAC");
+        if(shelly_c){
+            qDebug() << shelly_c->objectName();
+            shelly_c->publish(QMqttTopicName(this->property("mqtt_topic").toString()), this->property("mqtt_pyload").toByteArray());
+        }
     }
 }
 

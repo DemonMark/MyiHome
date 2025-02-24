@@ -33,7 +33,8 @@
 #define DHT_MAXCOUNT 35000 //liczba dobrana do szybkości RPi2 - dotyczy max czasu odczytu powyżej TIMEOUT
 #define DHT_BITS 41
 #define DC '\xb0' //znak stopnia
-#define sceny "/media/HDD2/Moje projekty/MyiHome/scene.db"
+#define HC '\x25' //znak %
+#define sceny "/home/marek/iHome/scene.db"
 
 QList<QLabel*> c_e;
 QList<QPushButton*> bList; //lista przycisków oświetlenia
@@ -45,6 +46,7 @@ QList<QLabel*> pir_label; //lista etykiet timerów PIR
 QList<QCheckBox*> chlist;
 QString time_text, time_h_m;
 extern QString ips;
+int ct_q;
 int num=0;
 extern unsigned char shell[1];
 extern unsigned char temp[20];
@@ -77,7 +79,7 @@ QStringList EN_WORD({"library","Mouse room","bedroom","wardrobe","bathroom"});
 bool locked;
 
 MainWindow *MainWindow::pMainWindow = nullptr; //dostep do MainWindow
-
+//MainWindow *MainWindow::mWinPtr = nullptr;
 //inicjalizacja pinów GPIO Raspberry
 void initGPIO()
 {
@@ -91,11 +93,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    pMainWindow = this;
+    //mWinPtr = qobject_cast<MainWindow*>(window());
     bcm2835_init();
     initGPIO();
 
     ui->setupUi(this);
-    pMainWindow = this;
+
     timerId = startTimer(1000);
 
     /******************************ZEGAR************************/
@@ -110,12 +114,11 @@ MainWindow::MainWindow(QWidget *parent) :
     lList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_temp_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_temp_*"));
     ldList = ui->tab_5->findChildren<QLabel*>(QRegExp ("label_dsc_*")) + ui->tab_2->findChildren<QLabel*>(QRegExp ("label_dsc_*"));
     pir_label = MainWindow::findChildren<QLabel*>(QRegExp ("label_pir_btn_*"));
-
-    int tmp = (MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count());
-    for(int lf=1; lf<=tmp; lf++){
-        QString ln=QString::number(lf);
-        c_e.append(MainWindow::findChildren<QLabel*>("con_err_"+ln));
+    //ułożenie objektów narastająco wg nazwy
+    for(int lf=1; lf<=MainWindow::findChildren<QLabel*>(QRegExp ("con_err_*")).count(); lf++){
+        c_e.append(MainWindow::findChildren<QLabel*>("con_err_" + QString::number(lf)));
     }
+    //
 
     mydbs baza(sceny);
     QSqlQuery *qry = baza.query();
@@ -177,6 +180,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_32->setVisible(false);
     ui->label_47->setVisible(false);
     ui->label_48->setVisible(false);
+    ui->label_df->setVisible(false);
     ui->label_shelly_106->setVisible(false);
     ui->label_ventilation->setVisible(false);
     ui->pir_dial->setVisible(false);
@@ -201,6 +205,7 @@ MainWindow::MainWindow(QWidget *parent) :
     movie_countdown = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/countdown.gif");
     movie_heat_fan = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pump_fan.gif");
     movie_all_off = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/power_on.gif");
+    movie_siren = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/siren_2.gif");
     movie_reku = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/reku_old.gif");
     movie_reku->setCacheMode(QMovie::CacheAll);
     movie_reku->jumpToFrame(ui->button_wentylator->property("current_speed").toInt());
@@ -208,9 +213,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_19->setMovie(movie_countdown);
     ui->label_wentylator->setMovie(movie_wentylacja);
     ui->pump_fan->setMovie(movie_heat_fan);
+    ui->siren->setMovie(movie_siren);
     movie_wentylacja->start();
     movie_heat_fan->setSpeed(150);
     movie_heat_fan->start();
+    movie_siren->jumpToFrame(0);
 
     pir_status();
     rekuperator(1);
@@ -219,14 +226,57 @@ MainWindow::MainWindow(QWidget *parent) :
     temp_on.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_true.png");
     temp_off.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_false.png");
     temp_dis.load("/media/HDD1/admin/iHome/28-02-2018/media/thermo_0.png");
-    con_err_off.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_off.png");
     con_err_on.load("/media/HDD1/admin/iHome/28-02-2018/media/con_err_on.png");
     ex_button.load("/media/HDD1/admin/iHome/28-02-2018/media/ex.png");
     map_button.load("/media/HDD1/admin/iHome/28-02-2018/media/map.png");
 
-    //WENTYLATOR AQUAMI
-    connect(ui->shelly_108, &shelly::SW, [&](bool ON){
+    //AQUAMI
+    connect(ui->shelly_111, &shelly::INPUT_0, [&](bool ON){
         movie_heat_fan->setPaused(!ON);
+    });
+
+    connect(ui->shelly_111, &shelly::INPUT_1, [&](bool ON){
+        ui->label_df->setVisible(ON);
+    });
+
+    connect(ui->shelly_111, &shelly::INPUT_2, [&](bool ON){
+        ui->cwu->setChecked(ON);
+    });
+
+    //BRAMA WJAZDOWA
+    connect(ui->shelly_107, &shelly::SHELLY_CLICKED, [=](){
+       movie_siren->start();
+    });
+    connect(ui->shelly_107_2, &shelly::SHELLY_CLICKED, [=](){
+       movie_siren->start();
+    });
+    connect(ui->shelly_107, &shelly::INPUT_0, [&](bool ON){
+        int movie_frame = ON ? 0 : 1;
+        QByteArray D = (QVariant(ON).toString()).toLocal8Bit();
+        const char *V = D.data();
+        ui->shelly_107->setIcon(ui->shelly_107->property(V).value<QIcon>());
+        movie_siren->setPaused(ON);
+        movie_siren->jumpToFrame(movie_frame);
+    });
+    connect(ui->shelly_107, &shelly::INPUT_1, [&](bool ON){
+        QString status = ON ? "open" : "false";
+        int movie_frame = ON ? 1 : 0;
+        QByteArray D = (QVariant(status).toString()).toLocal8Bit();
+        const char *V = D.data();
+        ui->shelly_107->setIcon(ui->shelly_107->property(V).value<QIcon>());
+        movie_siren->setPaused(ON);
+        movie_siren->jumpToFrame(movie_frame);
+    });
+    connect(ui->shelly_107, &shelly::INPUT_2, [&](bool ON){
+        QByteArray D = (QVariant(ON).toString()).toLocal8Bit();
+        const char *V = D.data();
+        ui->shelly_107_2->setIcon(ui->shelly_107_2->property(V).value<QIcon>());
+    });
+    connect(ui->shelly_107, &shelly::INPUT_3, [&](bool ON){
+        QString status = ON ? "open" : "false";
+        QByteArray D = (QVariant(status).toString()).toLocal8Bit();
+        const char *V = D.data();
+        ui->shelly_107_2->setIcon(ui->shelly_107_2->property(V).value<QIcon>());
     });
 
     //DZWONEK
@@ -271,6 +321,19 @@ MainWindow::MainWindow(QWidget *parent) :
             psDataa.append(plugsockett);
             shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
             delete shellsockk;
+        }
+    });
+
+    //WILGOTNOŚĆ
+    connect(ui->shelly_108, &shelly::RSSI, [=](uint rs){
+        ui->label_hum_1->setText(QString::number(rs) + HC);
+        int hum = rs>60 ? 1 : 0;
+
+        switch (hum){
+        case 1:
+            break;
+        case 0:
+            break;
         }
     });
 
@@ -322,18 +385,17 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     });
 
-    // WILGOTNOŚĆ, CIŚNIENIE, TEMPERATURA SYSTEMU
+    // WILGOTNOŚĆ, CIŚNIENIE
     humidity_timer = new QTimer(this);
     connect(humidity_timer, &QTimer::timeout, [=](){
         getHumidity();
         barometer();
-        system_fan(ui->label_37->text().toDouble());
     });
-    humidity_timer->start(60000);
+    //humidity_timer->start(60000);
     //
     //AKTYWACJA OGRZEWANIA / AKTYWACJA STREF OGRZEWANIA
-    connect(ui->shelly_108, &shelly::Relay, [=](bool ON){
-        if(!ON){
+    connect(ui->shelly_111, &shelly::INPUT_1, [=](bool ON){ //ROZWIĄZANIE TYMCZASOWE
+        if(ON){
             maskawysl[2]&=~0xf8;
             maskawysl[3]&=~0xfe;
             emit UDP_ReadytoSend("192.168.1.101");
@@ -341,6 +403,11 @@ MainWindow::MainWindow(QWidget *parent) :
             movie_pompa_2->stop();
             ui->label_pompa_1->setPixmap(pompa_off);
             ui->label_pompa_2->setPixmap(pompa_off);
+            ui->shelly_111->setChecked(!ON);
+            ui->label_df->setVisible(ON);
+        } else{
+            ui->label_df->setVisible(ON);
+            ui->shelly_111->setChecked(!ON);
         }
     });
 
@@ -477,7 +544,7 @@ void MainWindow::showTime(){
 void MainWindow::timerEvent(QTimerEvent *event){
 
     //*************GEOLOKALIZACJA**************
-   QFile comming("/home/pi/GDrive/comming_home.csv");
+   QFile comming("/home/marek/GDrive/comming_home.csv");
    if(comming.exists()){
         if(!jestem){
             comming.remove();
@@ -498,73 +565,6 @@ void MainWindow::timerEvent(QTimerEvent *event){
 }
 
 void MainWindow::receiving(){
-
-    /**********ZAMIANA RAMKI Z TEMPERATURA NA QSTRING+WYSWIETLENIE*************/
-    //****BIBLIOTEKA****//
-    //b.append(QString("%1").arg(temperatura[3]));
-    //t.append(QString("%1").arg(temperatura[4]));
-    //****SALON****//
-    //b1.append(QString("%1").arg(temperatura[6]));
-    //t1.append(QString("%1").arg(temperatura[7]));
-    //****SYPIALNIA****//
-    //b2.append(QString("%1").arg(temperatura[9]));
-    //t2.append(QString("%1").arg(temperatura[10]));
-    //****KORYTARZ DOL****//
-    //b3.append(QString("%1").arg(temperatura[12]));
-    //t3.append(QString("%1").arg(temperatura[13]));
-    //****MARYNARSKI****//
-    //b4.append(QString("%1").arg(temperatura[15]));
-    //t4.append(QString("%1").arg(temperatura[16]));
-    //****LAZIENKA DOL****//
-    //b5.append(QString("%1").arg(temperatura[18]));
-    //t5.append(QString("%1").arg(temperatura[19]));
-    //****KUCHNIA-JADALNIA****//
-    //b6.append(QString("%1").arg(temperatura[21]));
-    //t6.append(QString("%1").arg(temperatura[22]));
-    //****WIATROLAP****//
-    //b7.append(QString("%1").arg(temperatura[24]));
-    //t7.append(QString("%1").arg(temperatura[25]));
-    //****POKOJ MISI****//
-    //b8.append(QString("%1").arg(temperatura[27]));
-    //t8.append(QString("%1").arg(temperatura[28]));
-    //****LOFT****//
-    //b9.append(QString("%1").arg(temperatura[30]));
-    //t9.append(QString("%1").arg(temperatura[31]));
-    //****ŁAZIENKA GÓRA****//
-    //b11.append(QString("%1").arg(temperatura[33]));
-    //t11.append(QString("%1").arg(temperatura[34]));
-    //****ZASOBNIK C.O.*****//
-    //b14.append(QString("%1").arg(temperatura[45]));
-    //t14.append(QString("%1").arg(temperatura[46]));
-    //****KOTŁOWNIA****//
-    //b12.append(QString("%1").arg(temperatura[36]));
-    //t12.append(QString("%1").arg(temperatura[37]));
-    //****ZEWNATRZ****//
-    //b10.append(QString("%1").arg(temperatura[39]));
-    //t10.append(QString("%1").arg(temperatura[40]));
-    //subzero.append(QString("%1").arg(temperatura[41]));
-    //****GARAŻ****//
-    //b13.append(QString("%1").arg(temperatura[42]));
-    //t13.append(QString("%1").arg(temperatura[43]));
-    //*****ZBIORNIK CWU*****//
-    //b15.append(QString("%1").arg(temperatura[50]));
-    //t15.append(QString("%1").arg(temperatura[51]));
-
-    //ui->label_temp_9->setText(b+"."+t + DC);
-    //ui->label_temp_2->setText(b1+"."+t1 + DC);
-    //ui->label_temp_6->setText(b2+"."+t2 + DC);
-    //ui->label_temp_11->setText(b3+"."+t3 + DC);
-    //ui->label_temp_3->setText(b4+"."+t4 + DC);
-    //ui->label_temp_1->setText(b5+"."+t5 + DC);
-    //ui->label_temp_4->setText(b6+"."+t6 + DC);
-    //ui->label_temp_5->setText(b7+"."+t7 + DC);
-    //ui->label_temp_8->setText(b8+"."+t8 + DC);
-    //ui->label_temp_10->setText(b9+"."+t9 + DC);
-    //ui->label_temp_7->setText(b11+"."+t11 + DC);
-    //ui->label_temp_13->setText(b12+"."+t12 + DC);
-    //ui->label_temp_12->setText(b13+"."+t13 + DC);
-    //ui->label_21->setText(b14+"."+t14 + DC);
-    //ui->label_22->setText(b15+"."+t15 + DC);
 
     ui->label_pompa_1->setProperty("status", false);
     ui->label_pompa_2->setProperty("status", false);
@@ -622,7 +622,7 @@ void MainWindow::receiving(){
         }
         delete qry;
 
-        if(ui->shelly_108->property("Relay")==true){
+        if(ui->shelly_111->isChecked()){
             //*************flaga dla pomp podłogówki*******
             if(ui->label_pompa_1->property("status")==true){
                 maskawysl[3]|=0x40;
@@ -658,13 +658,17 @@ void MainWindow::receiving(){
         //
     }
 //****************sprawdzanie obecności czujników CT**********************************//
-    uint16_t id[16]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //numer czujnika
-    int tn[16]={48,48,48,48,48,48,48,48,49,49,49,49,49,49,49,49}; //numer bajtu kontrolnego stan czujnika
-    for(int i=0; i<16 ;i++){
-        if(temperatura[tn[i]]&id[i]){
-            c_e.at(i)->setPixmap(con_err_off);
-        }else{
-            c_e.at(i)->setPixmap(con_err_on);
+    uint16_t id[8]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80}; //numer czujnika
+    int tn[2]={48,49}; //numer bajtu kontrolnego stan czujnika
+    for(int tn_ : tn){
+        static int i = 0;
+        for(uint16_t  id_ : id){
+            if(temperatura[tn_]&id_){
+                c_e.at(i)->setPixmap(QPixmap());
+            }else{
+                c_e.at(i)->setPixmap(con_err_on);
+            }
+            i == 15 ? i=0 : i++;
         }
     }
 
@@ -852,7 +856,7 @@ void MainWindow::on_button_23_clicked()
         selected_sources(scheduledbtn, tempnames);
 
         if(ui->button_29->isChecked()){ //akcje wieczorne - znacznik 1
-            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
+            db_pirhex = ui->listWidget->currentItem()->whatsThis();
             db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "1";
             icon = "/media/HDD1/admin/iHome/28-02-2018/media/evening.png";
@@ -865,7 +869,7 @@ void MainWindow::on_button_23_clicked()
             }
         }
         if(ui->button_43->isChecked()){ //akcje dzienne - znacznik 3
-            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
+            db_pirhex = ui->listWidget->currentItem()->whatsThis();
             db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "3";
             icon = "/media/HDD1/admin/iHome/28-02-2018/media/day.png";
@@ -877,7 +881,7 @@ void MainWindow::on_button_23_clicked()
             }
         }
         if(ui->button_30->isChecked()){ //akcje stałe - znacznik 0
-            db_pirhex = QString::number(hexx[(ui->listWidget->currentRow())+1]);
+            db_pirhex = ui->listWidget->currentItem()->whatsThis();
             db_pirtext = ui->listWidget->currentItem()->text();
             db_time = "0";
             icon = "/media/HDD1/admin/iHome/28-02-2018/media/allday.png";
@@ -916,7 +920,7 @@ void MainWindow::on_button_23_clicked()
 
         mydbs baza(sceny);
         QSqlQuery *qry = new QSqlQuery(baza.getDatabase());
-
+        qDebug() << db_pirhex;
         qry->prepare("INSERT INTO main VALUES ('"+QString::number(id_rand)+"','"+db_time+"','"+db_pirhex+"','"+db_pirtext+"','"+db_start+"','"+db_stop+"','"+QString::number(db_suntimewatch)+"','"+db_sunset+"','"+db_sunrise+"','"+db_timername+"','"+QString::number(db_tmp)+"')");
         if(qry->exec()){
             foreach(QString db_btn, scheduledbtn){
@@ -1211,8 +1215,7 @@ void MainWindow::getHumidity()
         QString hum, temp;
         hum.setNum(humidity);
         temp.setNum(temperature);
-        ui->label_13->setText(hum +"%");
-        ui->label_14->setText(temp + DC);
+        //ui->label_hum_1->setText(hum +"%");
 
         if(humidity>=ui->spinBox->value() && !ventilation && spimy==0){
             ventilation=true;
@@ -1232,12 +1235,11 @@ void MainWindow::getHumidity()
 void MainWindow::barometer()
 {
     QString pressure, temperature;
-    QFile weather_data("/home/pi/plik.txt");
+    QFile weather_data("/home/marek/plik.txt");
     if(weather_data.open(QIODevice::ReadOnly | QIODevice::Text)){
         QTextStream data(&weather_data);
         data >> pressure >> temperature;
         ui->label_35->setText(pressure);
-        ui->label_37->setText(temperature);
     }
     weather_data.close();
 
@@ -1463,8 +1465,8 @@ void MainWindow::WoL(QString macc, QString addr)
         }     
         mac_size+=6;
     }
-    qDebug() << noused;
-    qDebug() << woldata;
+    qDebug() << "MAC: " << noused;
+    qDebug() << "DATA: " << woldata;
     WOL->writeDatagram(woldata, QHostAddress(addr),7);
 }
 
@@ -1636,7 +1638,6 @@ void MainWindow::buttons_run(QString j, bool tof, QString c)
     }else{
         the_button->click();
     }
-
 }
 //aktywowanie/deaktywowanie czujek PIR
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
@@ -1705,6 +1706,45 @@ void MainWindow::mqtt_processor(QString msg)
             source = init_fi.takeFirst();
             buttons_run(source->whatsThis(), true, "click");
         }
+    }
+}
+
+void MainWindow::MQTT_SHELLY(QString msg)
+{
+    if(msg.contains("SIGNAL_STRENGHT", Qt::CaseSensitive)){
+        QLabel *rsi_label = MainWindow::findChild<QLabel*>("rsi_shelly_" + msg.mid(17,3));
+        if(rsi_label!=nullptr){
+            rsi_label->setText(msg.mid(40,2) + "%");
+        }
+    } else if(msg.contains("INPUT", Qt::CaseSensitive)){
+        shelly *shelly_ptr = MainWindow::findChild<shelly*>("shelly_" + msg.mid(17,3));
+        if(shelly_ptr!=nullptr){
+            int INP = msg.mid(30,1).toInt();
+            QString INPUT = "INPUT_" + msg.mid(30,1);
+            QByteArray tINPUT = INPUT.toLocal8Bit();
+            const char *IPT = tINPUT.data();
+            shelly_ptr->setProperty(IPT, msg.mid(42,1));
+            switch (INP){
+            case 0:
+            {
+                emit shelly_ptr->INPUT_0(shelly_ptr->property("INPUT_0").toBool());
+                //qDebug() << ui->digitalclock->text() << " " << IPT << " " << msg.mid(42,1);
+                break;
+            }
+            case 1:
+
+                emit shelly_ptr->INPUT_1(shelly_ptr->property("INPUT_1").toBool());
+                break;
+            case 2:
+
+                emit shelly_ptr->INPUT_2(shelly_ptr->property("INPUT_2").toBool());
+                break;
+            case 3:
+
+                emit shelly_ptr->INPUT_3(shelly_ptr->property("INPUT_3").toBool());
+                break;
+            }
+        };
     }
 }
 //do skończenia
@@ -1792,15 +1832,6 @@ void MainWindow::delete_schedule(int itm)
             count++;
         }
         delete qry;
-    }
-}
-
-void MainWindow::system_fan(double temp)
-{
-    if(temp>29){
-        bcm2835_gpio_write(FAN_ON, LOW);
-    }else if(temp<28.1){
-        bcm2835_gpio_write(FAN_ON, HIGH);
     }
 }
 
@@ -1984,7 +2015,6 @@ void MainWindow::on_Tab_currentChanged(int index)
         show_item2(ui->Tab->currentWidget(), ui->rsi_shelly_105, ui->rsi_shelly_105->geometry());
         show_item2(ui->Tab->currentWidget(), ui->shelly_107, ui->shelly_107->geometry());
         show_item2(ui->Tab->currentWidget(), ui->shelly_107_2, ui->shelly_107_2->geometry());
-        show_item2(ui->Tab->currentWidget(), ui->temp_shelly_107, ui->temp_shelly_107->geometry());
         show_item2(ui->Tab->currentWidget(), ui->rsi_shelly_107, ui->rsi_shelly_107->geometry());
         show_item2(ui->Tab->currentWidget(), ui->label_wentylator, ui->label_wentylator->geometry());
         show_item2(ui->Tab->currentWidget(), ui->button_wentylator, ui->button_wentylator->geometry());
@@ -1997,6 +2027,18 @@ void MainWindow::on_Tab_currentChanged(int index)
     }
 }
 
+void MainWindow::on_mq_clicked(){
+    QMqttClient *test = new QMqttClient(this);
+    test->setHostname("LocalHost");
+    test->setPort(1883);
+    test->connectToHost();
+
+    const QString msg = "{'ID':'1'}";
+    const QString topic = "FAAC";
+    quint32 mm = test->publish(topic, msg.toUtf8(), 0, true);
+    qDebug() << mm;
+}
+
 //RETURN FUNCTIONS
 bool MainWindow::expanded(QPushButton *exd_btn, const char *prop)
 {
@@ -2006,6 +2048,7 @@ bool MainWindow::expanded(QPushButton *exd_btn, const char *prop)
         return false;
     }
 }
+
 //dostep do MainWindow z innych klas
 MainWindow *MainWindow::getMainWinPtr()
 {
