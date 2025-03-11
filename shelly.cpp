@@ -4,8 +4,19 @@ QByteArray plugsocket;
 QByteArray psData;
 QDateTime mute_timer;
 
+static mqtt_client *mqtt_shelly = nullptr;
+
 shelly::shelly(QWidget *parent) : QPushButton(parent)
 {
+    if(!mqtt_shelly){
+        mqtt_shelly = new mqtt_client("FAAC", "", this);
+    }
+
+    QTimer::singleShot(500, this, [&](){
+        mqtt_shelly->sub(this->property("mqtt_topic_sub").toString());
+        connect(mqtt_shelly, &mqtt_client::msg, this, &shelly::msg_process);
+    });
+
     sp_mw = MainWindow::getMainWinPtr();
 
     shellsock = new QUdpSocket(this);
@@ -19,11 +30,9 @@ shelly::shelly(QWidget *parent) : QPushButton(parent)
     });
 
     connect(this, &shelly::Relay, [=](bool ON){
-        if(ON){
-            this->setIcon(this->property("on").value<QIcon>());
-        }else if(this->property("mute")==0){
-            this->setIcon(this->property("off").value<QIcon>());
-        }
+        QByteArray D = (QVariant(ON).toString()).toLocal8Bit();
+        const char *V = D.data();
+        this->setIcon(this->property(V).value<QIcon>());
     });
 }
 
@@ -51,11 +60,7 @@ void shelly::mousePressEvent(QMouseEvent *ev)
         open(this->accessibleDescription().toInt());
     }
     if(this->property("MQTT").toBool()){
-        QMqttClient *shelly_c = sp_mw->findChild<QMqttClient*>("FAAC");
-        if(shelly_c){
-            qDebug() << shelly_c->objectName();
-            shelly_c->publish(QMqttTopicName(this->property("mqtt_topic").toString()), this->property("mqtt_pyload").toByteArray());
-        }
+            mqtt_shelly->publish(QMqttTopicName(this->property("mqtt_topic_pub").toString()), this->property("mqtt_pyload").toByteArray());
     }
 }
 
@@ -73,4 +78,27 @@ void shelly::open(int state){
     psData.append(plugsocket);
     shellsock->writeDatagram(psData,QHostAddress(this->accessibleName()),4210);
     qDebug() << plugsocket.toHex();
+}
+
+void shelly::msg_process(const QByteArray message)
+{
+    QJsonParseError parseError;
+    QJsonDocument JS_message = QJsonDocument::fromJson(message, &parseError);
+
+    if(parseError.error == QJsonParseError::NoError){
+        QJsonObject JSO = JS_message.object();
+
+        if(this->property("IP").toString() == JSO.value("IP").toString()){
+            if(JSO.contains("INPUT") && (JSO.value("INPUT").toInt() != -1)){ //dziwne zachowaie SHELLY przy stracie sygnału WiFi generuje INPUT o wartości -1
+                qDebug() << JSO << "INPUT " << JSO.value("STATUS").toInt();
+                (this->*SIGNALPOINTERS[JSO.value("INPUT").toInt()])(JSO.value("STATUS").toInt());
+            }
+            if(JSO.contains("SIGNAL_STRENGHT")){
+                QLabel *rsi_label = sp_mw->findChild<QLabel*>("rsi_shelly_" + JSO.value("IP").toString().mid(10,3));
+                if(rsi_label!=nullptr){
+                    rsi_label->setText(QString::number(JSO.value("SIGNAL_STRENGHT").toInt()) + "%");
+                }
+            }
+        }
+    }
 }

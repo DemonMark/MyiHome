@@ -198,6 +198,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dateTime = QDate::currentDate();
     dateStamptext = dateTime.toString("dd/MM/yyyy");
 
+    tik_tak = new QTimer(this);
+
     movie_pompa_1 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_pompa_2 = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/pompa_on.gif");
     movie_cyrkulacja = new QMovie("/media/HDD1/admin/iHome/28-02-2018/media/circulation_on.gif");
@@ -214,6 +216,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->label_wentylator->setMovie(movie_wentylacja);
     ui->pump_fan->setMovie(movie_heat_fan);
     ui->siren->setMovie(movie_siren);
+    ui->siren->raise();
     movie_wentylacja->start();
     movie_heat_fan->setSpeed(150);
     movie_heat_fan->start();
@@ -245,10 +248,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //BRAMA WJAZDOWA
     connect(ui->shelly_107, &shelly::SHELLY_CLICKED, [=](){
-       movie_siren->start();
+        ui->siren->raise();
+        movie_siren->start();
     });
     connect(ui->shelly_107_2, &shelly::SHELLY_CLICKED, [=](){
-       movie_siren->start();
+        ui->siren->raise();
+        movie_siren->start();
     });
     connect(ui->shelly_107, &shelly::INPUT_0, [&](bool ON){
         int movie_frame = ON ? 0 : 1;
@@ -280,21 +285,19 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     //DZWONEK
-    connect(ui->shelly_106, &shelly::SW, [&](bool ON){
-        if(ON){
-            ui->shelly_106->setIcon(ui->shelly_106->property("mute_icon").value<QIcon>());
-        }else{
+    connect(ui->shelly_106, &shelly::INPUT_0, [&](bool ON){
+        QByteArray D = (QVariant(ON).toString()).toLocal8Bit();
+        const char *V = D.data();
+        ui->shelly_106->setIcon(ui->shelly_106->property(V).value<QIcon>());
+        if(!ON){
             tik_tak->stop();
-            ui->label_shelly_106->setVisible(false);
+            ui->label_shelly_106->setVisible(ON);
         }
         ui->shelly_106->setProperty("mute", ON);
     });
 
-    tik_tak = new QTimer(this);
-
     connect(ui->shelly_106, &shelly::TIMER, [&](){
         shelly *mut = MainWindow::findChild<shelly*>("shelly_106");
-
         if(mut->property("mute").toBool()){
             ui->label_shelly_106->setVisible(true);
             int t = ui->dzwonek_t->value()*60;
@@ -302,25 +305,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
                 ui->label_shelly_106->setText(QDateTime::fromTime_t(--t).toUTC().toString("mm:ss"));
                 if(t==0){
-                    mut->open(2);
+                    qDebug() << "MUTE OFF";
+                    mut->mousePressEvent(nullptr);
                 }
             });
             tik_tak->start(1000);
-        }
-    });
-
-    connect(ui->shelly_105, &shelly::SW, [=](bool ON){
-        if(ON){
-            QByteArray plugsockett;
-            QByteArray psDataa;
-            QUdpSocket *shellsockk = new QUdpSocket(this);
-
-            plugsockett[0]=0x53;
-            plugsockett[1]=0x01;
-            psDataa.clear();
-            psDataa.append(plugsockett);
-            shellsockk->writeDatagram(psDataa,QHostAddress("192.168.1.106"),4210);
-            delete shellsockk;
         }
     });
 
@@ -1677,19 +1666,20 @@ void MainWindow::pir_status()
     delete pir_check_qry;
 }
 
-void MainWindow::mqtt_processor(QString msg)
+void MainWindow::mqtt_processor(const QByteArray msg)
 {
+    QString msg_ = QString::fromUtf8(msg);
     //translator(msg);
     //obsługa głosowa scen
     foreach(QPushButton *sbtn, sbList){
         QRegularExpression re_msg(sbtn->accessibleName(), QRegularExpression::CaseInsensitiveOption);
-        QRegularExpressionMatch m_msg = re_msg.match(msg);
+        QRegularExpressionMatch m_msg = re_msg.match(msg_);
         if(m_msg.hasMatch()){
             sbtn->setChecked(true);
         }
     }
     //obsługa głosowa świateł
-    QList<QString> split_msg = msg.split(" ");
+    QList<QString> split_msg = msg_.split(" ");
     int w_count = 0;
     QListWidgetItem* source;
     for(int i=0; i<split_msg.count();i++){
@@ -1709,44 +1699,6 @@ void MainWindow::mqtt_processor(QString msg)
     }
 }
 
-void MainWindow::MQTT_SHELLY(QString msg)
-{
-    if(msg.contains("SIGNAL_STRENGHT", Qt::CaseSensitive)){
-        QLabel *rsi_label = MainWindow::findChild<QLabel*>("rsi_shelly_" + msg.mid(17,3));
-        if(rsi_label!=nullptr){
-            rsi_label->setText(msg.mid(40,2) + "%");
-        }
-    } else if(msg.contains("INPUT", Qt::CaseSensitive)){
-        shelly *shelly_ptr = MainWindow::findChild<shelly*>("shelly_" + msg.mid(17,3));
-        if(shelly_ptr!=nullptr){
-            int INP = msg.mid(30,1).toInt();
-            QString INPUT = "INPUT_" + msg.mid(30,1);
-            QByteArray tINPUT = INPUT.toLocal8Bit();
-            const char *IPT = tINPUT.data();
-            shelly_ptr->setProperty(IPT, msg.mid(42,1));
-            switch (INP){
-            case 0:
-            {
-                emit shelly_ptr->INPUT_0(shelly_ptr->property("INPUT_0").toBool());
-                //qDebug() << ui->digitalclock->text() << " " << IPT << " " << msg.mid(42,1);
-                break;
-            }
-            case 1:
-
-                emit shelly_ptr->INPUT_1(shelly_ptr->property("INPUT_1").toBool());
-                break;
-            case 2:
-
-                emit shelly_ptr->INPUT_2(shelly_ptr->property("INPUT_2").toBool());
-                break;
-            case 3:
-
-                emit shelly_ptr->INPUT_3(shelly_ptr->property("INPUT_3").toBool());
-                break;
-            }
-        };
-    }
-}
 //do skończenia
 void MainWindow::translator(QString &text_to_translate)
 {

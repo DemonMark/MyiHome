@@ -4690,17 +4690,9 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
-        <property name="mute_icon" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</iconset>
-        </property>
         <property name="on" stdset="0">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_on.png</iconset>
-        </property>
-        <property name="off" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</iconset>
         </property>
         <property name="offline" stdset="0">
          <iconset resource="ikony.qrc">
@@ -4716,10 +4708,24 @@ border: none;
          <bool>true</bool>
         </property>
         <property name="mqtt_pyload" stdset="0">
-         <string>{&quot;MUTE&quot;}</string>
+         <string>{&quot;MUTE&quot;:&quot;1&quot;}</string>
         </property>
-        <property name="mqtt_topic" stdset="0">
+        <property name="IP" stdset="0">
+         <string>192.168.1.113</string>
+        </property>
+        <property name="mqtt_topic_sub" stdset="0">
+         <string>aquami_stat</string>
+        </property>
+        <property name="mqtt_topic_pub" stdset="0">
          <string>BELL_CONTROL</string>
+        </property>
+        <property name="true" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off_mute.png</iconset>
+        </property>
+        <property name="false" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</iconset>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
@@ -5002,6 +5008,12 @@ border: none;
         </property>
         <property name="INPUT_3" stdset="0">
          <bool>false</bool>
+        </property>
+        <property name="IP" stdset="0">
+         <string>192.168.1.111</string>
+        </property>
+        <property name="mqtt_topic_sub" stdset="0">
+         <string>aquami_stat</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_32">
@@ -6350,14 +6362,6 @@ border: none;
         <property name="mute" stdset="0">
          <number>0</number>
         </property>
-        <property name="on" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</iconset>
-        </property>
-        <property name="off" stdset="0">
-         <iconset resource="ikony.qrc">
-          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</iconset>
-        </property>
         <property name="offline" stdset="0">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_offline.png</iconset>
@@ -6367,6 +6371,14 @@ border: none;
         </property>
         <property name="Relay" stdset="0">
          <bool>false</bool>
+        </property>
+        <property name="true" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_on.png</iconset>
+        </property>
+        <property name="false" stdset="0">
+         <iconset resource="ikony.qrc">
+          <normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/smart_lock_off.png</iconset>
         </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_105">
@@ -6387,7 +6399,7 @@ font: 75 7pt &quot;PibotoLt&quot;;</string>
          <string>00%</string>
         </property>
        </widget>
-       <widget class="QLabel" name="rsi_shelly_106">
+       <widget class="QLabel" name="rsi_shelly_113">
         <property name="geometry">
          <rect>
           <x>633</x>
@@ -6489,8 +6501,14 @@ border: none;
         <property name="mqtt_pyload" stdset="0">
          <string>{&quot;ID&quot;:&quot;1&quot;}</string>
         </property>
-        <property name="mqtt_topic" stdset="0">
+        <property name="mqtt_topic_sub" stdset="0">
+         <string>FAAC_STATUS</string>
+        </property>
+        <property name="mqtt_topic_pub" stdset="0">
          <string>FAAC_CONTROL</string>
+        </property>
+        <property name="IP" stdset="0">
+         <string>192.168.1.107</string>
         </property>
        </widget>
        <widget class="shelly" name="shelly_107_2">
@@ -6559,9 +6577,6 @@ border: none;
         <property name="mqtt_pyload" stdset="0">
          <string>{&quot;ID&quot;:&quot;0&quot;}</string>
         </property>
-        <property name="mqtt_topic" stdset="0">
-         <string>FAAC_CONTROL</string>
-        </property>
         <property name="true" stdset="0">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_close.png</iconset>
@@ -6573,6 +6588,15 @@ border: none;
         <property name="open" stdset="0">
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_open.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/gate_open.png</iconset>
+        </property>
+        <property name="mqtt_topic_sub" stdset="0">
+         <string>FAAC_STATUS</string>
+        </property>
+        <property name="mqtt_topic_pub" stdset="0">
+         <string>FAAC_CONTROL</string>
+        </property>
+        <property name="IP" stdset="0">
+         <string>192.168.1.112</string>
         </property>
        </widget>
        <widget class="QLabel" name="rsi_shelly_107">
@@ -7376,7 +7400,7 @@ border: none;</string>
        <zorder>con_err_15</zorder>
        <zorder>shelly_105</zorder>
        <zorder>rsi_shelly_105</zorder>
-       <zorder>rsi_shelly_106</zorder>
+       <zorder>rsi_shelly_113</zorder>
        <zorder>shelly_107</zorder>
        <zorder>shelly_107_2</zorder>
        <zorder>rsi_shelly_107</zorder>

@@ -101,9 +101,7 @@ private slots:
 
   void on_listWidget_itemClicked(QListWidgetItem *item);
 
-  void mqtt_processor(QString msg);
-
-  void MQTT_SHELLY(QString msg);
+  void mqtt_processor(const QByteArray msg);
 
   void on_button_list_currentIndexChanged(int arg1);
 

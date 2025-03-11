@@ -12,13 +12,13 @@ public:
     explicit mqtt_client(QString name, QString topic, QObject *parent = nullptr);
     virtual ~mqtt_client();
 
+    void sub(const QString topic);
+
 signals:
 
-    void msg(QString msg);
+    void msg(const QByteArray);
 
 public slots:
-
-    void publish(QString pMessage, QString pTopic);
 
 };
 

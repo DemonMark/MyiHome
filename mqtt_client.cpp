@@ -12,20 +12,18 @@ mqtt_client::mqtt_client(QString name, QString topic, QObject *parent) :
     connect(this, &QMqttClient::connected, [=](){
         this->subscribe(QMqttTopicFilter(topic));
     });
-
-    connect(this, &QMqttClient::messageReceived, [=](const QByteArray &message){
+    connect(this, &QMqttClient::messageReceived, [=](const QByteArray message){
         qDebug() << "MESSAGE FROM LAMBDA: " << message;
-        emit msg(QString::fromUtf8(message));
+        emit msg(message);
     });
 }
 
-void mqtt_client::publish(QString pMessage, QString pTopic)
+void mqtt_client::sub(const QString topic)
 {
-    const QString msg = "{'ID':'1'}";
-    const QString topic = "FAAC_CONTROL";
-    //iHome_mqtt->publish(QMqttTopicName(topic),msg.toUtf8(), 0, false);
-    //quint32 mm = iHome_mqtt->publish(topic, msg.toUtf8(), 0, false);
-    //qDebug() << mm;
+    connect(this, &QMqttClient::connected, [=](){
+        qDebug() << "SHELLY CONNECTED TO MQTT TO " << topic;
+        this->subscribe(QMqttTopicFilter(topic));
+    });
 }
 
 mqtt_client::~mqtt_client()
