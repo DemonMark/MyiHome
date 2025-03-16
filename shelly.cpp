@@ -97,8 +97,10 @@ void shelly::msg_process(const QByteArray message)
                 QLabel *rsi_label = sp_mw->findChild<QLabel*>("rsi_shelly_" + JSO.value("IP").toString().mid(10,3));
                 if(rsi_label!=nullptr){
                     rsi_label->setText(QString::number(JSO.value("SIGNAL_STRENGHT").toInt()) + "%");
+                    //mqtt_shelly->publish(QMqttTopicName(this->property("mqtt_topic_pub").toString()), this->property("mqtt_presence").toByteArray());
                 }
             }
+            mqtt_shelly->publish(QMqttTopicName(this->property("mqtt_topic_pub").toString()), this->property("mqtt_presence").toByteArray());
         }
     }
 }

@@ -4727,6 +4727,9 @@ border: none;
          <iconset resource="ikony.qrc">
           <normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</normaloff>:/HDD1/admin/iHome/28-02-2018/media/bell_off.png</iconset>
         </property>
+        <property name="mqtt_presence" stdset="0">
+         <string>{&quot;PRESENT&quot;:&quot;1&quot;}</string>
+        </property>
        </widget>
        <widget class="QPushButton" name="pushButton_33">
         <property name="geometry">
@@ -6509,6 +6512,9 @@ border: none;
         </property>
         <property name="IP" stdset="0">
          <string>192.168.1.107</string>
+        </property>
+        <property name="mqtt_presence" stdset="0">
+         <string>{&quot;PRESENT&quot;:&quot;1&quot;}</string>
         </property>
        </widget>
        <widget class="shelly" name="shelly_107_2">
@@ -9037,8 +9043,8 @@ border: none;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="grafika.qrc"/>
   <include location="ikony.qrc"/>
+  <include location="grafika.qrc"/>
  </resources>
  <connections/>
 </ui>
